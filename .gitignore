@@ -16,3 +16,6 @@ bin/
 test/resources/projects/**/.vscode
 test/resources/projects/maven/salut/testGradle
 test-temp
+.idea
+.vscode/settings.json
+.idea/workspace.xml
