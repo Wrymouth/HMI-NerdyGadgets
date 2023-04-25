@@ -5,7 +5,6 @@ public class DatabaseConnection {
     private static String username = "root";
     private static String password = "";
     private static Connection conn;
-    private static String urlstring;
 
     public Connection getConnection() {
         try {
