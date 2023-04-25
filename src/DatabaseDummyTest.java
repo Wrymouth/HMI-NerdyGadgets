@@ -1,3 +1,6 @@
+//This file is only meant for testing the database connection
+//and this file should not be added to the class diagram
+
 import java.sql.*;
 
 public class DatabaseDummyTest {
@@ -12,7 +15,7 @@ public class DatabaseDummyTest {
             this.results = stmt.executeQuery("SELECT * FROM products"); //Write query
             results.next(); //Moves result cursor
             System.out.println(results.getString("name")); //Returns name from column
-        } catch (SQLException ex) {
+        } catch(SQLException ex) {
             System.out.println("Creating query failed!");
             System.out.println(ex.getMessage());
         }
