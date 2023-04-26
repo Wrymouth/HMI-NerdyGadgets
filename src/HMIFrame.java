@@ -37,8 +37,7 @@ public class HMIFrame extends JFrame implements ActionListener {
         // order panel
         JLabel lOrder = new JLabel("Order");
         add(lOrder);
-        pOrder = new OrderPanel();
-        add(pOrder);
+
         // buttons
         bSelectOrder = new JButton("Selecteer order");
         add(bSelectOrder);
@@ -55,14 +54,21 @@ public class HMIFrame extends JFrame implements ActionListener {
         setVisible(true);
     }
 
+    public void setOrderPanel() {
+        pOrder = new OrderPanel(order);
+        add(pOrder);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bEditOrder) {
-            dEditOrder = new EditOrderDialog(this, true);
+            dEditOrder = new EditOrderDialog(this, true, order);
             dEditOrder.setVisible(true);
         } else if (e.getSource() == bSelectOrder) {
             dSelectOrder = new SelectOrderDialog(this, true);
-            dSelectOrder.setVisible(true);
+            this.order = dSelectOrder.getSelectedOrder();
+            setOrderPanel();
+            dSelectOrder.dispose();
         } else if (e.getSource() == bPickUpOrder) {
             // TODO pick up order
         } else if (e.getSource() == bPrintPdf) {

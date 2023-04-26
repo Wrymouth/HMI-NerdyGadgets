@@ -14,7 +14,6 @@ public class AddOrderDialog extends JDialog {
     public AddOrderDialog(JDialog dialog, boolean modal) {
         super(dialog, modal);
         // setup data
-        order = new Order();
         products = new Vector<Product>();
         dbFetchAllProducts();
         // setup ui
@@ -28,8 +27,8 @@ public class AddOrderDialog extends JDialog {
         listProducts = new JList<String>();
         add(listProducts);
         JLabel lOrder = new JLabel("Order");
-        pOrder = new OrderPanel();
-        add(pOrder);
+        // pOrder = new OrderPanel();
+        // add(pOrder);
         bAddProduct = new JButton("Product toevoegen");
         add(bAddProduct);
         bPlaceOrder = new JButton("Order plaatsen");

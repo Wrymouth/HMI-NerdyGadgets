@@ -1,11 +1,15 @@
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class SelectOrderDialog extends JDialog implements ActionListener {
     private ArrayList<Order> orders;
+    private Order selectedOrder;
 
     private JList listOrders;
     private JButton bAddOrder;
@@ -13,8 +17,8 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
 
     public SelectOrderDialog(Frame frame, boolean modal) {
         super(frame, modal);
-        orders = new ArrayList<Order>();
-        dbFetchAllOrders();
+        orders = DBMethods.dbFetchAllOrders();
+
         // setup ui
         setTitle("Orders");
         setSize(200, 300);
@@ -23,7 +27,21 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
         // ui components
         JLabel lOrders = new JLabel("Orders");
         add(lOrders);
-        listOrders = new JList<String>();
+        Vector<String> orderNames = new Vector<String>();
+        for (Order order : orders) {
+            orderNames.add(order.getName());
+        }
+        listOrders = new JList<String>(orderNames);
+        listOrders.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(javax.swing.event.ListSelectionEvent e) {
+                int index = listOrders.getSelectedIndex();
+                if (index != -1) {
+                    selectedOrder = orders.get(listOrders.getSelectedIndex());
+                }
+            }
+        });
+        listOrders.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         add(listOrders);
         bAddOrder = new JButton("Order toevoegen");
         bAddOrder.addActionListener(this);
@@ -31,6 +49,11 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
         bSelect = new JButton("Selecteren");
         bSelect.addActionListener(this);
         add(bSelect);
+        setVisible(true);
+    }
+
+    public Order getSelectedOrder() {
+        return selectedOrder;
     }
 
     @Override
@@ -39,13 +62,7 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
             AddOrderDialog dialog = new AddOrderDialog(this, true);
             dialog.setVisible(true);
         } else if (e.getSource() == bSelect) {
-            // TODO select order and close dialog
-            dispose();
+            setVisible(false);
         }
     }
-
-    public void dbFetchAllOrders() {
-        // TODO get all orders from database
-    }
-
 }
