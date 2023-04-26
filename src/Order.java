@@ -2,7 +2,16 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class Order {
+    private String name;
     private ArrayList<Orderline> products;
+
+    public Order(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public ArrayList<Orderline> getProducts() {
         return products;

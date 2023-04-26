@@ -10,9 +10,9 @@ public class EditOrderDialog extends JDialog implements ActionListener {
     private JButton bAddProduct;
     private JButton bSave;
 
-    public EditOrderDialog(Frame frame, boolean modal) {
+    public EditOrderDialog(Frame frame, boolean modal, Order order) {
         super(frame, modal);
-        order = new Order();
+        this.order = order;
         // setup ui
         setTitle("Order bewerken");
         setSize(400, 300);
@@ -21,7 +21,7 @@ public class EditOrderDialog extends JDialog implements ActionListener {
         // ui components
         JLabel lProducts = new JLabel("Producten");
         add(lProducts);
-        pOrder = new OrderPanel();
+        pOrder = new OrderPanel(order);
         add(pOrder);
         bAddProduct = new JButton("Product toevoegen");
         bAddProduct.addActionListener(this);
