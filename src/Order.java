@@ -27,7 +27,7 @@ public class Order {
 
     }
 
-    public void setProducts(ArrayList<Orderline> products) {
-        this.products = products;
+    public void setOrderlines(ArrayList<Orderline> orderlines) {
+        this.orderlines = orderlines;
     }
 }

@@ -19,6 +19,7 @@ public class DatabaseConnection {
         } catch (ClassNotFoundException ex) {
             // log an exception. for example:
             System.out.println("Driver not found.");
+            System.out.println(ex.getMessage());
         }
         return conn;
     }

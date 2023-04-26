@@ -21,7 +21,7 @@ public class EditOrderDialog extends JDialog implements ActionListener {
         // ui components
         JLabel lProducts = new JLabel("Producten");
         add(lProducts);
-        pOrder = new OrderPanel(order);
+        pOrder = new OrderPanel();
         add(pOrder);
         bAddProduct = new JButton("Product toevoegen");
         bAddProduct.addActionListener(this);

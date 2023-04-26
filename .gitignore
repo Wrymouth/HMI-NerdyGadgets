@@ -19,3 +19,4 @@ test-temp
 .idea
 .vscode/settings.json
 .idea/workspace.xml
+*.class
