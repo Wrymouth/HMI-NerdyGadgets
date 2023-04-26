@@ -1,10 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class AddOrderDialog extends JDialog {
     private Order order;
-    private Vector<Product> products;
+    private ArrayList<Product> products;
 
     private JList listProducts;
     private OrderPanel pOrder;
@@ -14,8 +14,7 @@ public class AddOrderDialog extends JDialog {
     public AddOrderDialog(JDialog dialog, boolean modal) {
         super(dialog, modal);
         // setup data
-        products = new Vector<Product>();
-        dbFetchAllProducts();
+        products = DBMethods.dbFetchAllProducts();
         // setup ui
         setTitle("Nieuw order");
         setSize(300, 300);
@@ -33,9 +32,5 @@ public class AddOrderDialog extends JDialog {
         add(bAddProduct);
         bPlaceOrder = new JButton("Order plaatsen");
         add(bPlaceOrder);
-    }
-
-    public void dbFetchAllProducts() {
-        // TODO get all products from database
     }
 }
