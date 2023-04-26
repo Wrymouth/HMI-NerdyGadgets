@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class OrderPanel extends JPanel {
     private JLabel jlOrderName;
@@ -19,14 +20,18 @@ public class OrderPanel extends JPanel {
     }
 
     private void displayOrder() {
+        ArrayList<Orderline> dbOrderlines = DBMethods.dbFetchOrderLines(this.order);
         jlOrderName.setText(order.getName());
 
-        for(Orderline ol : order.getOrderlines()) {
+        for(Orderline ol : dbOrderlines) {
             JLabel jlProductName = new JLabel();
-            JLabel jlProductAmount = new JLabel();
+            add(jlProductName);
+
+            JLabel jlProductQuantity = new JLabel();
+            add(jlProductQuantity);
 
             jlProductName.setText(ol.getProduct().getName());
-            jlProductAmount.setText(String.valueOf(ol.getAmount()));
+            jlProductQuantity.setText(ol.getAmount() + " stuks " + "(voorraad " + ol.getProduct().getQuantity() + ")");
         }
     }
 }
