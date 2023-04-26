@@ -39,7 +39,7 @@ public class DBMethods {
         return products;
     }
 
-    public static Order dbFetchOrderLines(Order order) {
+    public static ArrayList<Orderline> dbFetchOrderLines(Order order) {
         ArrayList<Orderline> orderlines = new ArrayList<>();
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM orderlines WHERE order_id = ?");
@@ -54,7 +54,7 @@ public class DBMethods {
             System.out.println("Creating query failed!");
             System.out.println(ex.getMessage());
         }
-        return order;
+        return orderlines;
     }
 
     public static Product dbFetchProduct(int productId) {
