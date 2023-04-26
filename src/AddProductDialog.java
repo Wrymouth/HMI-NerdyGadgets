@@ -13,8 +13,7 @@ public class AddProductDialog extends JDialog {
     public AddProductDialog(JDialog dialog, boolean modal) {
         super(dialog, modal);
         // setup data
-        products = new ArrayList<Product>();
-        dbFetchAllProducts();
+        products = DBMethods.dbFetchAllProducts();
         // setup ui
         setTitle("Product toevoegen");
         setSize(250, 300);
@@ -31,9 +30,5 @@ public class AddProductDialog extends JDialog {
         add(tAmount);
         bAdd = new JButton("Toevoegen");
         add(bAdd);
-    }
-
-    public void dbFetchAllProducts() {
-        // TODO get all products from database
     }
 }
