@@ -7,11 +7,11 @@ public class Orderline {
         this.product = product;
     }
 
-    public int getAmount() {
-        return amount;
-    }
-
     public Product getProduct() {
         return product;
+    }
+
+    public int getAmount() {
+        return amount;
     }
 }

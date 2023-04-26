@@ -24,19 +24,25 @@ public class HMIFrame extends JFrame implements ActionListener {
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new FlowLayout());
+
         // warehouse panel
         JLabel lWarehouse = new JLabel("Weergave robot");
         add(lWarehouse);
         pWarehouse = new WarehousePanel();
         add(pWarehouse);
+
         // boxes panel
         JLabel lBoxes = new JLabel("Dozen");
         add(lBoxes);
         pBoxes = new BoxesPanel();
         add(pBoxes);
+
         // order panel
         JLabel lOrder = new JLabel("Order");
         add(lOrder);
+
+        pOrder = new OrderPanel();
+        add(pOrder);
 
         // buttons
         bSelectOrder = new JButton("Selecteer order");
@@ -51,12 +57,8 @@ public class HMIFrame extends JFrame implements ActionListener {
         bPrintPdf = new JButton("Print pakbon");
         add(bPrintPdf);
         bPrintPdf.addActionListener(this);
-        setVisible(true);
-    }
 
-    public void setOrderPanel() {
-        pOrder = new OrderPanel(order);
-        add(pOrder);
+        setVisible(true);
     }
 
     @Override
@@ -66,13 +68,13 @@ public class HMIFrame extends JFrame implements ActionListener {
             dEditOrder.setVisible(true);
         } else if (e.getSource() == bSelectOrder) {
             dSelectOrder = new SelectOrderDialog(this, true);
-            this.order = dSelectOrder.getSelectedOrder();
-            setOrderPanel();
+            pOrder.setOrder(dSelectOrder.getSelectedOrder());
             dSelectOrder.dispose();
         } else if (e.getSource() == bPickUpOrder) {
             // TODO pick up order
         } else if (e.getSource() == bPrintPdf) {
             // TODO print pdf
         }
+        repaint();
     }
 }
