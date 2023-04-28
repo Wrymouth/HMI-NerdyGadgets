@@ -1,36 +1,82 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class AddOrderDialog extends JDialog {
+public class AddOrderDialog extends JDialog implements ActionListener {
     private Order order;
-    private ArrayList<Product> products;
+    private ArrayList<Product> allProducts;
 
-    private JList listProducts;
-    private OrderPanel pOrder;
-    private JButton bAddProduct;
+    private ProductListPanel pProductList;
     private JButton bPlaceOrder;
+    private JComboBox<String> productChoiceList; //Dropdown that contains all products that can be added to order
+    private JButton jbAddProductToOrder;
+    private ArrayList<String> addedProducts; //ArrayList that contains all product names selected from dropdown
 
     public AddOrderDialog(JDialog dialog, boolean modal) {
         super(dialog, modal);
         // setup data
-        products = DBMethods.dbFetchAllProducts();
+        allProducts = DBMethods.dbFetchAllProducts();
+        addedProducts = new ArrayList<>();
+        order = new Order();
         // setup ui
         setTitle("Nieuw order");
         setSize(300, 300);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLayout(new FlowLayout());
+
         // ui components
+        JLabel lOrder = new JLabel("Order");
+        add(lOrder);
+        pProductList = new ProductListPanel(order.getOrderlines(), true);
+        add(pProductList);
         JLabel lProducts = new JLabel("Producten");
         add(lProducts);
-        listProducts = new JList<String>();
-        add(listProducts);
-        JLabel lOrder = new JLabel("Order");
-        // pOrder = new OrderPanel();
-        // add(pOrder);
-        bAddProduct = new JButton("Product toevoegen");
-        add(bAddProduct);
+
+        productChoiceList = new JComboBox<String>();
+        for(Product p : getProducts()) {
+            productChoiceList.addItem(p.getName());
+        }
+        productChoiceList.setVisible(true);
+        add(productChoiceList);
+
+        jbAddProductToOrder = new JButton("Voeg product toe");
+        jbAddProductToOrder.addActionListener(this);
+        add(jbAddProductToOrder);
+
         bPlaceOrder = new JButton("Order plaatsen");
+        bPlaceOrder.addActionListener(this);
         add(bPlaceOrder);
+    }
+
+    //Gets all products from the DB and stores them in an ArrayList
+    public ArrayList<Product> getProducts() {
+        ArrayList<Product> productList = DBMethods.dbFetchAllProducts();
+        return productList;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getActionCommand().equals("Voeg product toe")) {
+            String selectedValue = String.valueOf(productChoiceList.getSelectedItem()); //Gets value from dropdown
+            addedProducts.add(selectedValue); //Adds value to list
+            // get selected product from name
+            Product selectedProduct = null;
+            for (Product product : allProducts) {
+                if (product.getName().equals(selectedValue)) {
+                    selectedProduct = product;
+                }
+            }
+            Orderline orderline = new Orderline(selectedProduct);
+            order.addOrderline(orderline);
+            pProductList.setOrderlines(order.getOrderlines());
+        } else if (e.getActionCommand().equals("Order plaatsen")) {
+            DBMethods.dbAddOrder(new Order());
+            for(Orderline ol : pProductList.getOrderlines()) {
+                DBMethods.dbAddOrderline(ol, order);
+            }
+            dispose();
+        }
     }
 }

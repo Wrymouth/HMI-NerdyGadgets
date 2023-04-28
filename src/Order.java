@@ -6,9 +6,19 @@ public class Order {
     private String name;
     private ArrayList<Orderline> orderlines;
 
+    public Order() {
+        orderlines = new ArrayList<Orderline>();
+    }
+
     public Order(int id, String name) {
         this.id = id;
         this.name = name;
+        orderlines = new ArrayList<Orderline>();
+    }
+
+    public Order(int id) {
+        this.id = id;
+        orderlines = new ArrayList<Orderline>();
     }
 
     public int getId() {
@@ -29,5 +39,9 @@ public class Order {
 
     public void setOrderlines(ArrayList<Orderline> orderlines) {
         this.orderlines = orderlines;
+    }
+
+    public void addOrderline(Orderline orderline) {
+        orderlines.add(orderline);
     }
 }

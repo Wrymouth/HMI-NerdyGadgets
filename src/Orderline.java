@@ -7,6 +7,10 @@ public class Orderline {
         this.product = product;
     }
 
+    public Orderline(Product product) {
+        this(1, product);
+    }
+
     public Product getProduct() {
         return product;
     }

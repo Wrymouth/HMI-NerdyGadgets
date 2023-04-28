@@ -27,6 +27,7 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
         // ui components
         JLabel lOrders = new JLabel("Orders");
         add(lOrders);
+
         Vector<String> orderNames = new Vector<String>();
         for (Order order : orders) {
             orderNames.add(order.getName());
