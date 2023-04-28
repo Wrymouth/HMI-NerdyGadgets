@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class HMIFrame extends JFrame implements ActionListener {
     private WarehousePanel pWarehouse;
@@ -9,15 +10,15 @@ public class HMIFrame extends JFrame implements ActionListener {
     private OrderPanel pOrder;
 
     private SelectOrderDialog dSelectOrder;
-    private EditOrderDialog	dEditOrder;
+    private EditOrderDialog dEditOrder;
 
     private JButton bSelectOrder;
     private JButton bEditOrder;
     private JButton bPickUpOrder;
     private JButton bPrintPdf;
-    
+
     private Order order;
-    
+
     public HMIFrame() {
         // basic setup
         setTitle("HMI NerdyGadgets");
@@ -64,13 +65,29 @@ public class HMIFrame extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bEditOrder) {
-            dEditOrder = new EditOrderDialog(this, true, order);
-            dEditOrder.setVisible(true);
+            if (order == null) {
+                JOptionPane.showMessageDialog(this, "Selecteer eerst een order");
+            } else {
+                dEditOrder = new EditOrderDialog(this, true, order);
+                dEditOrder.setVisible(true);
+                remove(pOrder);
+                order = dEditOrder.getOrder();
+                dEditOrder.dispose();
+            }
         } else if (e.getSource() == bSelectOrder) {
             dSelectOrder = new SelectOrderDialog(this, true);
-            pOrder.setOrder(dSelectOrder.getSelectedOrder());
+            Order selectedOrder = dSelectOrder.getSelectedOrder();
+            if (selectedOrder == null) {
+                return;
+            }
+            ArrayList<Orderline> orderlines = DBMethods.fetchOrderlines(selectedOrder);
+            this.order = selectedOrder;
+            this.order.setOrderlines(orderlines);
+            pOrder.setOrder(selectedOrder);
+            System.out.println(order);
             dSelectOrder.dispose();
         } else if (e.getSource() == bPickUpOrder) {
+            JOptionPane.showMessageDialog(this, "De order wordt nu door een mederwerker opgehaald.");
             // TODO pick up order
         } else if (e.getSource() == bPrintPdf) {
             // TODO print pdf
