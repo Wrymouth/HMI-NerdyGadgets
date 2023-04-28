@@ -11,9 +11,10 @@ public class ProductListPanel extends JPanel {
     public ProductListPanel(ArrayList<Orderline> orderlines, boolean hasEditButtons) {
         // setup data
         if (orderlines == null) {
-            orderlines = new ArrayList<Orderline>();
+            System.out.println("hoi");
+            setOrderlines(new ArrayList<Orderline>());
         } else {
-            this.orderlines = orderlines;
+            setOrderlines(orderlines);
         }
         this.hasEditButtons = hasEditButtons;
         // setup gui
@@ -39,6 +40,4 @@ public class ProductListPanel extends JPanel {
             add(productPanel);
         }
     }
-
-
 }

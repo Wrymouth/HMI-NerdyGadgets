@@ -64,11 +64,18 @@ public class HMIFrame extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bEditOrder) {
-            dEditOrder = new EditOrderDialog(this, true, order);
-            dEditOrder.setVisible(true);
+            if (order == null) {
+                JOptionPane.showMessageDialog(this, "Selecteer eerst een order");
+            } else {
+                dEditOrder = new EditOrderDialog(this, true, order);
+                dEditOrder.setVisible(true);
+            }
         } else if (e.getSource() == bSelectOrder) {
             dSelectOrder = new SelectOrderDialog(this, true);
-            pOrder.setOrder(dSelectOrder.getSelectedOrder());
+            Order selectedOrder = dSelectOrder.getSelectedOrder();
+            this.order = selectedOrder;
+            pOrder.setOrder(selectedOrder);
+            
             dSelectOrder.dispose();
         } else if (e.getSource() == bPickUpOrder) {
             // TODO pick up order

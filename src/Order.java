@@ -39,4 +39,13 @@ public class Order {
     public void addOrderline(Orderline orderline) {
         orderlines.add(orderline);
     }
+
+    @Override
+    public String toString() {
+        String orderString = "Order: " + name + "\n";
+        for (Orderline orderline : orderlines) {
+            orderString += orderline.toString() + "\n";
+        }
+        return orderString;
+    }
 }

@@ -18,4 +18,8 @@ public class Orderline {
     public int getAmount() {
         return amount;
     }
+
+    public String toString() {
+        return "Orderline: " + product.getName() + " " + amount + "x";
+    }
 }
