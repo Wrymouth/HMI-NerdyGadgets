@@ -10,7 +10,7 @@ public class EditOrderDialog extends JDialog implements ActionListener {
     private ArrayList<Product> allProducts;
 
     private OrderPanel pOrder;
-    private ProductListPanel pProductList;
+    private OrderlineListPanel pProductList;
     private JComboBox<String> productChoiceList;
     private JButton bAddProduct;
     private JButton bSave;
@@ -19,7 +19,7 @@ public class EditOrderDialog extends JDialog implements ActionListener {
         super(frame, modal);
         this.order = order;
 
-        allProducts = DBMethods.dbFetchAllProducts();
+        allProducts = DBMethods.fetchAllProducts();
         // setup ui
         setTitle("Order bewerken");
         setSize(400, 300);
@@ -29,14 +29,13 @@ public class EditOrderDialog extends JDialog implements ActionListener {
         JLabel lProducts = new JLabel("Producten");
         add(lProducts);
         productChoiceList = new JComboBox<String>();
-        for(Product p : DBMethods.dbFetchAllProducts()) {
+        for(Product p : DBMethods.fetchAllProducts()) {
             productChoiceList.addItem(p.getName());
         }
         add(productChoiceList);
         JLabel lOrder = new JLabel("Order");
         add(lOrder);
-        System.out.println(order);
-        pProductList = new ProductListPanel(order.getOrderlines(), true);
+        pProductList = new OrderlineListPanel(order.getOrderlines(), true);
         add(pProductList);
         bAddProduct = new JButton("Voeg product toe");
         bAddProduct.addActionListener(this);
@@ -44,6 +43,10 @@ public class EditOrderDialog extends JDialog implements ActionListener {
         bSave = new JButton("Opslaan");
         bSave.addActionListener(this);
         add(bSave);
+    }
+
+    public Order getOrder() {
+        return order;
     }
 
     @Override
@@ -61,8 +64,8 @@ public class EditOrderDialog extends JDialog implements ActionListener {
             order.addOrderline(orderline);
             pProductList.setOrderlines(order.getOrderlines());
         } else if (e.getSource() == bSave) {
-            // TODO modify order object and save to database
-            dispose();
+            DBMethods.updateOrder(order, pProductList.getOrderlines());
+            setVisible(false);
         }
     }
 

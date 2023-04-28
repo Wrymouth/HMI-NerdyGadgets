@@ -20,10 +20,9 @@ public class OrderPanel extends JPanel {
     }
 
     private void displayOrder() {
-        ArrayList<Orderline> dbOrderlines = DBMethods.dbFetchOrderLines(this.order);
         jlOrderName.setText(order.getName());
 
-        for(Orderline ol : dbOrderlines) {
+        for(Orderline ol : order.getOrderlines()) {
             JLabel jlProductName = new JLabel();
             add(jlProductName);
 

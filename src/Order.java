@@ -16,6 +16,11 @@ public class Order {
         orderlines = new ArrayList<Orderline>();
     }
 
+    public Order(int id) {
+        this.id = id;
+        orderlines = new ArrayList<Orderline>();
+    }
+
     public int getId() {
         return id;
     }
@@ -43,8 +48,12 @@ public class Order {
     @Override
     public String toString() {
         String orderString = "Order: " + name + "\n";
-        for (Orderline orderline : orderlines) {
-            orderString += orderline.toString() + "\n";
+        if (orderlines.size() == 0) {
+            orderString += "No products in order";
+        } else {
+            for (Orderline orderline : orderlines) {
+                orderString += orderline.toString() + "\n";
+            }
         }
         return orderString;
     }
