@@ -16,6 +16,11 @@ public class Order {
         orderlines = new ArrayList<Orderline>();
     }
 
+    public Order(int id) {
+        this.id = id;
+        orderlines = new ArrayList<Orderline>();
+    }
+
     public int getId() {
         return id;
     }

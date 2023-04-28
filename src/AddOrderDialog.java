@@ -33,6 +33,7 @@ public class AddOrderDialog extends JDialog implements ActionListener {
         add(pProductList);
         JLabel lProducts = new JLabel("Producten");
         add(lProducts);
+
         productChoiceList = new JComboBox<String>();
         for(Product p : getProducts()) {
             productChoiceList.addItem(p.getName());
@@ -71,7 +72,10 @@ public class AddOrderDialog extends JDialog implements ActionListener {
             order.addOrderline(orderline);
             pProductList.setOrderlines(order.getOrderlines());
         } else if (e.getActionCommand().equals("Order plaatsen")) {
-            DBMethods.dbAddOrder(new Order(1, "Order")); // TODO
+            DBMethods.dbAddOrder(new Order());
+            for(Orderline ol : pProductList.getOrderlines()) {
+                DBMethods.dbAddOrderline(ol, order);
+            }
             dispose();
         }
     }

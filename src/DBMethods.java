@@ -27,10 +27,11 @@ public class DBMethods {
         try {
             Statement stmt = conn.createStatement();
             ResultSet results = stmt.executeQuery("SELECT * FROM products"); //Write query
-            while (results.next()) {
+            while(results.next()) {
+                int id = results.getInt("product_id");
                 String productName = results.getString("name");
                 int quantity = results.getInt("quantity");
-                products.add(new Product(productName, quantity));
+                products.add(new Product(id, productName, quantity));
             }
         } catch(SQLException ex) {
             System.out.println("Creating query failed!");
@@ -86,11 +87,11 @@ public class DBMethods {
         }
     }
 
-    public static boolean dbAddOrderline(Orderline orderline, Order order, Product product) {
+    public static boolean dbAddOrderline(Orderline orderline, Order order) {
         try {
             PreparedStatement stmt = conn.prepareStatement("INSERT INTO orderlines (order_id, product_id, amount) VALUES (?, ?, ?)");
-            stmt.setInt(1, order.getId());
-            stmt.setInt(2, product.getId());
+            stmt.setInt(1, dbGetLastOrderID());
+            stmt.setInt(2, orderline.getProduct().getId());
             stmt.setInt(3, orderline.getAmount());
             stmt.executeUpdate();
             return true;
@@ -98,6 +99,19 @@ public class DBMethods {
             System.out.println("Creating query failed!");
             System.out.println(ex.getMessage());
             return false;
+        }
+    }
+
+    public static int dbGetLastOrderID() {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT order_id FROM orders ORDER BY order_id DESC");
+            ResultSet results = stmt.executeQuery();
+            results.next();
+            return results.getInt("order_id");
+        } catch (SQLException ex) {
+            System.out.println("Executing query failed!");
+            System.out.println(ex.getMessage());
+            return 0;
         }
     }
 }

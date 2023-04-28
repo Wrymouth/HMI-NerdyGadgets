@@ -21,4 +21,8 @@ public class ProductPanel extends JPanel {
             add(bRemove);
         }
     }
+
+    public String gettAmount() {
+        return tAmount.getText();
+    }
 }

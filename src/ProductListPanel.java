@@ -40,5 +40,11 @@ public class ProductListPanel extends JPanel {
         }
     }
 
+    public ArrayList<Orderline> getOrderlines() {
+        return orderlines;
+    }
 
+    public ArrayList<ProductPanel> getProductPanels() {
+        return productPanels;
+    }
 }
