@@ -20,10 +20,10 @@ public class HMIFrame extends JFrame implements ActionListener {
     
     public HMIFrame() {
         // basic setup
-        setTitle("HMI NerdyGadgets");
+        setTitle("NerdyGadgets Magazijnmanagement");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new FlowLayout());
+        setLayout(new GridLayout(2, 2));
 
         // warehouse panel
         JLabel lWarehouse = new JLabel("Weergave robot");
@@ -31,32 +31,30 @@ public class HMIFrame extends JFrame implements ActionListener {
         pWarehouse = new WarehousePanel();
         add(pWarehouse);
 
-        // boxes panel
-        JLabel lBoxes = new JLabel("Dozen");
-        add(lBoxes);
-        pBoxes = new BoxesPanel();
-        add(pBoxes);
-
         // order panel
-        JLabel lOrder = new JLabel("Order");
-        add(lOrder);
+        HMIContainer orderPanel = new HMIContainer("Order", new OrderPanel());
+        add(orderPanel);
+        bEditOrder = new JButton("Wijzig order"); //Edit order button
+        bEditOrder.addActionListener(this);
+        orderPanel.add(bEditOrder);
 
-        pOrder = new OrderPanel();
-        add(pOrder);
+        bSelectOrder = new JButton("Selecteer order"); //Select order button
+        bSelectOrder.addActionListener(this);
+        orderPanel.add(bSelectOrder);
+
+        // boxes panel
+        HMIContainer boxesPanel = new HMIContainer("Dozen", new BoxesPanel());
+        add(boxesPanel);
 
         // buttons
-        bSelectOrder = new JButton("Selecteer order");
-        add(bSelectOrder);
-        bSelectOrder.addActionListener(this);
-        bEditOrder = new JButton("Wijzig order");
-        add(bEditOrder);
-        bEditOrder.addActionListener(this);
         bPickUpOrder = new JButton("Haal order op");
-        add(bPickUpOrder);
         bPickUpOrder.addActionListener(this);
+        add(bPickUpOrder);
+
+        //Print receipt button
         bPrintPdf = new JButton("Print pakbon");
-        add(bPrintPdf);
         bPrintPdf.addActionListener(this);
+        add(bPrintPdf);
 
         setVisible(true);
     }
