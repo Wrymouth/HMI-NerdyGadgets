@@ -1,3 +1,6 @@
+//All elements on main UI are added to the HMIContainer object,
+//please add buttons etc to an HMIContainer object and not to the main UI frame itself.
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,25 +22,27 @@ public class HMIFrame extends JFrame implements ActionListener {
     private Order order;
     
     public HMIFrame() {
-        // basic setup
+        //GUI Setup
         setTitle("NerdyGadgets Magazijnmanagement");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(2, 1));
 
-        // warehouse panel
+        //Warehouse panel
         pWarehouse = new WarehousePanel();
         add(pWarehouse);
         JLabel lWarehouse = new JLabel("Weergave robot");
         pWarehouse.add(lWarehouse);
 
-        // order panel
+        //Order panel
         HMIContainer orderPanel = new HMIContainer("Order", new OrderPanel());
         add(orderPanel);
+
         bEditOrder = new JButton("Wijzig order"); //Edit order button
         bEditOrder.addActionListener(this);
         orderPanel.add(bEditOrder);
-        bPickUpOrder = new JButton("Haal order op");
+
+        bPickUpOrder = new JButton("Haal order op"); //Get order button
         bPickUpOrder.addActionListener(this);
         orderPanel.add(bPickUpOrder);
 
@@ -45,16 +50,16 @@ public class HMIFrame extends JFrame implements ActionListener {
         bSelectOrder.addActionListener(this);
         orderPanel.add(bSelectOrder);
 
-        // boxes panel
+        //Boxes panel
         HMIContainer boxesPanel = new HMIContainer("Dozen", new BoxesPanel());
         add(boxesPanel);
 
-        // buttons
-
-        //Print receipt button
-        bPrintPdf = new JButton("Print pakbon");
+        //Panel with PDF button
+        HMIContainer PDFButtonPanel = new HMIContainer("", new JPanel());
+        add(PDFButtonPanel);
+        bPrintPdf = new JButton("Print pakbon"); //Print receipt button
         bPrintPdf.addActionListener(this);
-        add(bPrintPdf);
+        PDFButtonPanel.add(bPrintPdf);
 
         setVisible(true);
     }
