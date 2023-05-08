@@ -1,5 +1,5 @@
-//All elements on main UI are added to the HMIContainer object,
-//please add buttons etc to an HMIContainer object and not to the main UI frame itself.
+//IMPORTANT: All elements on main UI are added to the HMIContainer object,
+//please add buttons, labels etc to an HMIContainer object and not to the main UI frame itself.
 
 import javax.swing.*;
 import java.awt.*;
@@ -7,9 +7,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class HMIFrame extends JFrame implements ActionListener {
-    private WarehousePanel pWarehouse;
-    private BoxesPanel pBoxes;
-    private OrderPanel pOrder;
+    //Create all HMIContainers so we can later access their data
+    private HMIContainer warehousePanel;
+    private HMIContainer boxesPanel;
+    private HMIContainer orderPanel;
+    private HMIContainer PDFButtonPanel;
 
     private SelectOrderDialog dSelectOrder;
     private EditOrderDialog	dEditOrder;
@@ -29,14 +31,16 @@ public class HMIFrame extends JFrame implements ActionListener {
         setLayout(new GridLayout(2, 1));
 
         //Warehouse panel
-        pWarehouse = new WarehousePanel();
-        add(pWarehouse);
+        warehousePanel = new HMIContainer("", new WarehousePanel());
+        add(warehousePanel);
         JLabel lWarehouse = new JLabel("Weergave robot");
-        pWarehouse.add(lWarehouse);
+        warehousePanel.add(lWarehouse);
+        warehousePanel.add(warehousePanel.getWarehousePanel());
 
         //Order panel
-        HMIContainer orderPanel = new HMIContainer("Order", new OrderPanel());
+        orderPanel = new HMIContainer("Order", new OrderPanel());
         add(orderPanel);
+        orderPanel.add(orderPanel.getOrderPanel());
 
         bEditOrder = new JButton("Wijzig order"); //Edit order button
         bEditOrder.addActionListener(this);
@@ -51,11 +55,11 @@ public class HMIFrame extends JFrame implements ActionListener {
         orderPanel.add(bSelectOrder);
 
         //Boxes panel
-        HMIContainer boxesPanel = new HMIContainer("Dozen", new BoxesPanel());
+        boxesPanel = new HMIContainer("Dozen", new BoxesPanel());
         add(boxesPanel);
 
         //Panel with PDF button
-        HMIContainer PDFButtonPanel = new HMIContainer("", new JPanel());
+        PDFButtonPanel = new HMIContainer("", new JPanel());
         add(PDFButtonPanel);
         bPrintPdf = new JButton("Print pakbon"); //Print receipt button
         bPrintPdf.addActionListener(this);
@@ -71,9 +75,9 @@ public class HMIFrame extends JFrame implements ActionListener {
             dEditOrder.setVisible(true);
         } else if (e.getSource() == bSelectOrder) {
             dSelectOrder = new SelectOrderDialog(this, true);
-            pOrder.setOrder(dSelectOrder.getSelectedOrder());
+            orderPanel.getOrderPanel().setOrder(dSelectOrder.getSelectedOrder());
             dSelectOrder.dispose();
-        } else if (e.getSource() == bPickUpOrder) {
+    } else if (e.getSource() == bPickUpOrder) {
             // TODO pick up order
         } else if (e.getSource() == bPrintPdf) {
             // TODO print pdf
