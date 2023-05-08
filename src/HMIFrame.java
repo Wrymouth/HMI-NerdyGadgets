@@ -23,13 +23,13 @@ public class HMIFrame extends JFrame implements ActionListener {
         setTitle("NerdyGadgets Magazijnmanagement");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(2, 2));
+        setLayout(new GridLayout(2, 1));
 
         // warehouse panel
-        JLabel lWarehouse = new JLabel("Weergave robot");
-        add(lWarehouse);
         pWarehouse = new WarehousePanel();
         add(pWarehouse);
+        JLabel lWarehouse = new JLabel("Weergave robot");
+        pWarehouse.add(lWarehouse);
 
         // order panel
         HMIContainer orderPanel = new HMIContainer("Order", new OrderPanel());
@@ -37,6 +37,9 @@ public class HMIFrame extends JFrame implements ActionListener {
         bEditOrder = new JButton("Wijzig order"); //Edit order button
         bEditOrder.addActionListener(this);
         orderPanel.add(bEditOrder);
+        bPickUpOrder = new JButton("Haal order op");
+        bPickUpOrder.addActionListener(this);
+        orderPanel.add(bPickUpOrder);
 
         bSelectOrder = new JButton("Selecteer order"); //Select order button
         bSelectOrder.addActionListener(this);
@@ -47,9 +50,6 @@ public class HMIFrame extends JFrame implements ActionListener {
         add(boxesPanel);
 
         // buttons
-        bPickUpOrder = new JButton("Haal order op");
-        bPickUpOrder.addActionListener(this);
-        add(bPickUpOrder);
 
         //Print receipt button
         bPrintPdf = new JButton("Print pakbon");
