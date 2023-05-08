@@ -57,6 +57,7 @@ public class HMIFrame extends JFrame implements ActionListener {
         //Boxes panel
         boxesPanel = new HMIContainer("Dozen", new BoxesPanel());
         add(boxesPanel);
+        boxesPanel.add(boxesPanel.getBoxesPanel());
 
         //Panel with PDF button
         PDFButtonPanel = new HMIContainer("", new JPanel());
