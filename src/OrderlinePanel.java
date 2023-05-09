@@ -40,7 +40,12 @@ public class OrderlinePanel extends JPanel implements ActionListener {
     }
 
     public Orderline getOrderline() {
-        orderline.setAmount(Integer.parseInt(this.getAmount()));
+        try {
+            orderline.setAmount(Integer.parseInt(this.getAmount()));
+            return orderline;
+        } catch (NumberFormatException ex) {
+            System.out.println("nog te doen");
+        }
         return orderline;
     }
 }
