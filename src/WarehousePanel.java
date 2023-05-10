@@ -70,7 +70,6 @@ public class WarehousePanel extends JPanel {
         }
         // draw robot
         g.setColor(Color.GRAY);
-        System.out.println(height);
         g.fillOval(robotX, height-robotY, productWidth, productHeight);
         
     }
@@ -82,6 +81,8 @@ public class WarehousePanel extends JPanel {
             return Color.GREEN;
         } else if(productName.equals("Blauw")) {
             return Color.BLUE;
+        } else if(productName.equals("Geel")) {
+            return Color.YELLOW;
         } else {
             return Color.BLACK;
         }
