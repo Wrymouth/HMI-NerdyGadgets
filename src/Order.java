@@ -21,7 +21,7 @@ public class Order {
         orderlines = new ArrayList<Orderline>();
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
@@ -43,5 +43,18 @@ public class Order {
 
     public void addOrderline(Orderline orderline) {
         orderlines.add(orderline);
+    }
+
+    @Override
+    public String toString() {
+        String orderString = "Order: " + name + "\n";
+        if (orderlines.size() == 0) {
+        orderString += "No products in order";
+        } else {
+            for (Orderline orderline : orderlines) {
+                orderString += orderline.toString() + "\n";
+            }
+        }
+        return orderString;
     }
 }
