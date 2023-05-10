@@ -52,7 +52,7 @@ public class DBMethods {
                 while(results.next()) {
                     int productId = results.getInt("product_id");
                     int amount = results.getInt("amount");
-                    orderlines.add(new Orderline(amount, fetchProduct(productId)));
+                    orderlines.add(new Orderline(amount, dbFetchProduct(productId)));
                 }
             } else {
                 System.out.println("ID mag niet null zijn!");

@@ -28,6 +28,12 @@ public class EditOrderDialog extends JDialog implements ActionListener {
         // ui components
         JLabel lProducts = new JLabel("Producten");
         add(lProducts);
+<<<<<<< HEAD
+        pOrder = new OrderPanel();
+        add(pOrder);
+        pOrder.setOrder(order);
+        bAddProduct = new JButton("Product toevoegen");
+=======
         productChoiceList = new JComboBox<String>();
         for(Product p : DBMethods.fetchAllProducts()) {
             productChoiceList.addItem(p.getName());
@@ -38,6 +44,7 @@ public class EditOrderDialog extends JDialog implements ActionListener {
         pProductList = new OrderlineListPanel(order.getOrderlines(), true);
         add(pProductList);
         bAddProduct = new JButton("Voeg product toe");
+>>>>>>> main
         bAddProduct.addActionListener(this);
         add(bAddProduct);
         bSave = new JButton("Opslaan");
@@ -68,4 +75,8 @@ public class EditOrderDialog extends JDialog implements ActionListener {
             setVisible(false);
         }
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 }
