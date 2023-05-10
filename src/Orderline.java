@@ -18,4 +18,14 @@ public class Orderline {
     public int getAmount() {
         return amount;
     }
+
+    public void setAmount(int amount) {
+        if (amount > 0) {
+            this.amount = amount;
+        }
+    }
+
+    public String toString() {
+        return "Orderline: " + product.getName() + " " + amount + "x";
+    }
 }
