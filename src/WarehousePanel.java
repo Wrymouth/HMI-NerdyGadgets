@@ -70,16 +70,17 @@ public class WarehousePanel extends JPanel {
         }
         // draw robot
         g.setColor(Color.GRAY);
+        System.out.println(height);
         g.fillOval(robotX, height-robotY, productWidth, productHeight);
         
     }
 
     private Color getProductColor(String productName) {
-        if (productName == "Rood") {
+        if(productName.equals("Rood")) {
             return Color.RED;
-        } else if (productName == "Groen") {
+        } else if(productName.equals("Groen")) {
             return Color.GREEN;
-        } else if (productName == "Blauw") {
+        } else if(productName.equals("Blauw")) {
             return Color.BLUE;
         } else {
             return Color.BLACK;

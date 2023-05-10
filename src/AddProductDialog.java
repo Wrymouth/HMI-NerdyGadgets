@@ -13,7 +13,7 @@ public class AddProductDialog extends JDialog {
     public AddProductDialog(JDialog dialog, boolean modal) {
         super(dialog, modal);
         // setup data
-        products = DBMethods.fetchAllProducts();
+        products = DBMethods.dbFetchAllProducts();
         // setup ui
         setTitle("Product toevoegen");
         setSize(250, 300);
