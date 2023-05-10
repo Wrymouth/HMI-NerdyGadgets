@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -44,12 +45,16 @@ public class DBMethods {
         ArrayList<Orderline> orderlines = new ArrayList<>();
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM orderlines WHERE order_id = ?");
-            stmt.setInt(1, order.getId());
-            ResultSet results = stmt.executeQuery();
-            while (results.next()) {
-                int productId = results.getInt("product_id");
-                int amount = results.getInt("amount");
-                orderlines.add(new Orderline(amount, dbFetchProduct(productId)));
+            if(order.getId() != null) { //Check if the id id null
+                stmt.setInt(1, order.getId());
+                ResultSet results = stmt.executeQuery();
+                while(results.next()) {
+                    int productId = results.getInt("product_id");
+                    int amount = results.getInt("amount");
+                    orderlines.add(new Orderline(amount, dbFetchProduct(productId)));
+                }
+            } else {
+                System.out.println("ID mag niet null zijn!");
             }
         } catch(SQLException ex) {
             System.out.println("Creating query failed!");

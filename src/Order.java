@@ -21,7 +21,7 @@ public class Order {
         orderlines = new ArrayList<Orderline>();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
