@@ -11,7 +11,7 @@ public class HMIFrame extends JFrame implements ActionListener {
     private HMIContainer warehousePanel;
     private HMIContainer boxesPanel;
     private HMIContainer orderPanel;
-    private HMIContainer PDFButtonPanel;
+    private HMIContainer ButtonPanel;
 
     private SelectOrderDialog dSelectOrder;
     private EditOrderDialog	dEditOrder;
@@ -20,6 +20,7 @@ public class HMIFrame extends JFrame implements ActionListener {
     private JButton bEditOrder;
     private JButton bPickUpOrder;
     private JButton bPrintPdf;
+    private JButton jbEmergency;
     
     private Order order;
     
@@ -60,11 +61,17 @@ public class HMIFrame extends JFrame implements ActionListener {
         boxesPanel.add(boxesPanel.getBoxesPanel());
 
         //Panel with PDF button
-        PDFButtonPanel = new HMIContainer("", new JPanel());
-        add(PDFButtonPanel);
+        ButtonPanel = new HMIContainer("", new JPanel());
+        add(ButtonPanel);
         bPrintPdf = new JButton("Print pakbon"); //Print receipt button
         bPrintPdf.addActionListener(this);
-        PDFButtonPanel.add(bPrintPdf);
+        ButtonPanel.add(bPrintPdf);
+
+        jbEmergency = new JButton("Stop Robot!"); //Robot emergency button
+        jbEmergency.setBackground(Color.RED);
+        jbEmergency.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        jbEmergency.addActionListener(this);
+        ButtonPanel.add(jbEmergency);
 
         setVisible(true);
     }
@@ -78,10 +85,13 @@ public class HMIFrame extends JFrame implements ActionListener {
             dSelectOrder = new SelectOrderDialog(this, true);
             orderPanel.getOrderPanel().setOrder(dSelectOrder.getSelectedOrder());
             dSelectOrder.dispose();
-    } else if (e.getSource() == bPickUpOrder) {
+        } else if (e.getSource() == bPickUpOrder) {
             // TODO pick up order
         } else if (e.getSource() == bPrintPdf) {
             // TODO print pdf
+        } else if (e.getActionCommand().equals("Stop Robot!")) {
+            System.out.println("STOP!");
+            //Todo robot emergency button
         }
     }
 }
