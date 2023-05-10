@@ -23,6 +23,7 @@ public class EditOrderDialog extends JDialog implements ActionListener {
         add(lProducts);
         pOrder = new OrderPanel();
         add(pOrder);
+        pOrder.setOrder(order);
         bAddProduct = new JButton("Product toevoegen");
         bAddProduct.addActionListener(this);
         add(bAddProduct);
@@ -41,7 +42,4 @@ public class EditOrderDialog extends JDialog implements ActionListener {
             dispose();
         }
     }
-
-    
-
 }
