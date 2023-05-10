@@ -78,17 +78,12 @@ public class HMIFrame extends JFrame implements ActionListener {
             } else {
                 dEditOrder = new EditOrderDialog(this, true, order);
                 dEditOrder.setVisible(true);
-                remove(pOrder);
+                remove(orderPanel);
                 order = dEditOrder.getOrder();
                 dEditOrder.dispose();
             }
         } else if (e.getSource() == bSelectOrder) {
             dSelectOrder = new SelectOrderDialog(this, true);
-<<<<<<< HEAD
-            orderPanel.getOrderPanel().setOrder(dSelectOrder.getSelectedOrder());
-            dSelectOrder.dispose();
-    } else if (e.getSource() == bPickUpOrder) {
-=======
             Order selectedOrder = dSelectOrder.getSelectedOrder();
             if (selectedOrder == null) {
                 return;
@@ -96,12 +91,11 @@ public class HMIFrame extends JFrame implements ActionListener {
             ArrayList<Orderline> orderlines = DBMethods.fetchOrderlines(selectedOrder);
             this.order = selectedOrder;
             this.order.setOrderlines(orderlines);
-            pOrder.setOrder(selectedOrder);
+            orderPanel.getOrderPanel().setOrder(selectedOrder);
             System.out.println(order);
             dSelectOrder.dispose();
         } else if (e.getSource() == bPickUpOrder) {
-            JOptionPane.showMessageDialog(this, "De order wordt nu door een mederwerker opgehaald.");
->>>>>>> main
+            JOptionPane.showMessageDialog(this, "De order wordt nu door een medewerker opgehaald.");
             // TODO pick up order
         } else if (e.getSource() == bPrintPdf) {
             // TODO print pdf
