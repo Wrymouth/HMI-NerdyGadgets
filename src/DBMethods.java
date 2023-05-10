@@ -45,7 +45,6 @@ public class DBMethods {
         ArrayList<Orderline> orderlines = new ArrayList<>();
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM orderlines WHERE order_id = ?");
-<<<<<<< HEAD
             if(order.getId() != null) { //Check if the id id null
                 stmt.setInt(1, order.getId());
                 ResultSet results = stmt.executeQuery();
@@ -56,14 +55,6 @@ public class DBMethods {
                 }
             } else {
                 System.out.println("ID mag niet null zijn!");
-=======
-            stmt.setInt(1, order.getId());
-            ResultSet results = stmt.executeQuery();
-            while (results.next()) {
-                int productId = results.getInt("product_id");
-                int amount = results.getInt("amount");
-                orderlines.add(new Orderline(amount, fetchProduct(productId)));
->>>>>>> main
             }
         } catch(SQLException ex) {
             System.out.println("Creating query failed!");

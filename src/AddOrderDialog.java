@@ -72,7 +72,6 @@ public class AddOrderDialog extends JDialog implements ActionListener {
             order.addOrderline(orderline);
             pProductList.setOrderlines(order.getOrderlines());
         } else if (e.getActionCommand().equals("Order plaatsen")) {
-<<<<<<< HEAD
             if(!pProductList.getOrderlines().isEmpty()) {
                 DBMethods.addOrder(new Order());
                 for(Orderline ol : pProductList.getOrderlines()) {
@@ -82,11 +81,6 @@ public class AddOrderDialog extends JDialog implements ActionListener {
             } else {
                 JOptionPane.showMessageDialog(this, "Order mag niet leeg zijn!",
                         "Order leeg", JOptionPane.INFORMATION_MESSAGE);
-=======
-            DBMethods.addOrder(new Order());
-            for(Orderline ol : pProductList.getOrderlines()) {
-                DBMethods.addOrderline(ol, DBMethods.getLastOrderID());
->>>>>>> main
             }
         }
     }
