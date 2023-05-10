@@ -20,10 +20,10 @@ public class OrderPanel extends JPanel {
     }
 
     private void displayOrder() {
-        ArrayList<Orderline> dbOrderlines = DBMethods.dbFetchOrderLines(this.order);
-        jlOrderName.setText(order.getName());
-
-        for(Orderline ol : dbOrderlines) {
+        removeAll();
+        jlOrderName = new JLabel(order.getName());
+        add(jlOrderName);
+        for(Orderline ol : order.getOrderlines()) {
             JLabel jlProductName = new JLabel();
             add(jlProductName);
 
@@ -33,5 +33,7 @@ public class OrderPanel extends JPanel {
             jlProductName.setText(ol.getProduct().getName());
             jlProductQuantity.setText(ol.getAmount() + " stuks " + "(voorraad " + ol.getProduct().getQuantity() + ")");
         }
+        repaint();
+        revalidate();
     }
 }

@@ -8,7 +8,7 @@ public class AddOrderDialog extends JDialog implements ActionListener {
     private Order order;
     private ArrayList<Product> allProducts;
 
-    private ProductListPanel pProductList;
+    private OrderlineListPanel pProductList;
     private JButton bPlaceOrder;
     private JComboBox<String> productChoiceList; //Dropdown that contains all products that can be added to order
     private JButton jbAddProductToOrder;
@@ -17,7 +17,7 @@ public class AddOrderDialog extends JDialog implements ActionListener {
     public AddOrderDialog(JDialog dialog, boolean modal) {
         super(dialog, modal);
         // setup data
-        allProducts = DBMethods.dbFetchAllProducts();
+        allProducts = getProducts();
         addedProducts = new ArrayList<>();
         order = new Order();
         // setup ui
@@ -29,7 +29,7 @@ public class AddOrderDialog extends JDialog implements ActionListener {
         // ui components
         JLabel lOrder = new JLabel("Order");
         add(lOrder);
-        pProductList = new ProductListPanel(order.getOrderlines(), true);
+        pProductList = new OrderlineListPanel(order.getOrderlines(), true);
         add(pProductList);
         JLabel lProducts = new JLabel("Producten");
         add(lProducts);
@@ -52,7 +52,7 @@ public class AddOrderDialog extends JDialog implements ActionListener {
 
     //Gets all products from the DB and stores them in an ArrayList
     public ArrayList<Product> getProducts() {
-        ArrayList<Product> productList = DBMethods.dbFetchAllProducts();
+        ArrayList<Product> productList = DBMethods.fetchAllProducts();
         return productList;
     }
 
@@ -73,9 +73,9 @@ public class AddOrderDialog extends JDialog implements ActionListener {
             pProductList.setOrderlines(order.getOrderlines());
         } else if (e.getActionCommand().equals("Order plaatsen")) {
             if(!pProductList.getOrderlines().isEmpty()) {
-                DBMethods.dbAddOrder(new Order());
+                DBMethods.addOrder(new Order());
                 for(Orderline ol : pProductList.getOrderlines()) {
-                    DBMethods.dbAddOrderline(ol, order);
+                    DBMethods.addOrderline(ol, order.getId());
                 }
                 dispose();
             } else {
