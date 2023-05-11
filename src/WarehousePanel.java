@@ -70,7 +70,6 @@ public class WarehousePanel extends JPanel {
         }
         // draw robot
         g.setColor(Color.GRAY);
-        System.out.println(height);
         g.fillOval(robotX, height-robotY, productWidth, productHeight);
         
     }
