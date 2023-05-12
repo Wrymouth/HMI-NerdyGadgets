@@ -13,7 +13,7 @@ public class ArduinoComm {
 
     // gets x and y position of every product in selected order and saves them in set pattern in a variable.
     // Then sends the pattern to the arduino.
-    public void sendMessage() throws InterruptedException {
+    public void sendCoordinates() throws InterruptedException {
         StringBuilder positie = null;
 
         for (Orderline orderline: this.order.getOrderlines()) {
@@ -21,7 +21,7 @@ public class ArduinoComm {
         }
 
         // opens connection on defined commport
-        SerialPort sp = SerialPort.getCommPort("COM8"); //define comport arduino
+        SerialPort sp = SerialPort.getCommPorts()[0]; //define comport arduino
         sp.setComPortParameters(9600, 8, 1, 0);
         sp.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING, 0, 0);
 
@@ -43,5 +43,22 @@ public class ArduinoComm {
         } else {
             System.out.println("Failed to close port :(");
         }
+    }
+
+    public void readIncomingMessage() throws InterruptedException {
+        SerialPort comPort = SerialPort.getCommPorts()[0];
+        comPort.setComPortParameters(9600, 8, 1, 0);
+        comPort.openPort();
+        comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 100, 0);
+        try {
+            while (true)
+            {
+                byte[] readBuffer = new byte[1024];
+                int numRead = comPort.readBytes(readBuffer, readBuffer.length);
+                System.out.println("Read " + numRead + " bytes.");
+                
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        comPort.closePort();
     }
 }

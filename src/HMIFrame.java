@@ -102,7 +102,18 @@ public class HMIFrame extends JFrame implements ActionListener {
             dSelectOrder.dispose();
         } else if (e.getSource() == bPickUpOrder) {
             JOptionPane.showMessageDialog(this, "De order wordt nu door een medewerker opgehaald.");
-            // TODO pick up order
+            ArduinoComm com = new ArduinoComm(order);
+            try {
+                com.sendCoordinates();
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            try {
+                com.readIncomingMessage();
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
         } else if (e.getSource() == bPrintPdf) {
             // TODO print pdf
         } else if (e.getActionCommand().equals("Stop Robot!")) {
