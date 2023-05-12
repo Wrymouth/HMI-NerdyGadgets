@@ -23,14 +23,14 @@ public class OrderlineListPanel extends JPanel {
 
     public void setOrderlines(ArrayList<Orderline> orderlines) {
         this.orderlines = orderlines;
-        createProductPanels();
+        createOrderlinePanels();
         revalidate();
         repaint();
     }
 
 
 
-    public void createProductPanels() {
+    public void createOrderlinePanels() {
         orderlinePanels = new ArrayList<OrderlinePanel>();
         removeAll();
         for (Orderline orderline : orderlines) {
@@ -41,10 +41,6 @@ public class OrderlineListPanel extends JPanel {
     }
 
     public ArrayList<Orderline> getOrderlines() {
-        ArrayList<Orderline> orderlines = new ArrayList<Orderline>();
-        for (OrderlinePanel orderlinePanel : orderlinePanels) {
-            orderlines.add(orderlinePanel.getOrderline());
-        }
         return orderlines;
     }
 

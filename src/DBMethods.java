@@ -9,13 +9,13 @@ public class DBMethods {
         ArrayList<Order> orders = new ArrayList<Order>();
         try {
             Statement stmt = conn.createStatement();
-            ResultSet results = stmt.executeQuery("SELECT * FROM orders"); //Write query
+            ResultSet results = stmt.executeQuery("SELECT * FROM orders"); // Write query
             while (results.next()) {
                 int orderId = results.getInt("order_id");
                 String orderName = "Order " + orderId;
                 orders.add(new Order(orderId, orderName));
             }
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             System.out.println("Creating query failed!");
             System.out.println(ex.getMessage());
         }
@@ -26,8 +26,8 @@ public class DBMethods {
         ArrayList<Product> products = new ArrayList<>();
         try {
             Statement stmt = conn.createStatement();
-            ResultSet results = stmt.executeQuery("SELECT * FROM products"); //Write query
-            while(results.next()) {
+            ResultSet results = stmt.executeQuery("SELECT * FROM products"); // Write query
+            while (results.next()) {
                 int id = results.getInt("product_id");
                 String productName = results.getString("name");
                 int quantity = results.getInt("quantity");
@@ -36,7 +36,7 @@ public class DBMethods {
                 int positionY = results.getInt("positionY");
                 products.add(new Product(id, productName, quantity, volume, positionX, positionY));
             }
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             System.out.println("Creating query failed!");
             System.out.println(ex.getMessage());
         }
@@ -47,14 +47,18 @@ public class DBMethods {
         ArrayList<Orderline> orderlines = new ArrayList<>();
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM orderlines WHERE order_id = ?");
-            stmt.setInt(1, order.getId());
-            ResultSet results = stmt.executeQuery();
-            while (results.next()) {
-                int productId = results.getInt("product_id");
-                int amount = results.getInt("amount");
-                orderlines.add(new Orderline(amount, fetchProduct(productId)));
+            if (order.getId() != 0) { // Check if the id is null
+                stmt.setInt(1, order.getId());
+                ResultSet results = stmt.executeQuery();
+                while (results.next()) {
+                    int productId = results.getInt("product_id");
+                    int amount = results.getInt("amount");
+                    orderlines.add(new Orderline(amount, fetchProduct(productId)));
+                }
+            } else {
+                System.out.println("ID mag niet null zijn!");
             }
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             System.out.println("Creating query failed!");
             System.out.println(ex.getMessage());
         }
@@ -75,7 +79,7 @@ public class DBMethods {
                 int positionY = results.getInt("positionY");
                 return new Product(id, productName, quantity, volume, positionX, positionY);
             }
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             System.out.println("Creating query failed!");
             System.out.println(ex.getMessage());
         }
@@ -87,7 +91,7 @@ public class DBMethods {
             PreparedStatement stmt = conn.prepareStatement("INSERT INTO orders () VALUES ()");
             stmt.executeUpdate();
             return true;
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             System.out.println("Creating query failed!");
             System.out.println(ex.getMessage());
             return false;
@@ -100,25 +104,26 @@ public class DBMethods {
             stmt.setInt(1, order.getId());
             stmt.executeUpdate();
             for (Orderline orderline : orderlines) {
-                DBMethods.addOrderline(orderline, order.getId());
+                DBMethods.addOrderline(orderline);
             }
             return true;
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             System.out.println("Creating query failed!");
             System.out.println(ex.getMessage());
             return false;
         }
     }
 
-    public static boolean addOrderline(Orderline orderline, int orderId) {
+    public static boolean addOrderline(Orderline orderline) {
         try {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO orderlines (order_id, product_id, amount) VALUES (?, ?, ?)");
-            stmt.setInt(1, orderId);
+            PreparedStatement stmt = conn
+                    .prepareStatement("INSERT INTO orderlines (order_id, product_id, amount) VALUES (?, ?, ?)");
+            stmt.setInt(1, getLastOrderID());
             stmt.setInt(2, orderline.getProduct().getId());
             stmt.setInt(3, orderline.getAmount());
             stmt.executeUpdate();
             return true;
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             System.out.println("Creating query failed!");
             System.out.println(ex.getMessage());
             return false;

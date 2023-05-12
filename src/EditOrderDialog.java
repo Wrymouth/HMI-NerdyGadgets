@@ -17,9 +17,8 @@ public class EditOrderDialog extends JDialog implements ActionListener {
 
     public EditOrderDialog(Frame frame, boolean modal, Order order) {
         super(frame, modal);
-        this.order = order;
-
         allProducts = DBMethods.fetchAllProducts();
+        this.order = order;
         // setup ui
         setTitle("Order bewerken");
         setSize(400, 300);
@@ -29,7 +28,7 @@ public class EditOrderDialog extends JDialog implements ActionListener {
         JLabel lProducts = new JLabel("Producten");
         add(lProducts);
         productChoiceList = new JComboBox<String>();
-        for(Product p : DBMethods.fetchAllProducts()) {
+        for (Product p : allProducts) {
             productChoiceList.addItem(p.getName());
         }
         add(productChoiceList);
@@ -52,7 +51,7 @@ public class EditOrderDialog extends JDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bAddProduct) {
-            String selectedValue = String.valueOf(productChoiceList.getSelectedItem()); //Gets value from dropdown
+            String selectedValue = String.valueOf(productChoiceList.getSelectedItem()); // Gets value from dropdown
             // get selected product from name
             Product selectedProduct = null;
             for (Product product : allProducts) {
@@ -66,7 +65,8 @@ public class EditOrderDialog extends JDialog implements ActionListener {
         } else if (e.getSource() == bSave) {
             DBMethods.updateOrder(order, pProductList.getOrderlines());
             setVisible(false);
+            // TODO modify order object and save to database
+            dispose();
         }
     }
-
 }

@@ -1,4 +1,7 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,7 +13,6 @@ public class OrderlinePanel extends JPanel implements ActionListener {
     private JButton bRemove;
     private boolean hasEditButtons;
 
-
     public OrderlinePanel(Orderline orderline, boolean hasEditButtons) {
         this.orderline = orderline;
         this.hasEditButtons = hasEditButtons;
@@ -21,6 +23,30 @@ public class OrderlinePanel extends JPanel implements ActionListener {
         if (hasEditButtons) {
             tAmount = new JTextField(2);
             tAmount.setText(String.valueOf(orderline.getAmount()));
+            tAmount.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    setAmount();
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    setAmount();
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    setAmount();
+                }
+
+                public void setAmount() {
+                    try {
+                        orderline.setAmount(Integer.parseInt(tAmount.getText()));
+                    } catch (NumberFormatException e) {
+                        orderline.setAmount(0);
+                    }
+                }
+            });
             add(tAmount);
             bRemove = new JButton("X");
             bRemove.addActionListener(this);
