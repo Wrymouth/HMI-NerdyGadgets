@@ -116,9 +116,13 @@ public class HMIFrame extends JFrame implements ActionListener {
             }
         } else if (e.getSource() == bPrintPdf) {
             // TODO print pdf
-        } else if (e.getActionCommand().equals("Stop Robot!")) {
-            System.out.println("STOP!");
-            // Todo robot emergency button
+        } else if (e.getActionCommand().equals("Noodstop")) {
+            ArduinoComm com = new ArduinoComm();
+            try {
+                com.sendEmergencySignal(true);
+            } catch(InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }
