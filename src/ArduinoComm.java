@@ -4,13 +4,26 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class ArduinoComm {
-    public static void main(String[] args) throws IOException, InterruptedException {
-         // Port declareren en initialiseren uit jSerialComm dependency.
-        SerialPort sp = SerialPort.getCommPort("COM8"); // Verander name nog! (te vinden in arduino code)
-        sp.setComPortParameters(9600, 8, 1, 0); // Standaard voor arduino
-        sp.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING, 0, 0);
 
-        PrintWriter output = new PrintWriter(sp.getOutputStream()); // Output variabele gedeclareerd.
+    private Order order;
+
+    public ArduinoComm(Order order){
+        this.order = order;
+    }
+
+    // gets x and y position of every product in selected order and saves them in set pattern in a variable.
+    // Then sends the pattern to the arduino.
+    public void sendMessage() throws InterruptedException {
+        StringBuilder positie = null;
+
+        for (Orderline orderline: this.order.getOrderlines()) {
+            positie.append(orderline.getProduct().getPositionX()).append(",").append(orderline.getProduct().getPositionY()).append(" ");
+        }
+
+        // opens connection on defined commport
+        SerialPort sp = SerialPort.getCommPort("COM8"); //define comport arduino
+        sp.setComPortParameters(9600, 8, 1, 0);
+        sp.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING, 0, 0);
 
         if (sp.openPort()) {
             System.out.println("Port is open :)");
@@ -19,23 +32,16 @@ public class ArduinoComm {
             return;
         }
 
-        // Vervang dit met wat je wilt sturen (dit was voor mijn demo)
-        for (short i = 0; i < 10; i++) {
-            System.out.println(i);
-            output.println(i); // Print short naar serial comm van arduino
-            output.flush(); // Java --> Arduino
-            Thread.sleep(1000);
+        PrintWriter output = new PrintWriter(sp.getOutputStream()); // Output variable declared.
 
-            if (i == 9) {
-                i = 0;
-            }
-        }
+        output.println(positie); // Print short naar serial comm van arduino
+        output.flush(); // Java --> Arduino
+        Thread.sleep(1000);
 
         if (sp.closePort()) {
             System.out.println("Port is closed :)");
         } else {
             System.out.println("Failed to close port :(");
-            return;
         }
     }
 }

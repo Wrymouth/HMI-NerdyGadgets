@@ -31,7 +31,10 @@ public class DBMethods {
                 int id = results.getInt("product_id");
                 String productName = results.getString("name");
                 int quantity = results.getInt("quantity");
-                products.add(new Product(id, productName, quantity));
+                int volume = results.getInt("volume");
+                int positionX = results.getInt("positionX");
+                int positionY = results.getInt("positionY");
+                products.add(new Product(id, productName, quantity, volume, positionX, positionY));
             }
         } catch(SQLException ex) {
             System.out.println("Creating query failed!");
@@ -67,7 +70,10 @@ public class DBMethods {
                 int id = results.getInt("product_id");
                 String productName = results.getString("name");
                 int quantity = results.getInt("quantity");
-                return new Product(id, productName, quantity);
+                int volume = results.getInt("volume");
+                int positionX = results.getInt("positionX");
+                int positionY = results.getInt("positionY");
+                return new Product(id, productName, quantity, volume, positionX, positionY);
             }
         } catch(SQLException ex) {
             System.out.println("Creating query failed!");
