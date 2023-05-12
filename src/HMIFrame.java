@@ -85,8 +85,8 @@ public class HMIFrame extends JFrame implements ActionListener {
             } else {
                 dEditOrder = new EditOrderDialog(this, true, order);
                 dEditOrder.setVisible(true);
-                remove(orderPanel);
                 order = dEditOrder.getOrder();
+                orderPanel.getOrderPanel().setOrder(order);
                 dEditOrder.dispose();
             }
         } else if (e.getSource() == bSelectOrder) {
@@ -99,7 +99,6 @@ public class HMIFrame extends JFrame implements ActionListener {
             this.order = selectedOrder;
             this.order.setOrderlines(orderlines);
             orderPanel.getOrderPanel().setOrder(selectedOrder);
-            System.out.println(order);
             dSelectOrder.dispose();
         } else if (e.getSource() == bPickUpOrder) {
             JOptionPane.showMessageDialog(this, "De order wordt nu door een medewerker opgehaald.");
