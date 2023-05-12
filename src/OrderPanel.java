@@ -19,6 +19,10 @@ public class OrderPanel extends JPanel {
         displayOrder();
     }
 
+    public Order getOrder() {
+        return order;
+    }
+
     private void displayOrder() {
         removeAll();
         ArrayList<Orderline> dbOrderlines = DBMethods.fetchOrderlines(this.order);

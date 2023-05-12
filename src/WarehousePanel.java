@@ -17,11 +17,11 @@ public class WarehousePanel extends JPanel {
 
     public WarehousePanel() {
         Product[][] positions = {
-            {new Product("Groen", 1), null, null, null, null},
+            {new Product(2,"Groen", 1, 10,30, 300 ), null, null, null, null},
             {null, null, null, null, null},
-            {null, null, null, new Product("Rood", 5), null},
+            {null, null, null, new Product(1,"Rood", 2,5, 250 , 150), null},
             {null, null, null, null, null},
-            {null, null, new Product("Blauw", 3), null, null},
+            {null, null, new Product(3,"Blauw", 3, 5,150, 30), null, null},
         };
 
         warehouse = new Warehouse(positions);
