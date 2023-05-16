@@ -67,8 +67,12 @@ public class WarehousePanel extends JPanel {
             }
         }
         // draw robot
-        g.setColor(Color.GRAY);
-        g.fillOval(robot.getPositionX(), height-robot.getPositionY(), productWidth, productHeight);
+        while(true){
+            g.setColor(Color.GRAY);
+            g.fillOval(robot.getPositionX(), height-robot.getPositionY(), productWidth, productHeight);
+            repaint();
+        }
+       
         
     }
 
