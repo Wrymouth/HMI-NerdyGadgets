@@ -15,13 +15,17 @@ public class WarehousePanel extends JPanel {
     private Robot robot;
 
     public WarehousePanel(Robot robot) {
-        Product[][] positions = {
-            {new Product(2,"Groen", 1, 10,30, 300 ), null, null, null, null},
-            {null, null, null, null, null},
-            {null, null, null, new Product(1,"Rood", 2,5, 250 , 150), null},
-            {null, null, null, null, null},
-            {null, null, new Product(3,"Blauw", 3, 5,150, 30), null, null},
-        };
+        int i = 0;
+        int j = 0;
+        Product[][] positions = new Product[5][5];
+        for (Product product: DBMethods.fetchAllProducts()) {
+            positions[i][j] = product;
+            j++;
+            if (j == 5){
+                j = 0;
+                i++;
+            }
+        }
 
         warehouse = new Warehouse(positions);
         
@@ -62,7 +66,7 @@ public class WarehousePanel extends JPanel {
                 }
                 int productX = j * boxWidth + xStart;
                 int productY = i * boxHeight + yStart;
-                g.setColor(getProductColor(column[j].getName()));
+                g.setColor(getProductColor(column[j].getVolume()));
                 g.fillOval(productX + 10, productY + 10, productWidth, productHeight);
             }
         }
@@ -72,12 +76,14 @@ public class WarehousePanel extends JPanel {
         
     }
 
-    private Color getProductColor(String productName) {
-        if(productName.equals("Rood")) {
+    private Color getProductColor(int productVolume) {
+        if(productVolume == 10) {
             return Color.RED;
-        } else if(productName.equals("Groen")) {
+        } else if (productVolume == 8) {
+            return Color.YELLOW;
+        } else if(productVolume == 5) {
             return Color.GREEN;
-        } else if(productName.equals("Blauw")) {
+        } else if(productVolume == 2) {
             return Color.BLUE;
         } else {
             return Color.BLACK;

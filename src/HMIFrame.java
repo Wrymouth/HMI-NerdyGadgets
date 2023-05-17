@@ -104,7 +104,8 @@ public class HMIFrame extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this, "De order wordt nu door een medewerker opgehaald.");
             ArduinoComm com = new ArduinoComm(order, robot);
             try {
-                com.sendCoordinates();
+                //com.sendCoordinates();
+                com.readIncomingMessage();
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
