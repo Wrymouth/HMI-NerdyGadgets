@@ -68,7 +68,7 @@ public class HMIFrame extends JFrame implements ActionListener {
         bPrintPdf.addActionListener(this);
         ButtonPanel.add(bPrintPdf);
 
-        jbEmergency = new JButton("Stop Robot!"); // Robot emergency button
+        jbEmergency = new JButton("Noodstop"); // Robot emergency button
         jbEmergency.setBackground(Color.RED);
         jbEmergency.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         jbEmergency.addActionListener(this);
@@ -117,9 +117,13 @@ public class HMIFrame extends JFrame implements ActionListener {
             }
         } else if (e.getSource() == bPrintPdf) {
             // TODO print pdf
-        } else if (e.getActionCommand().equals("Stop Robot!")) {
-            System.out.println("STOP!");
-            // Todo robot emergency button
+        } else if (e.getActionCommand().equals("Noodstop")) {
+            ArduinoComm com = new ArduinoComm();
+            try {
+                com.sendEmergencySignal(true);
+            } catch(InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }

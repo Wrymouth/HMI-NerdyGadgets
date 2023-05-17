@@ -59,13 +59,19 @@ public class EditOrderDialog extends JDialog implements ActionListener {
                     selectedProduct = product;
                 }
             }
+            for (Orderline ol : order.getOrderlines()) {
+                if (ol.getProduct().getId() == selectedProduct.getId()) {
+                    ol.setAmount(ol.getAmount() + 1);
+                    pProductList.setOrderlines(order.getOrderlines());
+                    return;
+                }
+            }
             Orderline orderline = new Orderline(selectedProduct);
             order.addOrderline(orderline);
             pProductList.setOrderlines(order.getOrderlines());
         } else if (e.getSource() == bSave) {
             DBMethods.updateOrder(order, pProductList.getOrderlines());
             setVisible(false);
-            // TODO modify order object and save to database
             dispose();
         }
     }

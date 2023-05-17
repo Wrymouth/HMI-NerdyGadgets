@@ -17,6 +17,11 @@ public class ArduinoComm {
         this.robot = robot;
     }
 
+    public ArduinoComm() {
+
+    }
+
+
     // gets x and y position of every product in selected order and saves them in set pattern in a variable.
     // Then sends the pattern to the arduino.
     public void sendCoordinates() throws InterruptedException {
@@ -57,7 +62,6 @@ public class ArduinoComm {
         comPort.setComPortParameters(9600, 8, 1, 0);
         comPort.openPort();
         comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
-
         comPort.addDataListener(new SerialPortDataListener() {
             @Override
             public int getListeningEvents() {
@@ -86,5 +90,32 @@ public class ArduinoComm {
             }
         });
         comPort.closePort();
+    }
+
+    public void sendEmergencySignal(boolean emergency) throws InterruptedException {
+        SerialPort sp = SerialPort.getCommPorts()[0]; //define comport arduino
+        sp.setComPortParameters(9600, 8, 1, 0);
+        sp.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING, 0, 0);
+
+        if (sp.openPort()) {
+            System.out.println("Port is open :)");
+        } else {
+            System.out.println("Failed to open port :(");
+            return;
+        }
+
+        PrintWriter output = new PrintWriter(sp.getOutputStream()); // Output variable declared.
+
+        if(emergency) {
+            output.println(emergency); // Print short naar serial comm van arduino
+            output.flush(); // Java --> Arduino
+            Thread.sleep(1000);
+        }
+
+        if (sp.closePort()) {
+            System.out.println("Port is closed :)");
+        } else {
+            System.out.println("Failed to close port :(");
+        }
     }
 }
