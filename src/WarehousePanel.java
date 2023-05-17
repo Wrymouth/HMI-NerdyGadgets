@@ -1,5 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import com.fazecast.jSerialComm.SerialPort; // library voor arduino communicatie
+import com.fazecast.jSerialComm.SerialPortDataListener;
+import com.fazecast.jSerialComm.SerialPortEvent;
 
 public class WarehousePanel extends JPanel {
     private Warehouse warehouse;
@@ -39,6 +42,18 @@ public class WarehousePanel extends JPanel {
         this.robot = robot;
 
         setBackground(Color.WHITE);
+        SerialPort Port = SerialPort.getCommPorts()[0];
+        Port.addDataListener(new SerialPortDataListener() {
+            @Override
+            public int getListeningEvents() {
+                return SerialPort.LISTENING_EVENT_DATA_RECEIVED;
+            }
+
+            @Override
+            public void serialEvent(SerialPortEvent serialPortEvent) {
+                repaint();
+            }
+        });
     }
 
     @Override
@@ -66,14 +81,12 @@ public class WarehousePanel extends JPanel {
                 g.fillOval(productX + 10, productY + 10, productWidth, productHeight);
             }
         }
-        // draw robot
-        while(true){
+
+            // draw robot
             g.setColor(Color.GRAY);
-            g.fillOval(robot.getPositionX(), height-robot.getPositionY(), productWidth, productHeight);
-            repaint();
-        }
-       
-        
+            g.fillOval(robot.getPositionX(), height - robot.getPositionY(), productWidth, productHeight);
+            
+
     }
 
     private Color getProductColor(String productName) {
@@ -87,4 +100,5 @@ public class WarehousePanel extends JPanel {
             return Color.BLACK;
         }
     }
+
 }
