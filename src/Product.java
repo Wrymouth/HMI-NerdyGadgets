@@ -28,6 +28,10 @@ public class Product {
         return quantity;
     }
 
+    public int getVolume() {
+        return volume;
+    }
+
     public int getPositionX() {
         return positionX;
     }
