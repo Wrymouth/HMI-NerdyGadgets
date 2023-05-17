@@ -12,10 +12,9 @@ public class WarehousePanel extends JPanel {
     private int productHeight;
     private int xStart;
     private int yStart;
-    private int robotX;
-    private int robotY;
+    private Robot robot;
 
-    public WarehousePanel() {
+    public WarehousePanel(Robot robot) {
         Product[][] positions = {
             {new Product(2,"Groen", 1, 10,30, 300 ), null, null, null, null},
             {null, null, null, null, null},
@@ -37,8 +36,7 @@ public class WarehousePanel extends JPanel {
         this.productHeight = 15;
         this.xStart = 30;
         this.yStart = 30;
-        this.robotX = 0;
-        this.robotY = 20;
+        this.robot = robot;
 
         setBackground(Color.WHITE);
     }
@@ -70,7 +68,7 @@ public class WarehousePanel extends JPanel {
         }
         // draw robot
         g.setColor(Color.GRAY);
-        g.fillOval(robotX, height-robotY, productWidth, productHeight);
+        g.fillOval(robot.getPositionX(), height-robot.getPositionY(), productWidth, productHeight);
         
     }
 

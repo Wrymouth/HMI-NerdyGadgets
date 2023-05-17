@@ -24,7 +24,7 @@ public class HMIFrame extends JFrame implements ActionListener {
     private JButton jbEmergency;
 
     private Order order;
-
+    private Robot robot = new Robot();
     public HMIFrame() {
         // GUI Setup
         setTitle("NerdyGadgets Magazijnmanagement");
@@ -33,7 +33,7 @@ public class HMIFrame extends JFrame implements ActionListener {
         setLayout(new GridLayout(2, 1));
 
         // Warehouse panel
-        warehousePanel = new HMIContainer("", new WarehousePanel());
+        warehousePanel = new HMIContainer("", new WarehousePanel(robot));
         add(warehousePanel);
         JLabel lWarehouse = new JLabel("Weergave robot");
         warehousePanel.add(lWarehouse);
@@ -68,7 +68,7 @@ public class HMIFrame extends JFrame implements ActionListener {
         bPrintPdf.addActionListener(this);
         ButtonPanel.add(bPrintPdf);
 
-        jbEmergency = new JButton("Stop Robot!"); // Robot emergency button
+        jbEmergency = new JButton("Noodstop"); // Robot emergency button
         jbEmergency.setBackground(Color.RED);
         jbEmergency.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         jbEmergency.addActionListener(this);
@@ -102,7 +102,7 @@ public class HMIFrame extends JFrame implements ActionListener {
             dSelectOrder.dispose();
         } else if (e.getSource() == bPickUpOrder) {
             JOptionPane.showMessageDialog(this, "De order wordt nu door een medewerker opgehaald.");
-            ArduinoComm com = new ArduinoComm(order);
+            ArduinoComm com = new ArduinoComm(order, robot);
             try {
                 com.sendCoordinates();
             } catch (InterruptedException ex) {

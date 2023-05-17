@@ -6,9 +6,11 @@ import java.io.PrintWriter;
 public class ArduinoComm {
 
     private Order order;
+    private Robot robot;
 
-    public ArduinoComm(Order order){
+    public ArduinoComm(Order order, Robot robot){
         this.order = order;
+        this.robot = robot;
     }
 
     public ArduinoComm() {
@@ -50,18 +52,26 @@ public class ArduinoComm {
         }
     }
 
+    // reads message from arduino which contains x-position,y-position and then saves it in Robot class
     public void readIncomingMessage() throws InterruptedException {
         SerialPort comPort = SerialPort.getCommPorts()[0];
         comPort.setComPortParameters(9600, 8, 1, 0);
         comPort.openPort();
-        comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 100, 0);
+        comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
         try {
             while(true)
             {
-                byte[] readBuffer = new byte[1024];
-                int numRead = comPort.readBytes(readBuffer, readBuffer.length);
+                byte[] readBuffer = new byte[1024]; // initiates buffer and its size
+                int numRead = comPort.readBytes(readBuffer, readBuffer.length); // Reads up to readbuffer.length raw data bytes from the serial port and stores them in numread
                 System.out.println("Read " + numRead + " bytes.");
-                
+                String coordinates = Integer.toString(numRead); // transforms read byts into a string
+                int index = coordinates.indexOf(','); // defines index to be searched for
+                if (index != -1){ // if index is found
+                    // makes a substring from the coordinates String until defined index, then parses it to int and saves it in x-position of robot
+                    robot.setPositionX(Integer.parseInt(coordinates.substring(0, index)));
+                    // makes a substring from the coordinates String from defined index onwards, then parses it to int and saves it in y-position of robot
+                    robot.setPositionY(Integer.parseInt(coordinates.substring(index + 1)));
+                }
             }
         } catch (Exception e) { e.printStackTrace(); }
         comPort.closePort();
