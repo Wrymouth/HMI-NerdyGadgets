@@ -1,7 +1,11 @@
 import com.fazecast.jSerialComm.SerialPort; // library voor arduino communicatie
+import com.fazecast.jSerialComm.SerialPortDataListener;
+import com.fazecast.jSerialComm.SerialPortEvent;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 public class ArduinoComm {
 
@@ -53,13 +57,25 @@ public class ArduinoComm {
         comPort.setComPortParameters(9600, 8, 1, 0);
         comPort.openPort();
         comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
-        try {
-            while (true)
-            {
-                byte[] readBuffer = new byte[1024]; // initiates buffer and its size
-                int numRead = comPort.readBytes(readBuffer, readBuffer.length); // Reads up to readbuffer.length raw data bytes from the serial port and stores them in numread
-                System.out.println("Read " + numRead + " bytes.");
-                String coordinates = Integer.toString(numRead); // transforms read byts into a string
+
+        comPort.addDataListener(new SerialPortDataListener() {
+            @Override
+            public int getListeningEvents() {
+                return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
+            }
+
+            @Override
+            public void serialEvent(SerialPortEvent event) {
+                if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
+                    return;
+
+                // Read the incoming data
+                byte[] newData = new byte[comPort.bytesAvailable()];
+                int numRead = comPort.readBytes(newData, newData.length);
+
+                // Process the received data
+                String coordinates = new String(newData);
+                System.out.println("Received data: " + coordinates);
                 int index = coordinates.indexOf(','); // defines index to be searched for
                 if (index != -1){ // if index is found
                     // makes a substring from the coordinates String until defined index, then parses it to int and saves it in x-position of robot
@@ -68,7 +84,7 @@ public class ArduinoComm {
                     robot.setPositionY(Integer.parseInt(coordinates.substring(index + 1)));
                 }
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        });
         comPort.closePort();
     }
 }
