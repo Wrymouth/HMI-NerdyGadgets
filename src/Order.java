@@ -4,15 +4,18 @@ import java.util.ArrayList;
 public class Order {
     private int id;
     private String name;
+    private int customer_ID;
     private ArrayList<Orderline> orderlines;
+    private ArrayList<Box> boxes;
 
     public Order() {
         orderlines = new ArrayList<Orderline>();
     }
 
-    public Order(int id, String name) {
+    public Order(int id, String name, int customer_ID) {
         this.id = id;
         this.name = name;
+        this.customer_ID = customer_ID;
         orderlines = new ArrayList<Orderline>();
     }
 
@@ -21,8 +24,16 @@ public class Order {
         orderlines = new ArrayList<Orderline>();
     }
 
+    public ArrayList<Box> getBoxes() {
+        return boxes;
+    }
+
     public int getId() {
         return id;
+    }
+
+    public int getCustomer_ID() {
+        return customer_ID;
     }
 
     public String getName() {
@@ -34,7 +45,12 @@ public class Order {
     }
 
     public void placeProductsInBoxes() {
-
+        boxes = new ArrayList<>();
+        ArrayList<Product> products = new ArrayList<>();
+        for (Orderline orderline: orderlines) {
+            products.add(orderline.getProduct());
+        }
+        boxes.add(new Box(products));
     }
 
     public void setOrderlines(ArrayList<Orderline> orderlines) {

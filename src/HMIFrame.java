@@ -116,7 +116,13 @@ public class HMIFrame extends JFrame implements ActionListener {
                 throw new RuntimeException(ex);
             }
         } else if (e.getSource() == bPrintPdf) {
-            // TODO print pdf
+            try {
+                order.placeProductsInBoxes();
+                PackingSlip pdf = new PackingSlip(order);
+                pdf.printPackingSlips();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         } else if (e.getActionCommand().equals("Noodstop")) {
             ArduinoComm com = new ArduinoComm();
             try {
