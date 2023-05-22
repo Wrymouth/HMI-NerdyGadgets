@@ -3,7 +3,6 @@ import com.aspose.pdf.*;
 public class PackingSlip {
     private Customer customer;
     private Order order;
-//    private static String _dataDir = "C:\\School\\Java\\HMI-NerdyGadgets\\PackingSlips";
     public PackingSlip(Order order) throws Exception {
         this.order = order;
         customer = DBMethods.fetchCustomer(order.getCustomer_ID());
