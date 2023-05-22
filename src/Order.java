@@ -43,6 +43,16 @@ public class Order {
     public ArrayList<Orderline> getOrderlines() {
         return orderlines;
     }
+    public Orderline getOrderline(int id){
+        Orderline o = null;
+        for (Orderline orderline: orderlines) {
+            if (orderline.getProduct().getId() == id){
+                 o = orderline;
+                break;
+            }
+        }
+        return o;
+    }
 
     public void placeProductsInBoxes() {
         boxes = new ArrayList<>();

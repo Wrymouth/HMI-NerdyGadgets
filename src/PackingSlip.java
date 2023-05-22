@@ -65,7 +65,7 @@ public class PackingSlip {
                 Row row4 = productTable.getRows().add();
                 row4.getCells().add(String.valueOf(product.getId()));
                 row4.getCells().add(product.getName());
-                row4.getCells().add(String.valueOf(product.getQuantity()));
+                row4.getCells().add(String.valueOf(order.getOrderline(product.getId()).getAmount()));
             }
 
             document.getPages().get_Item(1).getParagraphs().add(productTable);
