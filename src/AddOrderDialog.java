@@ -69,7 +69,7 @@ public class AddOrderDialog extends JDialog implements ActionListener {
             if(!pOrderlineList.getOrderlines().isEmpty()) {
                 DBMethods.addOrder(new Order());
                 for(Orderline ol : pOrderlineList.getOrderlines()) {
-                    DBMethods.addOrderline(ol);
+                    DBMethods.addOrderline(ol, 0); // new order so orderId is not known yet
                 }
                 dispose();
             } else {

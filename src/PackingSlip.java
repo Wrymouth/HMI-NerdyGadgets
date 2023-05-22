@@ -5,7 +5,7 @@ public class PackingSlip {
     private Order order;
     public PackingSlip(Order order) throws Exception {
         this.order = order;
-        customer = DBMethods.fetchCustomer(order.getCustomer_ID());
+        customer = DBMethods.fetchCustomer(order.getCustomerID());
     }
 
     public void printPackingSlips(){
