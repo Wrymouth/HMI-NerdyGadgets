@@ -13,8 +13,8 @@ public class DBMethods {
             while (results.next()) {
                 int orderId = results.getInt("order_id");
                 String orderName = "Order " + orderId;
-                int customer_ID = results.getInt("customerID");
-                orders.add(new Order(orderId, orderName, customer_ID));
+                int customerID = results.getInt("customerID");
+                orders.add(new Order(orderId, orderName, customerID));
             }
         } catch (SQLException ex) {
             System.out.println("Creating query failed!");
@@ -53,9 +53,9 @@ public class DBMethods {
                 int customerID = results.getInt("CustomerID");
                 String name = results.getString("Name");
                 String address = results.getString("Address");
-                String ZIP_code = results.getString("ZIP-code");
+                String ZIPcode = results.getString("ZIP-code");
                 String city = results.getString("City");
-                customers.add(new Customer(customerID, name, address, ZIP_code, city));
+                customers.add(new Customer(customerID, name, address, ZIPcode, city));
             }
         } catch (SQLException e) {
             System.out.println("Creating query failed!");
@@ -116,9 +116,9 @@ public class DBMethods {
                 int customerID = results.getInt("CustomerID");
                 String name = results.getString("Name");
                 String address = results.getString("Address");
-                String ZIP_code = results.getString("ZIP-code");
+                String ZIPcode = results.getString("ZIP-code");
                 String city = results.getString("City");
-                return new Customer(customerID, name, address, ZIP_code, city);
+                return new Customer(customerID, name, address, ZIPcode, city);
             }
         } catch (SQLException e) {
             System.out.println("Creating query failed!");

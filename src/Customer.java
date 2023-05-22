@@ -1,15 +1,15 @@
 public class Customer {
     private int customerID;
     private String name;
-    private String adress;
-    private String ZIP_code;
+    private String address;
+    private String ZIPcode;
     private String city;
 
-    public Customer(int customerID, String name, String adress, String ZIP_code, String city) {
+    public Customer(int customerID, String name, String address, String ZIPcode, String city) {
         this.customerID = customerID;
         this.name = name;
-        this.adress = adress;
-        this.ZIP_code = ZIP_code;
+        this.address = address;
+        this.ZIPcode = ZIPcode;
         this.city = city;
     }
 
@@ -29,20 +29,20 @@ public class Customer {
         this.name = name;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String adress) {
+        this.address = adress;
     }
 
-    public String getZIP_code() {
-        return ZIP_code;
+    public String getZIPcode() {
+        return ZIPcode;
     }
 
-    public void setZIP_code(String ZIP_code) {
-        this.ZIP_code = ZIP_code;
+    public void setZIPcode(String ZIP_code) {
+        this.ZIPcode = ZIP_code;
     }
 
     public String getCity() {

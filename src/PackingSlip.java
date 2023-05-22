@@ -37,8 +37,8 @@ public class PackingSlip {
 
             Row row2 = customerTable.getRows().add();
             row2.getCells().add(customer.getName());
-            row2.getCells().add(customer.getAdress());
-            row2.getCells().add(customer.getZIP_code());
+            row2.getCells().add(customer.getAddress());
+            row2.getCells().add(customer.getZIPcode());
             row2.getCells().add(customer.getCity());
             // Add table object to first page of input document
             document.getPages().get_Item(1).getParagraphs().add(customerTable);

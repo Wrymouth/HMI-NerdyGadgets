@@ -4,7 +4,7 @@ import java.util.ArrayList;
 public class Order {
     private int id;
     private String name;
-    private int customer_ID;
+    private int customerID;
     private ArrayList<Orderline> orderlines;
     private ArrayList<Box> boxes;
 
@@ -12,10 +12,10 @@ public class Order {
         orderlines = new ArrayList<Orderline>();
     }
 
-    public Order(int id, String name, int customer_ID) {
+    public Order(int id, String name, int customerID) {
         this.id = id;
         this.name = name;
-        this.customer_ID = customer_ID;
+        this.customerID = customerID;
         orderlines = new ArrayList<Orderline>();
     }
 
@@ -33,7 +33,7 @@ public class Order {
     }
 
     public int getCustomer_ID() {
-        return customer_ID;
+        return customerID;
     }
 
     public String getName() {
