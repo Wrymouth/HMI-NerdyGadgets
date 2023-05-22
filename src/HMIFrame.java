@@ -101,6 +101,7 @@ public class HMIFrame extends JFrame implements ActionListener {
             this.order.setOrderlines(orderlines);
             orderPanel.getOrderPanel().setOrder(selectedOrder);
             dSelectOrder.dispose();
+            order.placeProductsInBoxes();
             com = new ArduinoComm(order, robot);
             try {
                 com.TSP();
@@ -122,7 +123,6 @@ public class HMIFrame extends JFrame implements ActionListener {
             }
         } else if (e.getSource() == bPrintPdf) {
             try {
-                order.placeProductsInBoxes();
                 PackingSlip pdf = new PackingSlip(order);
                 pdf.printPackingSlips();
             } catch (Exception ex) {

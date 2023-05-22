@@ -28,14 +28,13 @@ public class ArduinoComm {
     // gets x and y position of every product in selected order and saves them in set pattern in a variable.
     // Then sends the pattern to the arduino.
     public void sendCoordinates(int positionX, int positionY) throws InterruptedException {
-        StringBuilder positie = null;
+        String positie = null;
 
-        for (Orderline orderline: this.order.getOrderlines()) {
-            positie.append(positionX).append(",").append(positionY).append(" ");
-        }
+            positie = positionX + "," + positionY + " ";
+
 
         // opens connection on defined commport
-        SerialPort sp = SerialPort.getCommPorts()[0]; //define comport arduino
+        SerialPort sp = SerialPort.getCommPort("com5"); //define comport arduino
         sp.setComPortParameters(9600, 8, 1, 0);
         sp.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING, 0, 0);
 
@@ -165,6 +164,7 @@ public class ArduinoComm {
             if (minIndex != -1) {
                 distances[minIndex] = 0.0;
                 sendCoordinates(productX[minIndex], productY[minIndex]);
+                System.out.println("x-coordinate " + productX[minIndex] + "\n" + "y-coordinate" + productY[minIndex]);
             }
         }
     }
