@@ -68,7 +68,7 @@ public class HMIFrame extends JFrame implements ActionListener {
         bPrintPdf.addActionListener(this);
         ButtonPanel.add(bPrintPdf);
 
-        jbEmergency = new JButton("Stop Robot!"); // Robot emergency button
+        jbEmergency = new JButton("Noodstop"); // Robot emergency button
         jbEmergency.setBackground(Color.RED);
         jbEmergency.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         jbEmergency.addActionListener(this);
@@ -104,7 +104,8 @@ public class HMIFrame extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this, "De order wordt nu door een medewerker opgehaald.");
             ArduinoComm com = new ArduinoComm(order, robot);
             try {
-                com.sendCoordinates();
+                //com.sendCoordinates();
+                com.readIncomingMessage();
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
