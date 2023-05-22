@@ -44,7 +44,7 @@ public class DBMethods {
         return products;
     }
 
-    public static ArrayList<Customer> fetchAllCustomers(){
+    public static ArrayList<Customer> fetchAllCustomers() {
         ArrayList<Customer> customers = new ArrayList<>();
         try {
             Statement stmt = conn.createStatement();
@@ -63,7 +63,7 @@ public class DBMethods {
         }
         return customers;
     }
-    
+
     public static ArrayList<Orderline> fetchOrderlines(Order order) {
         ArrayList<Orderline> orderlines = new ArrayList<>();
         try {
@@ -107,7 +107,7 @@ public class DBMethods {
         return null;
     }
 
-    public static Customer fetchCustomer(int ID){
+    public static Customer fetchCustomer(int ID) {
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM customers WHERE customerID = ?");
             stmt.setInt(1, ID);
@@ -129,7 +129,8 @@ public class DBMethods {
 
     public static boolean addOrder(Order order) {
         try {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO orders () VALUES ()");
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO orders (CustomerID) VALUES (?)");
+            stmt.setInt(1, 1);
             stmt.executeUpdate();
             return true;
         } catch (SQLException ex) {
@@ -145,7 +146,7 @@ public class DBMethods {
             stmt.setInt(1, order.getId());
             stmt.executeUpdate();
             for (Orderline orderline : orderlines) {
-                DBMethods.addOrderline(orderline);
+                DBMethods.addOrderline(orderline, order.getId());
             }
             return true;
         } catch (SQLException ex) {
@@ -155,11 +156,15 @@ public class DBMethods {
         }
     }
 
-    public static boolean addOrderline(Orderline orderline) {
+    public static boolean addOrderline(Orderline orderline, int orderID) {
         try {
             PreparedStatement stmt = conn
                     .prepareStatement("INSERT INTO orderlines (order_id, product_id, amount) VALUES (?, ?, ?)");
-            stmt.setInt(1, getLastOrderID());
+            if (orderID == 0) {
+                stmt.setInt(1, getLastOrderID());
+            } else {
+                stmt.setInt(1, orderID);
+            }
             stmt.setInt(2, orderline.getProduct().getId());
             stmt.setInt(3, orderline.getAmount());
             stmt.executeUpdate();

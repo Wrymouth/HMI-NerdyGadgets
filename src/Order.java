@@ -32,7 +32,7 @@ public class Order {
         return id;
     }
 
-    public int getCustomer_ID() {
+    public int getCustomerID() {
         return customerID;
     }
 
