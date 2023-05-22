@@ -16,6 +16,7 @@ public class WarehousePanel extends JPanel {
     private int xStart;
     private int yStart;
     private Robot robot;
+    private Order order;
 
     public WarehousePanel(Robot robot) {
         Product[][] positions = {
@@ -42,18 +43,18 @@ public class WarehousePanel extends JPanel {
         this.robot = robot;
 
         setBackground(Color.WHITE);
-        SerialPort Port = SerialPort.getCommPorts()[0];
-        Port.addDataListener(new SerialPortDataListener() {
-            @Override
-            public int getListeningEvents() {
-                return SerialPort.LISTENING_EVENT_DATA_RECEIVED;
-            }
-
-            @Override
-            public void serialEvent(SerialPortEvent serialPortEvent) {
-                repaint();
-            }
-        });
+//        SerialPort Port = SerialPort.getCommPorts()[0];
+//        Port.addDataListener(new SerialPortDataListener() {
+//            @Override
+//            public int getListeningEvents() {
+//                return SerialPort.LISTENING_EVENT_DATA_RECEIVED;
+//            }
+//
+//            @Override
+//            public void serialEvent(SerialPortEvent serialPortEvent) {
+//                repaint();
+//            }
+//        });
     }
 
     @Override
@@ -85,8 +86,19 @@ public class WarehousePanel extends JPanel {
             // draw robot
             g.setColor(Color.GRAY);
             g.fillOval(robot.getPositionX(), height - robot.getPositionY(), productWidth, productHeight);
-            
 
+            //draw complete orders
+            if(robot.getPositionX() == 1 && robot.getPositionY() == 2){ //instead of 1 and 2 needs to be order coordinates
+                order.ordercounter++;
+                g.setColor(Color.BLACK);
+                g.drawOval(10, 10, productWidth, productHeight);// instead of 10 needs to be order coordinates
+                g.setColor(Color.GREEN);
+                g.drawLine(5,5,8,8);
+                g.drawLine(8,8,10,10);
+
+
+
+        }
     }
 
     private Color getProductColor(String productName) {
@@ -100,5 +112,6 @@ public class WarehousePanel extends JPanel {
             return Color.BLACK;
         }
     }
+
 
 }

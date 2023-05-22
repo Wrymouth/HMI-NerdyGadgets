@@ -5,6 +5,7 @@ public class Order {
     private int id;
     private String name;
     private ArrayList<Orderline> orderlines;
+    public int ordercounter;
 
     public Order() {
         orderlines = new ArrayList<Orderline>();
@@ -56,5 +57,12 @@ public class Order {
             }
         }
         return orderString;
+    }
+    public void CompleteOrder(){
+        if(orderlines.size() == ordercounter){
+            System.out.println("Order Complete");
+            //code for robot to move to starting point:
+
+        }
     }
 }
