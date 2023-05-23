@@ -18,10 +18,13 @@ public class OrderlinePanel extends JPanel implements ActionListener {
         this.hasEditButtons = hasEditButtons;
         setPreferredSize(new Dimension(100, 40));
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS)); // list view
+
         JLabel lName = new JLabel(orderline.getProduct().getName());
+        lName.setPreferredSize(new Dimension(150, 50));
         add(lName);
-        if (hasEditButtons) {
-            tAmount = new JTextField(2);
+
+        if(hasEditButtons) {
+            tAmount = new JTextField(1);
             tAmount.setText(String.valueOf(orderline.getAmount()));
             tAmount.getDocument().addDocumentListener(new DocumentListener() {
                 @Override
@@ -47,8 +50,10 @@ public class OrderlinePanel extends JPanel implements ActionListener {
                     }
                 }
             });
+
             add(tAmount);
             bRemove = new JButton("X");
+            bRemove.setPreferredSize(new Dimension(50, 50));
             bRemove.addActionListener(this);
             add(bRemove);
         }
