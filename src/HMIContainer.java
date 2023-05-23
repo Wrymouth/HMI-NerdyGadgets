@@ -52,4 +52,8 @@ public class HMIContainer extends JPanel {
     public WarehousePanel getWarehousePanel() {
         return (WarehousePanel) panel;
     }
+
+    public CustomerPanel getCustomerPanel() {
+        return (CustomerPanel) panel;
+    }
 }

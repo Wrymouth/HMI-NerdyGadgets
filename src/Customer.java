@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Customer {
     private int customerID;
     private String name;
@@ -11,6 +13,10 @@ public class Customer {
         this.address = address;
         this.ZIPcode = ZIPcode;
         this.city = city;
+    }
+
+    public Customer() {
+
     }
 
     public int getCustomerID() {
@@ -52,4 +58,16 @@ public class Customer {
     public void setCity(String city) {
         this.city = city;
     }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "customerID=" + customerID +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", ZIPcode='" + ZIPcode + '\'' +
+                ", city='" + city + '\'' +
+                '}';
+    }
 }
+
