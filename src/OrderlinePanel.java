@@ -13,6 +13,8 @@ public class OrderlinePanel extends JPanel implements ActionListener {
     private JButton bRemove;
     private boolean hasEditButtons;
 
+    private boolean error = false;
+
     public OrderlinePanel(Orderline orderline, boolean hasEditButtons) {
         this.orderline = orderline;
         this.hasEditButtons = hasEditButtons;
@@ -42,8 +44,10 @@ public class OrderlinePanel extends JPanel implements ActionListener {
                 public void setAmount() {
                     try {
                         orderline.setAmount(Integer.parseInt(tAmount.getText()));
+                        error = false;
                     } catch (NumberFormatException e) {
                         orderline.setAmount(0);
+                        error = true;
                     }
                 }
             });
@@ -54,8 +58,12 @@ public class OrderlinePanel extends JPanel implements ActionListener {
         }
     }
 
-    public String getAmount() {
-        return tAmount.getText();
+    public int getAmount() {
+        return Integer.parseInt(tAmount.getText());
+    }
+
+    public boolean isError() {
+        return error;
     }
 
     @Override
@@ -65,13 +73,8 @@ public class OrderlinePanel extends JPanel implements ActionListener {
         }
     }
 
-    public Orderline getOrderline() {
-        try {
-            orderline.setAmount(Integer.parseInt(this.getAmount()));
-            return orderline;
-        } catch (NumberFormatException ex) {
-            System.out.println("nog te doen");
-        }
+    public Orderline getOrderline(){
+        orderline.setAmount(this.getAmount());
         return orderline;
     }
 }
