@@ -95,7 +95,7 @@ public class AddOrderDialog extends JDialog implements ActionListener {
             pOrderlineList.setOrderlines(order.getOrderlines());
         } else if(e.getActionCommand().equals("Order plaatsen")) {
             if(!pOrderlineList.getOrderlines().isEmpty()) {
-                DBMethods.addOrder(new Order());
+                DBMethods.addOrder(new Order(selectedCustomer.getCustomerID()));
                 for(Orderline ol : pOrderlineList.getOrderlines()) {
                     DBMethods.addOrderline(ol, 0); // new order so orderId is not known yet
                 }

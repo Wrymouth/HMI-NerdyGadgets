@@ -19,8 +19,8 @@ public class Order {
         orderlines = new ArrayList<Orderline>();
     }
 
-    public Order(int id) {
-        this.id = id;
+    public Order(int customerID) {
+        this.customerID = customerID;
         orderlines = new ArrayList<Orderline>();
     }
 

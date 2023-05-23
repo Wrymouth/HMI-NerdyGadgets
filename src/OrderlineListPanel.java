@@ -19,6 +19,7 @@ public class OrderlineListPanel extends JPanel {
         // setup gui
         setPreferredSize(new Dimension(100, 200));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        add(new JLabel("Geen product(en) geselecteerd!"));
     }
 
     public void setOrderlines(ArrayList<Orderline> orderlines) {
@@ -27,8 +28,6 @@ public class OrderlineListPanel extends JPanel {
         revalidate();
         repaint();
     }
-
-
 
     public void createOrderlinePanels() {
         orderlinePanels = new ArrayList<OrderlinePanel>();
