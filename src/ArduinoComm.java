@@ -150,9 +150,11 @@ public class ArduinoComm {
             distances[j] = Math.sqrt(Math.pow(productY[j], 2) + Math.pow(productX[j], 2));
         }
 
+        int m = 0;
+        int minIndex = -1;
+
         for (int o = 0; o < productsTBC.size(); o++) {
             double minValue = Double.POSITIVE_INFINITY;
-            int minIndex = -1;
 
             for (int k = 0; k < productsTBC.size(); k++) {
                 if (distances[k] != 0.0 && distances[k] < minValue) {
@@ -162,6 +164,17 @@ public class ArduinoComm {
             }
 
             if (minIndex != -1) {
+                if (m == 0) {
+                    for (int b = 0; b < productsTBC.size(); b++) {
+                        if (b != minIndex) {
+                            productX[b] -= productX[minIndex];
+                            productY[b] -= productY[minIndex];
+                            distances[b] = Math.sqrt(Math.pow(productY[b], 2) + Math.pow(productX[b], 2));
+                        }
+                    }
+                    m++;
+                }
+
                 distances[minIndex] = 0.0;
                 sendCoordinates(productX[minIndex], productY[minIndex]);
                 System.out.println("x-coordinate " + productX[minIndex] + "\n" + "y-coordinate" + productY[minIndex]);
