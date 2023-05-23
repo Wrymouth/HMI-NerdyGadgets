@@ -150,7 +150,7 @@ public class DBMethods {
     public static boolean addOrder(Order order) {
         try {
             PreparedStatement stmt = conn.prepareStatement("INSERT INTO orders (CustomerID) VALUES (?)");
-            stmt.setInt(1, 1);
+            stmt.setInt(1, order.getCustomerID());
             stmt.executeUpdate();
             return true;
         } catch (SQLException ex) {
