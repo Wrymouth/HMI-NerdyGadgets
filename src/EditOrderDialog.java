@@ -70,6 +70,13 @@ public class EditOrderDialog extends JDialog implements ActionListener {
             order.addOrderline(orderline);
             pProductList.setOrderlines(order.getOrderlines());
         } else if (e.getSource() == bSave) {
+            ArrayList<OrderlinePanel> panels = pProductList.getOrderlinePanels();
+            for (OrderlinePanel panel : panels){
+                if(panel.isError()){
+                    JOptionPane.showMessageDialog(this, "ongeldige invoer bij: ", "Foutmelding", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
             DBMethods.updateOrder(order, pProductList.getOrderlines());
             setVisible(false);
             dispose();
