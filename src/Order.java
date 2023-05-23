@@ -55,12 +55,15 @@ public class Order {
     }
 
     public void placeProductsInBoxes() {
+
         boxes = new ArrayList<>();
         ArrayList<Product> products = new ArrayList<>();
         for (Orderline orderline: orderlines) {
             products.add(orderline.getProduct());
         }
-        boxes.add(new Box(products));
+
+        BinPacking binPacking = new BinPacking();
+        boxes = binPacking.binPacking(products);
     }
 
     public void setOrderlines(ArrayList<Orderline> orderlines) {
