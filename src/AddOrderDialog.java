@@ -20,6 +20,7 @@ public class AddOrderDialog extends JDialog implements ActionListener {
     private ArrayList<Customer> selectedCustomers;
 
     private JButton jbSelectCustomer;
+    private JButton jbCancel;
 
     private CustomerPanel customerInfo;
 
@@ -76,6 +77,11 @@ public class AddOrderDialog extends JDialog implements ActionListener {
         bPlaceOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         bPlaceOrder.addActionListener(this);
         add(bPlaceOrder);
+
+        jbCancel = new JButton("Annuleren");
+        jbCancel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        jbCancel.addActionListener(this);
+        add(jbCancel);
     }
 
     @Override
@@ -95,11 +101,16 @@ public class AddOrderDialog extends JDialog implements ActionListener {
             pOrderlineList.setOrderlines(order.getOrderlines());
         } else if(e.getActionCommand().equals("Order plaatsen")) {
             if(!pOrderlineList.getOrderlines().isEmpty()) {
-                DBMethods.addOrder(new Order(selectedCustomer.getCustomerID()));
-                for(Orderline ol : pOrderlineList.getOrderlines()) {
-                    DBMethods.addOrderline(ol, 0); // new order so orderId is not known yet
+                if(selectedCustomer.getCustomerID() != 0) { //Check if customer is set
+                    DBMethods.addOrder(new Order(selectedCustomer.getCustomerID()));
+                    for(Orderline ol : pOrderlineList.getOrderlines()) {
+                        DBMethods.addOrderline(ol, 0); // new order so orderId is not known yet
+                    }
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Er moet een klant geselecteerd zijn!",
+                            "Geen klant geselecteerd", JOptionPane.INFORMATION_MESSAGE);
                 }
-                dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Order mag niet leeg zijn!",
                         "Order leeg", JOptionPane.INFORMATION_MESSAGE);
@@ -108,6 +119,8 @@ public class AddOrderDialog extends JDialog implements ActionListener {
             String selectedName = String.valueOf(customerChoiceList.getSelectedItem());
             selectedCustomer = DBMethods.fetchCustomerByName(selectedName); //Get selected from db based on name
             customerInfo.setCustomer(selectedCustomer); //Set customer in CustomerPanel which will also display it
+        } else if(e.getActionCommand().equals("Annuleren")) {
+            dispose();
         }
     }
 }
