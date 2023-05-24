@@ -122,11 +122,15 @@ public class HMIFrame extends JFrame implements ActionListener {
                 throw new RuntimeException(ex);
             }
         } else if (e.getSource() == bPrintPdf) {
-            try {
-                PackingSlip pdf = new PackingSlip(order);
-                pdf.printPackingSlips();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
+            if (order == null){
+                JOptionPane.showMessageDialog(this, "Selecteer eerst een order");
+            }else {
+                try {
+                    PackingSlip pdf = new PackingSlip(order);
+                    pdf.printPackingSlips();
+                } catch (Exception ignored) {
+
+                }
             }
         } else if (e.getActionCommand().equals("Noodstop")) {
             ArduinoComm com = new ArduinoComm();
