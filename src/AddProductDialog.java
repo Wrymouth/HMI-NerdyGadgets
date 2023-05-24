@@ -16,7 +16,7 @@ public class AddProductDialog extends JDialog {
         products = DBMethods.fetchAllProducts();
         // setup ui
         setTitle("Product toevoegen");
-        setSize(250, 300);
+        setSize(750, 300);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLayout(new FlowLayout());
         // ui components
@@ -27,6 +27,7 @@ public class AddProductDialog extends JDialog {
         JLabel lAmount = new JLabel("Aantal");
         add(lAmount);
         tAmount = new JTextField();
+        tAmount.setPreferredSize(new Dimension(50,10));
         add(tAmount);
         bAdd = new JButton("Toevoegen");
         add(bAdd);

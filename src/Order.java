@@ -45,6 +45,7 @@ public class Order {
     public void addOrderline(Orderline orderline) {
         orderlines.add(orderline);
     }
+    public void removeOrderline(Orderline orderline){orderlines.remove(orderline);}
 
     @Override
     public String toString() {

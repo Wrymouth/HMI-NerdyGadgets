@@ -17,8 +17,10 @@ public class OrderlineListPanel extends JPanel {
             setOrderlines(orderlines);
         }
         // setup gui
-        setPreferredSize(new Dimension(100, 200));
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setPreferredSize(new Dimension(400, 200));
+        //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new GridLayout(orderlines.size(),1));
+
     }
 
     public void setOrderlines(ArrayList<Orderline> orderlines) {

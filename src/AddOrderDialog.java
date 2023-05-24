@@ -13,6 +13,7 @@ public class AddOrderDialog extends JDialog implements ActionListener {
     private JComboBox<String> productChoiceList; //Dropdown that contains all products that can be added to order
     private JButton jbAddProductToOrder;
     private ArrayList<String> addedProducts; //ArrayList that contains all product names selected from dropdown
+    private SelectOrderDialog selectOrderDialog;
 
     public AddOrderDialog(JDialog dialog, boolean modal) {
         super(dialog, modal);
@@ -22,17 +23,17 @@ public class AddOrderDialog extends JDialog implements ActionListener {
         order = new Order();
         // setup ui
         setTitle("Nieuw order");
-        setSize(300, 300);
+        setSize(750, 500);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLayout(new FlowLayout());
 
         // ui components
-        JLabel lOrder = new JLabel("Order");
-        add(lOrder);
+       JLabel lOrder = new JLabel("Order");
+       //add(lOrder);
         pOrderlineList = new OrderlineListPanel(order.getOrderlines(), true);
         add(pOrderlineList);
         JLabel lProducts = new JLabel("Producten");
-        add(lProducts);
+        //add(lProducts);
 
         productChoiceList = new JComboBox<String>();
         for(Product p : allProducts) {
@@ -48,6 +49,7 @@ public class AddOrderDialog extends JDialog implements ActionListener {
         bPlaceOrder = new JButton("Order plaatsen");
         bPlaceOrder.addActionListener(this);
         add(bPlaceOrder);
+
     }
 
     @Override
@@ -70,6 +72,8 @@ public class AddOrderDialog extends JDialog implements ActionListener {
                 DBMethods.addOrder(new Order());
                 for(Orderline ol : pOrderlineList.getOrderlines()) {
                     DBMethods.addOrderline(ol);
+
+                    selectOrderDialog.AddOrdersToList(ol);
                 }
                 dispose();
             } else {
@@ -78,4 +82,5 @@ public class AddOrderDialog extends JDialog implements ActionListener {
             }
         }
     }
+
 }

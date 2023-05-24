@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.border.Border;
 
 public class HMIFrame extends JFrame implements ActionListener {
     // Create all HMIContainers so we can later access their data
@@ -30,19 +31,25 @@ public class HMIFrame extends JFrame implements ActionListener {
         setTitle("NerdyGadgets Magazijnmanagement");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(2, 1));
+        setLayout(new GridLayout(2,1,5,5));
+
+
+
 
         // Warehouse panel
-        warehousePanel = new HMIContainer("", new WarehousePanel(robot));
+        warehousePanel = new HMIContainer("Weergave robot:", new WarehousePanel(robot));
         add(warehousePanel);
-        JLabel lWarehouse = new JLabel("Weergave robot");
-        warehousePanel.add(lWarehouse);
         warehousePanel.add(warehousePanel.getWarehousePanel());
+        Border blackline = BorderFactory.createLineBorder(Color.black);
+        warehousePanel.setBorder(blackline);
+
+
 
         // Order panel
         orderPanel = new HMIContainer("Order", new OrderPanel());
         add(orderPanel);
         orderPanel.add(orderPanel.getOrderPanel());
+        orderPanel.setBorder(blackline);
 
         bEditOrder = new JButton("Wijzig order"); // Edit order button
         bEditOrder.addActionListener(this);
@@ -60,6 +67,7 @@ public class HMIFrame extends JFrame implements ActionListener {
         boxesPanel = new HMIContainer("Dozen", new BoxesPanel());
         add(boxesPanel);
         boxesPanel.add(boxesPanel.getBoxesPanel());
+        boxesPanel.setBorder(blackline);
 
         // Panel with PDF button
         ButtonPanel = new HMIContainer("", new JPanel());
@@ -68,12 +76,12 @@ public class HMIFrame extends JFrame implements ActionListener {
         bPrintPdf.addActionListener(this);
         ButtonPanel.add(bPrintPdf);
 
+
         jbEmergency = new JButton("Noodstop"); // Robot emergency button
         jbEmergency.setBackground(Color.RED);
         jbEmergency.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         jbEmergency.addActionListener(this);
         ButtonPanel.add(jbEmergency);
-
         setVisible(true);
     }
 

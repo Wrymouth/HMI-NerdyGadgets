@@ -14,6 +14,7 @@ public class EditOrderDialog extends JDialog implements ActionListener {
     private JComboBox<String> productChoiceList;
     private JButton bAddProduct;
     private JButton bSave;
+    private JButton bRemoveProduct;
 
     public EditOrderDialog(Frame frame, boolean modal, Order order) {
         super(frame, modal);
@@ -21,7 +22,7 @@ public class EditOrderDialog extends JDialog implements ActionListener {
         this.order = order;
         // setup ui
         setTitle("Order bewerken");
-        setSize(400, 300);
+        setSize(600, 300);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLayout(new FlowLayout());
         // ui components
@@ -33,9 +34,12 @@ public class EditOrderDialog extends JDialog implements ActionListener {
         }
         add(productChoiceList);
         JLabel lOrder = new JLabel("Order");
-        add(lOrder);
+        //add(lOrder);
         pProductList = new OrderlineListPanel(order.getOrderlines(), true);
         add(pProductList);
+        bRemoveProduct = new JButton("Verwijder product");
+        bRemoveProduct.addActionListener(this);
+        add(bRemoveProduct);
         bAddProduct = new JButton("Voeg product toe");
         bAddProduct.addActionListener(this);
         add(bAddProduct);
@@ -69,6 +73,11 @@ public class EditOrderDialog extends JDialog implements ActionListener {
             Orderline orderline = new Orderline(selectedProduct);
             order.addOrderline(orderline);
             pProductList.setOrderlines(order.getOrderlines());
+
+            if (e.getSource() == bRemoveProduct){
+            //moet nog code voor worden gemaakt.
+
+            }
         } else if (e.getSource() == bSave) {
             DBMethods.updateOrder(order, pProductList.getOrderlines());
             setVisible(false);

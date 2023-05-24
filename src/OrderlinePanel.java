@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 
 public class OrderlinePanel extends JPanel implements ActionListener {
     private Orderline orderline;
+    private Order order;
 
     private JTextField tAmount;
     private JButton bRemove;
@@ -21,7 +22,7 @@ public class OrderlinePanel extends JPanel implements ActionListener {
         JLabel lName = new JLabel(orderline.getProduct().getName());
         add(lName);
         if (hasEditButtons) {
-            tAmount = new JTextField(2);
+            tAmount = new JTextField();
             tAmount.setText(String.valueOf(orderline.getAmount()));
             tAmount.getDocument().addDocumentListener(new DocumentListener() {
                 @Override
@@ -47,6 +48,7 @@ public class OrderlinePanel extends JPanel implements ActionListener {
                     }
                 }
             });
+            tAmount.setPreferredSize(new Dimension(10,10));
             add(tAmount);
             bRemove = new JButton("X");
             bRemove.addActionListener(this);
@@ -61,7 +63,7 @@ public class OrderlinePanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bRemove) {
-
+            
         }
     }
 

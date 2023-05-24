@@ -8,6 +8,7 @@ public class BoxesPanel extends JPanel {
     public BoxesPanel() {
         setPreferredSize(new Dimension(200, 200));
         setBackground(Color.WHITE);
+
     }
 
     @Override
