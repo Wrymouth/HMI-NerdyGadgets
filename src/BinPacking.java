@@ -15,6 +15,7 @@ public class BinPacking {
         // Now call first fit for sorted items
         ArrayList<Box> boxes = firstFit(products);
         return boxes;
+
     }
 
     private ArrayList<Box> firstFit(ArrayList<Product> products) {

@@ -55,15 +55,19 @@ public class Order {
     }
 
     public void placeProductsInBoxes() {
-
-        boxes = new ArrayList<>();
+        // Create arraylist for holding all the products
         ArrayList<Product> products = new ArrayList<>();
-        for (Orderline orderline: orderlines) {
-            products.add(orderline.getProduct());
+
+        // Iterate through all order lines and place the product in the arraylist; do this for the ordered quantity
+        for (Orderline orderline: this.orderlines) {
+            for (int i = 0; i < orderline.getAmount(); i++) {
+                products.add(orderline.getProduct());
+            }
         }
 
-        BinPacking binPacking = new BinPacking();
-        boxes = binPacking.binPacking(products);
+        // Create an instance of the BinPacking class and let it place the products in boxes
+        BinPacking packing = new BinPacking();
+        this.boxes = packing.binPacking(products);
     }
 
     public void setOrderlines(ArrayList<Orderline> orderlines) {
