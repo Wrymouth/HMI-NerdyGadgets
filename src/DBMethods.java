@@ -208,4 +208,17 @@ public class DBMethods {
             return 0;
         }
     }
+
+    public static boolean deleteOrder(int id){
+        try {
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM orderlines WHERE order_id = ?");
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("executing query failed!");
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
 }

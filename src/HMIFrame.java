@@ -115,12 +115,7 @@ public class HMIFrame extends JFrame implements ActionListener {
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
-
-            try {
-                com.readIncomingMessage();
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
+            //DBMethods.deleteOrder(order.getId());
         } else if (e.getSource() == bPrintPdf) {
             if (order == null){
                 JOptionPane.showMessageDialog(this, "Selecteer eerst een order");

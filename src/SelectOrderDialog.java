@@ -63,7 +63,11 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
             AddOrderDialog dialog = new AddOrderDialog(this, true);
             dialog.setVisible(true);
         } else if (e.getSource() == bSelect) {
-            setVisible(false);
+            if (getSelectedOrder() == null){
+                JOptionPane.showMessageDialog(this, "Selecteer eerst een order");
+            } else {
+                setVisible(false);
+            }
         }
     }
 }
