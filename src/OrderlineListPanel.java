@@ -2,14 +2,17 @@ import com.aspose.pdf.operators.BX;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 
-public class OrderlineListPanel extends JPanel {
+public class OrderlineListPanel extends JPanel implements ComponentListener{
     private ArrayList<OrderlinePanel> orderlinePanels;
 
     private ArrayList<Orderline> orderlines;
     private boolean hasEditButtons;
     private JScrollPane jsProductsScroll;
+    private JPanel selectedProductsView = new JPanel();
 
     public OrderlineListPanel(ArrayList<Orderline> orderlines, boolean hasEditButtons) {
         // setup data
@@ -36,7 +39,7 @@ public class OrderlineListPanel extends JPanel {
         orderlinePanels = new ArrayList<OrderlinePanel>();
         removeAll();
 
-        JPanel selectedProductsView = new JPanel();
+
         selectedProductsView.setLayout(new BoxLayout(selectedProductsView, BoxLayout.PAGE_AXIS));
 
         jsProductsScroll = new JScrollPane(selectedProductsView);
@@ -44,9 +47,12 @@ public class OrderlineListPanel extends JPanel {
         add(jsProductsScroll);
 
         for (Orderline orderline : orderlines) {
-            OrderlinePanel orderlinePanel = new OrderlinePanel(orderline, hasEditButtons);
-            orderlinePanels.add(orderlinePanel);
-            selectedProductsView.add((orderlinePanel));
+            if(orderline != null){
+                OrderlinePanel orderlinePanel = new OrderlinePanel(orderline, hasEditButtons, orderlines);
+                orderlinePanels.add(orderlinePanel);
+                orderlinePanel.addComponentListener(this);
+                selectedProductsView.add((orderlinePanel));
+            }
         }
     }
 
@@ -56,5 +62,35 @@ public class OrderlineListPanel extends JPanel {
 
     public ArrayList<OrderlinePanel> getOrderlinePanels() {
         return orderlinePanels;
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) {
+//        this.removeAll();
+//        this.revalidate();
+//        this.repaint();
+//        System.out.println("removed");
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+//        this.removeAll();
+//        this.revalidate();
+//        this.repaint();
+//        System.out.println("removed");
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+//        this.removeAll();
+//        this.revalidate();
+//        this.repaint();
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+        this.revalidate();
+        this.repaint();
+        System.out.println("ll");
     }
 }

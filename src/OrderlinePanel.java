@@ -5,9 +5,13 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
 
 public class OrderlinePanel extends JPanel implements ActionListener {
     private Orderline orderline;
+
+    private ArrayList<Orderline> orderlines;
 
     private JTextField tAmount;
     private JButton bRemove;
@@ -15,9 +19,10 @@ public class OrderlinePanel extends JPanel implements ActionListener {
 
     private boolean error = false;
 
-    public OrderlinePanel(Orderline orderline, boolean hasEditButtons) {
+    public OrderlinePanel(Orderline orderline, boolean hasEditButtons, ArrayList<Orderline> orderlines) {
         this.orderline = orderline;
         this.hasEditButtons = hasEditButtons;
+        this.orderlines = orderlines;
         setPreferredSize(new Dimension(100, 40));
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS)); // list view
 
@@ -74,7 +79,10 @@ public class OrderlinePanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bRemove) {
-
+            orderlines.remove(orderline);
+            removeAll();
+            revalidate();
+            repaint();
         }
     }
 
@@ -82,4 +90,5 @@ public class OrderlinePanel extends JPanel implements ActionListener {
         orderline.setAmount(this.getAmount());
         return orderline;
     }
+
 }
