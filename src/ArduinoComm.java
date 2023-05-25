@@ -67,6 +67,7 @@ public class ArduinoComm {
         comPort.closePort();
     }
 
+    //Only called when the emergency button is pressed in HMI, sends emergency signal to robot
     public void sendEmergencySignal(boolean emergency) throws InterruptedException {
         SerialPort sp = SerialPort.getCommPorts()[0]; //define comport arduino
         sp.setComPortParameters(9600, 8, 1, 0);
