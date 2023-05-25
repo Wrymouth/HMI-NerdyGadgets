@@ -82,7 +82,7 @@ public class ArduinoComm {
         PrintWriter output = new PrintWriter(sp.getOutputStream()); // Output variable declared.
 
         if(emergency) {
-            output.println(emergency); // Print short naar serial comm van arduino
+            output.println("E"); // Print short naar serial comm van arduino
             output.flush(); // Java --> Arduino
             Thread.sleep(1000);
         }
