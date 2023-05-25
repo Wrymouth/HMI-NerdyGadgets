@@ -83,8 +83,8 @@ public class ArduinoComm {
         PrintWriter output = new PrintWriter(sp.getOutputStream()); // Output variable declared.
 
         if(emergency) {
-            output.println("E"); // Print short naar serial comm van arduino
-            output.flush(); // Java --> Arduino
+            output.println("E"); //Sends char E to robot, when read by Arduino it will activate the emergency stop
+            output.flush();
             Thread.sleep(1000);
         }
 
