@@ -52,6 +52,7 @@ public class EditOrderDialog extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bAddProduct) {
             String selectedValue = String.valueOf(productChoiceList.getSelectedItem()); // Gets value from dropdown
+
             // get selected product from name
             Product selectedProduct = null;
             for (Product product : allProducts) {
@@ -59,6 +60,7 @@ public class EditOrderDialog extends JDialog implements ActionListener {
                     selectedProduct = product;
                 }
             }
+
             for (Orderline ol : order.getOrderlines()) {
                 if (ol.getProduct().getId() == selectedProduct.getId()) {
                     ol.setAmount(ol.getAmount() + 1);
@@ -66,9 +68,11 @@ public class EditOrderDialog extends JDialog implements ActionListener {
                     return;
                 }
             }
+
             Orderline orderline = new Orderline(selectedProduct);
             order.addOrderline(orderline);
             pProductList.setOrderlines(order.getOrderlines());
+
         } else if (e.getSource() == bSave) {
             ArrayList<OrderlinePanel> panels = pProductList.getOrderlinePanels();
             for (OrderlinePanel panel : panels){
