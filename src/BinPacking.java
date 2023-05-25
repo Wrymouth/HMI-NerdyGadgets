@@ -22,7 +22,7 @@ public class BinPacking {
         ArrayList<Box> boxes = new ArrayList<>();
         int maxNrBoxes = products.size();
 
-        // Initialize result (Count of boxes)
+        // Initialize count of boxes
         int cntOfBoxes = 0;
 
         // Create an array to store remaining space in boxes
@@ -59,6 +59,7 @@ public class BinPacking {
                 // Calculate remaining space in the box and store that in the arraylist
                 remainingSpace[cntOfBoxes] = boxSize - product.getVolume();
 
+                // higher the count of boxes by 1
                 cntOfBoxes++;
             }
         }
