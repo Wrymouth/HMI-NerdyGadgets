@@ -13,7 +13,8 @@ public class DBMethods {
             while (results.next()) {
                 int orderId = results.getInt("order_id");
                 String orderName = "Order " + orderId;
-                orders.add(new Order(orderId, orderName));
+                int customerID = results.getInt("customerID");
+                orders.add(new Order(orderId, orderName, customerID));
             }
         } catch (SQLException ex) {
             System.out.println("Creating query failed!");
@@ -41,6 +42,26 @@ public class DBMethods {
             System.out.println(ex.getMessage());
         }
         return products;
+    }
+
+    public static ArrayList<Customer> fetchAllCustomers() {
+        ArrayList<Customer> customers = new ArrayList<>();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet results = stmt.executeQuery("SELECT * FROM customers"); // Write query
+            while (results.next()) {
+                int customerID = results.getInt("CustomerID");
+                String name = results.getString("Name");
+                String address = results.getString("Address");
+                String ZIPcode = results.getString("ZIP-code");
+                String city = results.getString("City");
+                customers.add(new Customer(customerID, name, address, ZIPcode, city));
+            }
+        } catch (SQLException e) {
+            System.out.println("Creating query failed!");
+            System.out.println(e.getMessage());
+        }
+        return customers;
     }
 
     public static ArrayList<Orderline> fetchOrderlines(Order order) {
@@ -86,9 +107,50 @@ public class DBMethods {
         return null;
     }
 
+    public static Customer fetchCustomer(int ID) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM customers WHERE customerID = ?");
+            stmt.setInt(1, ID);
+            ResultSet results = stmt.executeQuery();
+            while(results.next()) {
+                int customerID = results.getInt("CustomerID");
+                String name = results.getString("Name");
+                String address = results.getString("Address");
+                String ZIPcode = results.getString("ZIP-code");
+                String city = results.getString("City");
+                return new Customer(customerID, name, address, ZIPcode, city);
+            }
+        } catch(SQLException e) {
+            System.out.println("Creating query failed!");
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public static Customer fetchCustomerByName(String selectedName) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM customers WHERE Name = ?");
+            stmt.setString(1, selectedName);
+            ResultSet results = stmt.executeQuery();
+            while(results.next()) {
+                int customerID = results.getInt("CustomerID");
+                String name = results.getString("Name");
+                String address = results.getString("Address");
+                String ZIPcode = results.getString("ZIP-code");
+                String city = results.getString("City");
+                return new Customer(customerID, name, address, ZIPcode, city);
+            }
+        } catch(SQLException e) {
+            System.out.println("Creating query failed!");
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
     public static boolean addOrder(Order order) {
         try {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO orders () VALUES ()");
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO orders (CustomerID) VALUES (?)");
+            stmt.setInt(1, order.getCustomerID());
             stmt.executeUpdate();
             return true;
         } catch (SQLException ex) {
@@ -104,7 +166,7 @@ public class DBMethods {
             stmt.setInt(1, order.getId());
             stmt.executeUpdate();
             for (Orderline orderline : orderlines) {
-                DBMethods.addOrderline(orderline);
+                DBMethods.addOrderline(orderline, order.getId());
             }
             return true;
         } catch (SQLException ex) {
@@ -114,11 +176,15 @@ public class DBMethods {
         }
     }
 
-    public static boolean addOrderline(Orderline orderline) {
+    public static boolean addOrderline(Orderline orderline, int orderID) {
         try {
             PreparedStatement stmt = conn
                     .prepareStatement("INSERT INTO orderlines (order_id, product_id, amount) VALUES (?, ?, ?)");
-            stmt.setInt(1, getLastOrderID());
+            if (orderID == 0) {
+                stmt.setInt(1, getLastOrderID());
+            } else {
+                stmt.setInt(1, orderID);
+            }
             stmt.setInt(2, orderline.getProduct().getId());
             stmt.setInt(3, orderline.getAmount());
             stmt.executeUpdate();

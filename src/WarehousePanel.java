@@ -17,6 +17,8 @@ public class WarehousePanel extends JPanel {
     private int yStart;
     private Robot robot;
     private Order order;
+    private Orderline orderline;
+    private SelectOrderDialog selectOrderDialog;
 
     public WarehousePanel(Robot robot) {
         int i = 0;
@@ -32,7 +34,7 @@ public class WarehousePanel extends JPanel {
         }
 
         warehouse = new Warehouse(positions);
-        
+
         this.width = 200;
         this.height = 200;
 
@@ -46,19 +48,21 @@ public class WarehousePanel extends JPanel {
         this.yStart = 30;
         this.robot = robot;
 
+
         setBackground(Color.WHITE);
 //        SerialPort Port = SerialPort.getCommPorts()[0];
-//        Port.addDataListener(new SerialPortDataListener() {
-//            @Override
-//            public int getListeningEvents() {
-//                return SerialPort.LISTENING_EVENT_DATA_RECEIVED;
-//            }
+//         Port.addDataListener(new SerialPortDataListener() {
+//             @Override
+//             public int getListeningEvents() {
+//                 return SerialPort.LISTENING_EVENT_DATA_RECEIVED;
+//             }
 //
-//            @Override
-//            public void serialEvent(SerialPortEvent serialPortEvent) {
-//                repaint();
-//            }
-//        });
+//             @Override
+//             public void serialEvent(SerialPortEvent serialPortEvent) {
+//                 repaint();
+//             }
+//         });
+
     }
 
     @Override
@@ -87,23 +91,19 @@ public class WarehousePanel extends JPanel {
             }
         }
 
-            // draw robot
-            g.setColor(Color.GRAY);
-            g.fillOval(robot.getPositionX(), height - robot.getPositionY(), productWidth, productHeight);
+        // draw robot
+        g.setColor(Color.GRAY);
+        g.fillOval(200 + robot.getPositionX(), height - robot.getPositionY(), productWidth, productHeight);
 
-            //draw complete orders
-            if(robot.getPositionX() == 1 && robot.getPositionY() == 2){ //instead of 1 and 2 needs to be order coordinates
-                order.ordercounter++;
-                g.setColor(Color.BLACK);
-                g.drawOval(10, 10, productWidth, productHeight);// instead of 10 needs to be order coordinates
-                g.setColor(Color.GREEN);
-                g.drawLine(5,5,8,8);
-                g.drawLine(8,8,10,10);
-
-
-
+        //draw complete orders
+        if (robot.getPositionX() == 1 && robot.getPositionY() == 1) {
+            order.ordercounter++;
+            g.setColor(Color.WHITE);
+            g.drawOval(1, 1, productWidth, productHeight);
         }
     }
+
+
 
     private Color getProductColor(int productVolume) {
         if(productVolume == 10) {

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class AddOrderDialog extends JDialog implements ActionListener {
     private Order order;
+    private Customer selectedCustomer = new Customer();
     private ArrayList<Product> allProducts;
 
     private OrderlineListPanel pOrderlineList;
@@ -13,28 +14,40 @@ public class AddOrderDialog extends JDialog implements ActionListener {
     private JComboBox<String> productChoiceList; //Dropdown that contains all products that can be added to order
     private JButton jbAddProductToOrder;
     private ArrayList<String> addedProducts; //ArrayList that contains all product names selected from dropdown
-    private SelectOrderDialog selectOrderDialog;
+
+    private ArrayList<Customer> allCustomers; //Arraylist of all existing customers
+    private JComboBox<String> customerChoiceList; //Dropdown
+    private ArrayList<Customer> selectedCustomers;
+
+    private JButton jbSelectCustomer;
+    private JButton jbCancel;
+
+    private CustomerPanel customerInfo;
 
     public AddOrderDialog(JDialog dialog, boolean modal) {
         super(dialog, modal);
         // setup data
         allProducts = DBMethods.fetchAllProducts();
+        allCustomers = DBMethods.fetchAllCustomers();
         addedProducts = new ArrayList<>();
         order = new Order();
+
         // setup ui
         setTitle("Nieuw order");
-        setSize(750, 500);
+        setSize(500, 500);
+        setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        setLayout(new FlowLayout());
+        setLayout(new GridLayout(4,3));
 
         // ui components
-       JLabel lOrder = new JLabel("Order");
-       //add(lOrder);
         pOrderlineList = new OrderlineListPanel(order.getOrderlines(), true);
         add(pOrderlineList);
-        JLabel lProducts = new JLabel("Producten");
-        //add(lProducts);
 
+        //Panel with all data from selected user
+        customerInfo = new CustomerPanel();
+        add(customerInfo);
+
+        //Gets all products from list and stores them in a dropdown
         productChoiceList = new JComboBox<String>();
         for(Product p : allProducts) {
             productChoiceList.addItem(p.getName());
@@ -42,14 +55,33 @@ public class AddOrderDialog extends JDialog implements ActionListener {
         productChoiceList.setVisible(true);
         add(productChoiceList);
 
+        //Gets all customers from list and stores them in a dropdown
+        customerChoiceList = new JComboBox<String>();
+        for(Customer c : allCustomers) {
+            customerChoiceList.addItem(c.getName());
+        }
+        customerChoiceList.setVisible(true);
+        add(customerChoiceList);
+
         jbAddProductToOrder = new JButton("Voeg product toe");
+        jbAddProductToOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         jbAddProductToOrder.addActionListener(this);
         add(jbAddProductToOrder);
 
+        jbSelectCustomer = new JButton("Selecteer klant");
+        jbSelectCustomer.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        jbSelectCustomer.addActionListener(this);
+        add(jbSelectCustomer);
+
         bPlaceOrder = new JButton("Order plaatsen");
+        bPlaceOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         bPlaceOrder.addActionListener(this);
         add(bPlaceOrder);
 
+        jbCancel = new JButton("Annuleren");
+        jbCancel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        jbCancel.addActionListener(this);
+        add(jbCancel);
     }
 
     @Override
@@ -67,20 +99,28 @@ public class AddOrderDialog extends JDialog implements ActionListener {
             Orderline orderline = new Orderline(selectedProduct);
             order.addOrderline(orderline);
             pOrderlineList.setOrderlines(order.getOrderlines());
-        } else if (e.getActionCommand().equals("Order plaatsen")) {
+        } else if(e.getActionCommand().equals("Order plaatsen")) {
             if(!pOrderlineList.getOrderlines().isEmpty()) {
-                DBMethods.addOrder(new Order());
-                for(Orderline ol : pOrderlineList.getOrderlines()) {
-                    DBMethods.addOrderline(ol);
-
-                    selectOrderDialog.AddOrdersToList(ol);
+                if(selectedCustomer.getCustomerID() != 0) { //Check if customer is set
+                    DBMethods.addOrder(new Order(selectedCustomer.getCustomerID()));
+                    for(Orderline ol : pOrderlineList.getOrderlines()) {
+                        DBMethods.addOrderline(ol, 0); // new order so orderId is not known yet
+                    }
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Er moet een klant geselecteerd zijn!",
+                            "Geen klant geselecteerd", JOptionPane.INFORMATION_MESSAGE);
                 }
-                dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Order mag niet leeg zijn!",
                         "Order leeg", JOptionPane.INFORMATION_MESSAGE);
             }
+        } else if(e.getActionCommand().equals("Selecteer klant")) {
+            String selectedName = String.valueOf(customerChoiceList.getSelectedItem());
+            selectedCustomer = DBMethods.fetchCustomerByName(selectedName); //Get selected from db based on name
+            customerInfo.setCustomer(selectedCustomer); //Set customer in CustomerPanel which will also display it
+        } else if(e.getActionCommand().equals("Annuleren")) {
+            dispose();
         }
     }
-
 }

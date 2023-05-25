@@ -57,10 +57,12 @@ public class HMIFrame extends JFrame implements ActionListener {
 
         bPickUpOrder = new JButton("Haal order op"); // Get order button
         bPickUpOrder.addActionListener(this);
+
         orderPanel.add(bPickUpOrder);
 
         bSelectOrder = new JButton("Selecteer order"); // Select order button
         bSelectOrder.addActionListener(this);
+
         orderPanel.add(bSelectOrder);
 
         // Boxes panel
