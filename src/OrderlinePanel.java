@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class OrderlinePanel extends JPanel implements ActionListener {
     private Orderline orderline;
@@ -16,13 +17,15 @@ public class OrderlinePanel extends JPanel implements ActionListener {
     private JTextField tAmount;
     private JButton bRemove;
     private boolean hasEditButtons;
+    private OrderlineListPanel olp;
 
     private boolean error = false;
 
-    public OrderlinePanel(Orderline orderline, boolean hasEditButtons, ArrayList<Orderline> orderlines) {
+    public OrderlinePanel(Orderline orderline, boolean hasEditButtons, ArrayList<Orderline> orderlines, OrderlineListPanel olp) {
         this.orderline = orderline;
         this.hasEditButtons = hasEditButtons;
         this.orderlines = orderlines;
+        this.olp = olp;
         setPreferredSize(new Dimension(100, 40));
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS)); // list view
 
@@ -30,7 +33,7 @@ public class OrderlinePanel extends JPanel implements ActionListener {
         lName.setPreferredSize(new Dimension(150, 50));
         add(lName);
 
-        if(hasEditButtons) {
+        if (hasEditButtons) {
             tAmount = new JTextField(1);
             tAmount.setText(String.valueOf(orderline.getAmount()));
             tAmount.getDocument().addDocumentListener(new DocumentListener() {
@@ -78,17 +81,20 @@ public class OrderlinePanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        removeAll();
         if (e.getSource() == bRemove) {
             orderlines.remove(orderline);
-            removeAll();
-            revalidate();
-            repaint();
+            for (int i = 0; i < orderlines.size(); i++) {
+                Orderline element = orderlines.get(i);
+                if (element == null) {
+                    orderlines.remove(i);
+                    i--; // Decrement index to compensate for removed element
+                }
+            }
+            olp.getSelectedProductsView().remove(this);
+            olp.getSelectedProductsView().validate();
+            olp.getSelectedProductsView().repaint();
+            olp.getSelectedProductsView().revalidate();
         }
     }
-
-    public Orderline getOrderline(){
-        orderline.setAmount(this.getAmount());
-        return orderline;
-    }
-
 }

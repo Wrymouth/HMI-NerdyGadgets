@@ -6,7 +6,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 
-public class OrderlineListPanel extends JPanel implements ComponentListener{
+public class OrderlineListPanel extends JPanel{
     private ArrayList<OrderlinePanel> orderlinePanels;
 
     private ArrayList<Orderline> orderlines;
@@ -39,7 +39,6 @@ public class OrderlineListPanel extends JPanel implements ComponentListener{
         orderlinePanels = new ArrayList<OrderlinePanel>();
         removeAll();
 
-
         selectedProductsView.setLayout(new BoxLayout(selectedProductsView, BoxLayout.PAGE_AXIS));
 
         jsProductsScroll = new JScrollPane(selectedProductsView);
@@ -47,12 +46,9 @@ public class OrderlineListPanel extends JPanel implements ComponentListener{
         add(jsProductsScroll);
 
         for (Orderline orderline : orderlines) {
-            if(orderline != null){
-                OrderlinePanel orderlinePanel = new OrderlinePanel(orderline, hasEditButtons, orderlines);
+                OrderlinePanel orderlinePanel = new OrderlinePanel(orderline, hasEditButtons, orderlines, this);
                 orderlinePanels.add(orderlinePanel);
-                orderlinePanel.addComponentListener(this);
                 selectedProductsView.add((orderlinePanel));
-            }
         }
     }
 
@@ -64,33 +60,7 @@ public class OrderlineListPanel extends JPanel implements ComponentListener{
         return orderlinePanels;
     }
 
-    @Override
-    public void componentResized(ComponentEvent e) {
-//        this.removeAll();
-//        this.revalidate();
-//        this.repaint();
-//        System.out.println("removed");
-    }
-
-    @Override
-    public void componentMoved(ComponentEvent e) {
-//        this.removeAll();
-//        this.revalidate();
-//        this.repaint();
-//        System.out.println("removed");
-    }
-
-    @Override
-    public void componentShown(ComponentEvent e) {
-//        this.removeAll();
-//        this.revalidate();
-//        this.repaint();
-    }
-
-    @Override
-    public void componentHidden(ComponentEvent e) {
-        this.revalidate();
-        this.repaint();
-        System.out.println("ll");
+    public JPanel getSelectedProductsView() {
+        return selectedProductsView;
     }
 }
