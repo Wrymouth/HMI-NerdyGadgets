@@ -96,6 +96,13 @@ public class AddOrderDialog extends JDialog implements ActionListener {
                     selectedProduct = product;
                 }
             }
+            for (Orderline ol : order.getOrderlines()) {
+                if (ol.getProduct().getId() == selectedProduct.getId()) {
+                    ol.setAmount(ol.getAmount() + 1);
+                    pOrderlineList.setOrderlines(order.getOrderlines());
+                    return;
+                }
+            }
             Orderline orderline = new Orderline(selectedProduct);
             order.addOrderline(orderline);
             pOrderlineList.setOrderlines(order.getOrderlines());
