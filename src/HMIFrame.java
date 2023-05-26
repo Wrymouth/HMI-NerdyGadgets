@@ -123,8 +123,13 @@ public class HMIFrame extends JFrame implements ActionListener {
             }
         } else if (e.getSource() == bPrintPdf) {
             try {
-                PackingSlip pdf = new PackingSlip(order);
-                pdf.printPackingSlips();
+                if(order == null) {
+                    JOptionPane.showMessageDialog(this, "Selecteer eerst een order!",
+                            "Geen order geselecteerd", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    PackingSlip pdf = new PackingSlip(order);
+                    pdf.printPackingSlips();
+                }
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
