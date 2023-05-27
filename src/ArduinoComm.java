@@ -19,75 +19,13 @@ public class ArduinoComm {
 
     private String instruction = "";
 
-    public ArduinoComm(Order order, Robot robot) {
-        this.order = order;
+    private SerialPort sp;
+
+    public ArduinoComm(Robot robot, String comPort) {
         this.robot = robot;
-    }
 
-    public ArduinoComm() {
-
-    }
-
-    // gets x and y position of every product in selected order and saves them in
-    // set pattern in a variable.
-    // Then sends the pattern to the arduino.
-    public void sendCoordinates() throws InterruptedException {
-        instruction.trim();
-        // opens connection on defined commport
-        SerialPort sp = SerialPort.getCommPort("COM5"); // define comport arduino
-        sp.setBaudRate(9600);
-        sp.setNumDataBits(8);
-        sp.setNumStopBits(1);
-        sp.setParity(SerialPort.NO_PARITY);
-        sp.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
-
-        if (sp.openPort()) {
-            System.out.println("Port is open :)"); // if connection is open print this
-        } else {
-            System.out.println("sendmessage: Failed to open port :("); // if connection is not open print this
-            return;
-        }
-
-        OutputStream outputStream = sp.getOutputStream();
-        // print string per character
-        byte[] strToBytes = instruction.getBytes();
-        try {
-            outputStream.write(strToBytes);
-            outputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SerialPortInvalidPortException e) {
-            e.getMessage();
-            e.printStackTrace();
-        }
-
-        if (sp.closePort()) {
-            System.out.println("Port is closed :)");
-        } else {
-            System.out.println("sendmessage: Failed to close port :(");
-        }
-    }
-
-    // reads message from arduino which contains x-position,y-position and then
-    // saves it in Robot class
-    public void readIncomingMessage() throws InterruptedException {
-        SerialPort comPort = SerialPort.getCommPort("COM5");
-
-        comPort.setBaudRate(9600);
-        comPort.setNumDataBits(8);
-        comPort.setNumStopBits(1);
-        comPort.setParity(SerialPort.NO_PARITY);
-        comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
-
-        if (comPort.openPort()) {
-            System.out.println("Port is open :)");
-        } else {
-            System.out.println("readincomingmessage: Failed to open port :(");
-            return;
-        }
-
-        comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
-        comPort.addDataListener(new SerialPortDataListener() {
+        openComPort(comPort);
+        sp.addDataListener(new SerialPortDataListener() {
             @Override
             public int getListeningEvents() {
                 return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
@@ -99,8 +37,8 @@ public class ArduinoComm {
                     return;
 
                 // Read the incoming data
-                byte[] newData = new byte[comPort.bytesAvailable()];
-                int numRead = comPort.readBytes(newData, newData.length);
+                byte[] newData = new byte[sp.bytesAvailable()];
+                int numRead = sp.readBytes(newData, newData.length);
 
                 // Process the received data
                 String coordinates = new String(newData);
@@ -116,37 +54,69 @@ public class ArduinoComm {
                 }
             }
         });
-        comPort.closePort();
+    }
+
+    public ArduinoComm() {
+    }
+
+    public void openComPort(String com) {
+        sp = SerialPort.getCommPort(com);
+        sp.setBaudRate(9600);
+        sp.setNumDataBits(8);
+        sp.setNumStopBits(1);
+        sp.setParity(SerialPort.NO_PARITY);
+        sp.setDTR();
+        sp.setRTS();
+        sp.setComPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0);
+
+        if (sp.openPort()) {
+            System.out.println("Port is open :)"); // if connection is open print this
+        } else {
+            System.out.println("sendmessage: Failed to open port :("); // if connection is not open print this
+            return;
+        }
+    }
+
+    public static void closeComPort(String com) {
+        SerialPort sp = SerialPort.getCommPort(com);
+        if (sp.closePort()) {
+            System.out.println("Port is closed :)"); // if connection is open print this
+        } else {
+            System.out.println("sendmessage: Failed to close port :("); // if connection is not open print this
+            return;
+        }
+    }
+
+    // gets x and y position of every product in selected order and saves them in
+    // set pattern in a variable.
+    // Then sends the pattern to the arduino.
+    public void sendCoordinates() throws InterruptedException {
+        instruction.trim();
+        instruction += "\n";
+
+        // opens connection on defined commport
+
+        // print string per character
+        byte[] strToBytes = instruction.getBytes();
+        try {
+            sp.writeBytes(strToBytes, strToBytes.length, 0);
+        } catch (SerialPortInvalidPortException e) {
+            e.getMessage();
+            e.printStackTrace();
+        }
     }
 
     public void sendEmergencySignal(boolean emergency) throws InterruptedException {
-        SerialPort sp = SerialPort.getCommPorts()[0]; // define comport arduino
-        sp.setComPortParameters(9600, 8, 1, 0);
-        sp.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING, 0, 0);
-
-        if (sp.openPort()) {
-            System.out.println("Port is open :)");
-        } else {
-            System.out.println("emergencysignal: Failed to open port :(");
-            return;
-        }
-
         PrintWriter output = new PrintWriter(sp.getOutputStream()); // Output variable declared.
 
         if (emergency) {
-            output.println(emergency); // Print short naar serial comm van arduino
+            output.println("E"); // Print short naar serial comm van arduino
             output.flush(); // Java --> Arduino
             Thread.sleep(1000);
         }
-
-        if (sp.closePort()) {
-            System.out.println("Port is closed :)");
-        } else {
-            System.out.println("Failed to close port :(");
-        }
     }
 
-    public void TSP() throws InterruptedException {
+    public void TSP(Order order) throws InterruptedException {
         List<Product> productsTBC = new ArrayList<>();
         int[] productX = new int[3];
         int[] productY = new int[3];
@@ -206,7 +176,6 @@ public class ArduinoComm {
                 System.out.println("x-coordinate " + productX[minIndex] + "\n" + "y-coordinate " + productY[minIndex]);
             }
         }
-        System.out.println(instruction);
         sendCoordinates();
     }
 }
