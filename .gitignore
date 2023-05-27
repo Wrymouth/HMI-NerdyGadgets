@@ -21,3 +21,4 @@ test-temp
 .idea/workspace.xml
 *.class
 /lib
+*.pdf

@@ -24,7 +24,8 @@ public class HMIFrame extends JFrame implements ActionListener {
     private JButton jbEmergency;
 
     private Order order;
-
+    private Robot robot = new Robot();
+    private ArduinoComm com;
     public HMIFrame() {
         // GUI Setup
         setTitle("NerdyGadgets Magazijnmanagement");
@@ -33,7 +34,7 @@ public class HMIFrame extends JFrame implements ActionListener {
         setLayout(new GridLayout(2, 1));
 
         // Warehouse panel
-        warehousePanel = new HMIContainer("", new WarehousePanel());
+        warehousePanel = new HMIContainer("", new WarehousePanel(robot));
         add(warehousePanel);
         JLabel lWarehouse = new JLabel("Weergave robot");
         warehousePanel.add(lWarehouse);
@@ -72,7 +73,7 @@ public class HMIFrame extends JFrame implements ActionListener {
         bPrintPdf.addActionListener(this);
         buttonPanel.add(bPrintPdf);
 
-        jbEmergency = new JButton("Stop Robot!"); // Robot emergency button
+        jbEmergency = new JButton("Noodstop"); // Robot emergency button
         jbEmergency.setBackground(Color.RED);
         jbEmergency.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         jbEmergency.addActionListener(this);
@@ -104,11 +105,17 @@ public class HMIFrame extends JFrame implements ActionListener {
             this.order.setOrderlines(orderlines);
             orderPanel.getOrderPanel().setOrder(selectedOrder);
             dSelectOrder.dispose();
-        } else if (e.getSource() == bPickUpOrder) { //Retrieves order
-            JOptionPane.showMessageDialog(this, "De order wordt nu door een medewerker opgehaald.");
-            ArduinoComm com = new ArduinoComm(order);
+            order.placeProductsInBoxes();
+            com = new ArduinoComm(order, robot);
             try {
-                com.sendCoordinates();
+                com.TSP();
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+        } else if (e.getSource() == bPickUpOrder) {
+            JOptionPane.showMessageDialog(this, "De order wordt nu door een medewerker opgehaald.");
+            try {
+                com.readIncomingMessage();
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
@@ -118,9 +125,14 @@ public class HMIFrame extends JFrame implements ActionListener {
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
-        } else if (e.getSource() == bPrintPdf) { //Print packing slip
-            // TODO print pdf
-        } else if (e.getActionCommand().equals("Noodstop")) { //Activates emergency signal
+        } else if (e.getSource() == bPrintPdf) {
+            try {
+                PackingSlip pdf = new PackingSlip(order);
+                pdf.printPackingSlips();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        } else if (e.getActionCommand().equals("Noodstop")) {
             ArduinoComm com = new ArduinoComm();
             try {
                 com.sendEmergencySignal(true);

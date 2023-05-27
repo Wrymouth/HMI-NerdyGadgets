@@ -13,15 +13,20 @@ public class OrderlinePanel extends JPanel implements ActionListener {
     private JButton bRemove;
     private boolean hasEditButtons;
 
+    private boolean error = false;
+
     public OrderlinePanel(Orderline orderline, boolean hasEditButtons) {
         this.orderline = orderline;
         this.hasEditButtons = hasEditButtons;
         setPreferredSize(new Dimension(100, 40));
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS)); // list view
+
         JLabel lName = new JLabel(orderline.getProduct().getName());
+        lName.setPreferredSize(new Dimension(150, 50));
         add(lName);
-        if (hasEditButtons) {
-            tAmount = new JTextField(2);
+
+        if(hasEditButtons) {
+            tAmount = new JTextField(1);
             tAmount.setText(String.valueOf(orderline.getAmount()));
             tAmount.getDocument().addDocumentListener(new DocumentListener() {
                 @Override
@@ -42,20 +47,28 @@ public class OrderlinePanel extends JPanel implements ActionListener {
                 public void setAmount() {
                     try {
                         orderline.setAmount(Integer.parseInt(tAmount.getText()));
+                        error = false;
                     } catch (NumberFormatException e) {
                         orderline.setAmount(0);
+                        error = true;
                     }
                 }
             });
+
             add(tAmount);
             bRemove = new JButton("X");
+            bRemove.setPreferredSize(new Dimension(50, 50));
             bRemove.addActionListener(this);
             add(bRemove);
         }
     }
 
-    public String getAmount() {
-        return tAmount.getText();
+    public int getAmount() {
+        return Integer.parseInt(tAmount.getText());
+    }
+
+    public boolean isError() {
+        return error;
     }
 
     @Override
@@ -65,13 +78,8 @@ public class OrderlinePanel extends JPanel implements ActionListener {
         }
     }
 
-    public Orderline getOrderline() {
-        try {
-            orderline.setAmount(Integer.parseInt(this.getAmount()));
-            return orderline;
-        } catch (NumberFormatException ex) {
-            System.out.println("nog te doen");
-        }
+    public Orderline getOrderline(){
+        orderline.setAmount(this.getAmount());
         return orderline;
     }
 }
