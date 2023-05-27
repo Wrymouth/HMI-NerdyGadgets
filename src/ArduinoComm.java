@@ -116,10 +116,11 @@ public class ArduinoComm {
         }
     }
 
+    //Only called when the emergency button is pressed in HMI, sends emergency signal to robot
     public void sendEmergencySignal(boolean emergency) throws InterruptedException {
         PrintWriter output = new PrintWriter(sp.getOutputStream()); // Output variable declared.
 
-        if (emergency) {
+        if(emergency) {
             output.println("E"); // Print short naar serial comm van arduino
             output.flush(); // Java --> Arduino
             Thread.sleep(1000);

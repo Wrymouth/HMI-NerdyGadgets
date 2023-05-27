@@ -112,7 +112,7 @@ public class DBMethods {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM customers WHERE customerID = ?");
             stmt.setInt(1, ID);
             ResultSet results = stmt.executeQuery();
-            while (results.next()) {
+            while(results.next()) {
                 int customerID = results.getInt("CustomerID");
                 String name = results.getString("Name");
                 String address = results.getString("Address");
@@ -120,7 +120,27 @@ public class DBMethods {
                 String city = results.getString("City");
                 return new Customer(customerID, name, address, ZIPcode, city);
             }
-        } catch (SQLException e) {
+        } catch(SQLException e) {
+            System.out.println("Creating query failed!");
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public static Customer fetchCustomerByName(String selectedName) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM customers WHERE Name = ?");
+            stmt.setString(1, selectedName);
+            ResultSet results = stmt.executeQuery();
+            while(results.next()) {
+                int customerID = results.getInt("CustomerID");
+                String name = results.getString("Name");
+                String address = results.getString("Address");
+                String ZIPcode = results.getString("ZIP-code");
+                String city = results.getString("City");
+                return new Customer(customerID, name, address, ZIPcode, city);
+            }
+        } catch(SQLException e) {
             System.out.println("Creating query failed!");
             System.out.println(e.getMessage());
         }
@@ -130,7 +150,7 @@ public class DBMethods {
     public static boolean addOrder(Order order) {
         try {
             PreparedStatement stmt = conn.prepareStatement("INSERT INTO orders (CustomerID) VALUES (?)");
-            stmt.setInt(1, 1);
+            stmt.setInt(1, order.getCustomerID());
             stmt.executeUpdate();
             return true;
         } catch (SQLException ex) {
