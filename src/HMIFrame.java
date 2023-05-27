@@ -83,7 +83,7 @@ public class HMIFrame extends JFrame implements ActionListener {
                 System.exit(0);
             }
         });
-        arduino = new ArduinoComm(robot, comPort);
+        arduino = new ArduinoComm(comPort, warehousePanel.getWarehousePanel());
         setVisible(true);
     }
 

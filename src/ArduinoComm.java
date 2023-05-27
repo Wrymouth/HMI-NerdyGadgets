@@ -14,16 +14,16 @@ import java.util.ArrayList;
 
 public class ArduinoComm {
 
-    private Order order;
-    private Robot robot;
+    private WarehousePanel wp;
+
 
     private String instruction = "";
+    private String receivedData = "";
 
     private SerialPort sp;
 
-    public ArduinoComm(Robot robot, String comPort) {
-        this.robot = robot;
-
+    public ArduinoComm(String comPort, WarehousePanel wp) {
+        this.wp = wp;
         openComPort(comPort);
         sp.addDataListener(new SerialPortDataListener() {
             @Override
@@ -36,21 +36,30 @@ public class ArduinoComm {
                 if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
                     return;
 
-                // Read the incoming data
-                byte[] newData = new byte[sp.bytesAvailable()];
-                int numRead = sp.readBytes(newData, newData.length);
-
-                // Process the received data
-                String coordinates = new String(newData);
-                System.out.println("Received data: " + coordinates);
-                int index = coordinates.indexOf(','); // defines index to be searched for
-                if (index != -1) { // if index is found
-                    // makes a substring from the coordinates String until defined index, then
-                    // parses it to int and saves it in x-position of robot
-                    robot.setPositionX(Integer.parseInt(coordinates.substring(0, index)));
-                    // makes a substring from the coordinates String from defined index onwards,
-                    // then parses it to int and saves it in y-position of robot
-                    robot.setPositionY(Integer.parseInt(coordinates.substring(index + 1)));
+                int availableBytes = sp.bytesAvailable();
+                if (availableBytes > 0) {
+                    byte[] newData = new byte[availableBytes];
+                    int numRead = sp.readBytes(newData, newData.length);
+                    receivedData += new String(newData);
+                    
+                    // the event reads data in small chunks, so the program checks for a newline character
+                    // to know if the data is complete
+                    int newlineIndex = receivedData.indexOf('\n');
+                    if (newlineIndex != -1) {
+                        String coordinates = receivedData.substring(0, newlineIndex);
+                        System.out.println("Received data: " + coordinates);
+                        int index = coordinates.indexOf(','); // if a comma is found, that means these are coordinates
+                        if (index != -1) {
+                            try {
+                                int x = Integer.parseInt(coordinates.substring(0, index));
+                                int y = Integer.parseInt(coordinates.substring(index + 1));
+                                wp.setRobotPosition(x, y);
+                            } catch (NumberFormatException e) {
+                            }
+                        }
+                        // set receivedData to empty string so we can start listening for new data
+                        receivedData = "";
+                    }
                 }
             }
         });
@@ -72,7 +81,7 @@ public class ArduinoComm {
         if (sp.openPort()) {
             System.out.println("Port is open :)"); // if connection is open print this
         } else {
-            System.out.println("sendmessage: Failed to open port :("); // if connection is not open print this
+            System.out.println("Failed to open port :("); // if connection is not open print this
             return;
         }
     }
@@ -93,6 +102,7 @@ public class ArduinoComm {
     public void sendCoordinates() throws InterruptedException {
         instruction.trim();
         instruction += "\n";
+        instruction = "100,2000\n";
 
         // opens connection on defined commport
 
@@ -100,7 +110,7 @@ public class ArduinoComm {
         byte[] strToBytes = instruction.getBytes();
         try {
             sp.writeBytes(strToBytes, strToBytes.length, 0);
-        } catch (SerialPortInvalidPortException e) {
+        } catch (Exception e) {
             e.getMessage();
             e.printStackTrace();
         }
