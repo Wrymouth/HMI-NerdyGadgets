@@ -25,7 +25,10 @@ public class HMIFrame extends JFrame implements ActionListener {
 
     private Order order;
     private Robot robot = new Robot();
-    private ArduinoComm com;
+    private ArduinoComm arduino;
+
+    private String comPort = "COM4";
+
     public HMIFrame() {
         // GUI Setup
         setTitle("NerdyGadgets Magazijnmanagement");
@@ -77,8 +80,15 @@ public class HMIFrame extends JFrame implements ActionListener {
         jbEmergency.setBackground(Color.RED);
         jbEmergency.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         jbEmergency.addActionListener(this);
-        buttonPanel.add(jbEmergency);
 
+       buttonPanel.add(jbEmergency);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                ArduinoComm.closeComPort(comPort);
+                System.exit(0);
+            }
+        });
+        arduino = new ArduinoComm(comPort, warehousePanel.getWarehousePanel());
         setVisible(true);
     }
 
@@ -106,22 +116,10 @@ public class HMIFrame extends JFrame implements ActionListener {
             orderPanel.getOrderPanel().setOrder(selectedOrder);
             dSelectOrder.dispose();
             order.placeProductsInBoxes();
-            com = new ArduinoComm(order, robot);
-            try {
-                com.TSP();
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
-        } else if (e.getSource() == bPickUpOrder) {
-            JOptionPane.showMessageDialog(this, "De order wordt nu door een medewerker opgehaald.");
-            try {
-                com.readIncomingMessage();
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
 
+        } else if (e.getSource() == bPickUpOrder) {
             try {
-                com.readIncomingMessage();
+                arduino.TSP(order);
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
@@ -138,10 +136,9 @@ public class HMIFrame extends JFrame implements ActionListener {
                 throw new RuntimeException(ex);
             }
         } else if (e.getActionCommand().equals("Noodstop")) {
-            ArduinoComm com = new ArduinoComm();
             try {
-                com.sendEmergencySignal(true);
-            } catch(InterruptedException ex) {
+                arduino.sendEmergencySignal(true);
+            } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
         }
