@@ -24,10 +24,6 @@ public class ArduinoComm {
 
     }
 
-    public Robot getRobot() {
-        return robot;
-    }
-
     // gets x and y position of every product in selected order and saves them in set pattern in a variable.
     // Then sends the pattern to the arduino.
     public void sendCoordinates(int positionX, int positionY) throws InterruptedException {

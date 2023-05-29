@@ -23,7 +23,6 @@ public class EditOrderDialog extends JDialog implements ActionListener {
     public EditOrderDialog(Frame frame, boolean modal, Order order) {
         super(frame, modal);
         allProducts = DBMethods.fetchAllProducts();
-        allProducts = DBMethods.fetchAllProducts();
         addedProducts = new ArrayList<>();
         this.order = order;
         selectedCustomer = DBMethods.fetchCustomer(order.getCustomerID());
