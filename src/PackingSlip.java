@@ -4,6 +4,11 @@ import com.aspose.pdf.Color;
 import javax.swing.*;
 import java.awt.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class PackingSlip {
     private Customer customer;
     private Order order;
@@ -19,9 +24,9 @@ public class PackingSlip {
 
     public void printPackingSlips() {
         int i = 1;
-        try {
-            for (Box box : order.getBoxes()) {
-                Document document = new Document();
+        for (Box box: order.getBoxes()) {
+            int[] amount = new int[26];
+            Document document = new Document();
 
 //Add page
                 Page page = document.getPages().add();
@@ -66,16 +71,22 @@ public class PackingSlip {
 
                 Row row3 = productTable.getRows().add();
 // add table cells
-                row3.getCells().add("productnummer");
-                row3.getCells().add("naam");
-                row3.getCells().add("aantal");
+            row3.getCells().add("productnummer");
+            row3.getCells().add("naam");
+            row3.getCells().add("aantal");
 
-                for (Product product : box.getProducts()) {
-                    Row row4 = productTable.getRows().add();
-                    row4.getCells().add(String.valueOf(product.getId()));
-                    row4.getCells().add(product.getName());
-                    row4.getCells().add(String.valueOf(order.getOrderline(product.getId()).getAmount()));
-                }
+            for (Product product : box.getProducts()) {
+                amount[product.getId()] = Collections.frequency(box.getProducts(), product);
+            }
+
+            List<Product> distinctProducts = box.getProducts().stream().distinct().toList();
+
+            for (Product product: distinctProducts) {
+                Row row4 = productTable.getRows().add();
+                row4.getCells().add(String.valueOf(product.getId()));
+                row4.getCells().add(product.getName());
+                row4.getCells().add(String.valueOf(amount[product.getId()]));
+            }
 
                 document.getPages().get_Item(1).getParagraphs().add(productTable);
 

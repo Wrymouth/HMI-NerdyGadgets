@@ -17,7 +17,6 @@ public class AddOrderDialog extends JDialog implements ActionListener {
 
     private ArrayList<Customer> allCustomers; //Arraylist of all existing customers
     private JComboBox<String> customerChoiceList; //Dropdown
-    private ArrayList<Customer> selectedCustomers;
 
     private JButton jbSelectCustomer;
     private JButton jbCancel;

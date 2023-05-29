@@ -13,6 +13,8 @@ public class WarehousePanel extends JPanel {
     private int xStart;
     private int yStart;
     private Robot robot;
+    private int robotX;
+    private int robotY;
 
     public WarehousePanel(Robot robot) {
         int i = 0;
@@ -45,6 +47,12 @@ public class WarehousePanel extends JPanel {
         setBackground(Color.WHITE);
     }
 
+    public void setRobotPosition(int x, int y) {
+        this.robotX = x;
+        this.robotY = y;
+        repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -72,7 +80,7 @@ public class WarehousePanel extends JPanel {
         }
         // draw robot
         g.setColor(Color.GRAY);
-        g.fillOval(robot.getPositionX(), height-robot.getPositionY(), productWidth, productHeight);
+        g.fillOval(robotX, height-robotY, productWidth, productHeight);
         
     }
 
