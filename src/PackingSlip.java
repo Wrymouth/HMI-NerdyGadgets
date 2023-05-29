@@ -95,8 +95,5 @@ public class PackingSlip {
                 document.save("packingSlip" + "OrderID" + order.getId() + "Box" + i + ".pdf");
                 i++;
             }
-        } catch (NullPointerException e) {
-
         }
     }
-}
