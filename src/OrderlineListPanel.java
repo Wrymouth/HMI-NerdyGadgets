@@ -25,7 +25,6 @@ public class OrderlineListPanel extends JPanel{
         // setup gui
         setPreferredSize(new Dimension(100, 200));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        add(new JLabel("Geen product(en) geselecteerd!"));
     }
 
     public void setOrderlines(ArrayList<Orderline> orderlines) {
