@@ -44,7 +44,6 @@ public class OrderlineListPanel extends JPanel{
         jsProductsScroll = new JScrollPane(selectedProductsView);
         jsProductsScroll.setPreferredSize(new Dimension(300, 300));
         add(jsProductsScroll);
-
         for (Orderline orderline : orderlines) {
                 OrderlinePanel orderlinePanel = new OrderlinePanel(orderline, hasEditButtons, orderlines, this);
                 orderlinePanels.add(orderlinePanel);

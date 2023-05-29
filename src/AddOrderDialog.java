@@ -87,6 +87,7 @@ public class AddOrderDialog extends JDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("Voeg product toe")) {
+            pOrderlineList.getSelectedProductsView().removeAll();
             String selectedValue = String.valueOf(productChoiceList.getSelectedItem()); //Gets value from dropdown
             addedProducts.add(selectedValue); //Adds value to list
             // get selected product from name

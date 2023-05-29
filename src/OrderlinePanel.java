@@ -81,8 +81,8 @@ public class OrderlinePanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        removeAll();
         if (e.getSource() == bRemove) {
+            removeAll();
             orderlines.remove(orderline);
             for (int i = 0; i < orderlines.size(); i++) {
                 Orderline element = orderlines.get(i);
@@ -91,10 +91,9 @@ public class OrderlinePanel extends JPanel implements ActionListener {
                     i--; // Decrement index to compensate for removed element
                 }
             }
-            olp.getSelectedProductsView().remove(this);
+            olp.getSelectedProductsView().removeAll();
             olp.getSelectedProductsView().validate();
-            olp.getSelectedProductsView().repaint();
-            olp.getSelectedProductsView().revalidate();
+            olp.setOrderlines(orderlines);
         }
     }
 }
