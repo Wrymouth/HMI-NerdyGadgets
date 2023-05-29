@@ -16,7 +16,6 @@ public class ArduinoComm {
 
     private WarehousePanel wp;
 
-
     private String instruction = "";
     private String receivedData = "";
 
