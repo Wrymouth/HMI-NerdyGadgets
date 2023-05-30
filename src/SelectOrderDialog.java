@@ -19,7 +19,7 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
     public SelectOrderDialog(Frame frame, boolean modal) {
         super(frame, modal);
         this.frame = frame;
-        orders = DBMethods.fetchAllOrders();
+        orders = DBMethods.fetchUnprocessedOrders();
 
         // setup ui
         setTitle("Orders");
