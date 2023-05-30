@@ -31,7 +31,8 @@ public class CustomerPanel extends JPanel {
         removeAll();
 
         //Set data
-        jlCustomerID.setText(String.valueOf(customer.getCustomerID()));
+        add(new JLabel("Klantgegevens:"));
+        jlCustomerID.setText("KlantID: " + customer.getCustomerID());
         add(jlCustomerID);
         jlCustomerName.setText(customer.getName());
         add(jlCustomerName);
