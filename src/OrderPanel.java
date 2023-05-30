@@ -50,6 +50,7 @@ public class OrderPanel extends JPanel {
         //Customer data
         CustomerPanel ct = new CustomerPanel();
         ct.setCustomer(customer);
+        ct.setBorder(BorderFactory.createLineBorder(Color.black));
         add(ct);
 
         revalidate();
