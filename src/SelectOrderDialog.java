@@ -14,11 +14,13 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
     private JList listOrders;
     private JButton bAddOrder;
     private JButton bSelect;
-    DefaultListModel orderNames = new DefaultListModel();
+    private DefaultListModel orderNames = new DefaultListModel();
+    private Frame frame;
 
     public SelectOrderDialog(Frame frame, boolean modal) {
         super(frame, modal);
-        orders = DBMethods.fetchAllOrders();
+        this.frame = frame;
+        orders = DBMethods.fetchUnprocessedOrders();
 
         // setup ui
         setTitle("Orders");
@@ -70,8 +72,15 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
         if (e.getSource() == bAddOrder) {
             AddOrderDialog dialog = new AddOrderDialog(this, true);
             dialog.setVisible(true);
+            dispose();
+            SelectOrderDialog sod = new SelectOrderDialog(frame, true);
         } else if (e.getSource() == bSelect) {
-            setVisible(false);
+            if(selectedOrder != null) {
+                setVisible(false);
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecteer eerst een order!",
+                        "Geen order geselecteerd", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
     }
 

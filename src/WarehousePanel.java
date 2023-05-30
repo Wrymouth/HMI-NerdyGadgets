@@ -20,6 +20,8 @@ public class WarehousePanel extends JPanel {
     private Order order;
     private Orderline orderline;
     private SelectOrderDialog selectOrderDialog;
+    private int robotX;
+    private int robotY;
 
     public WarehousePanel(Robot robot) {
         int i = 0;
@@ -69,6 +71,12 @@ public class WarehousePanel extends JPanel {
 
     }
 
+    public void setRobotPosition(int x, int y) {
+        this.robotX = x;
+        this.robotY = y;
+        repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -115,6 +123,10 @@ public class WarehousePanel extends JPanel {
             //draw route
             g.drawLine(order.getPositionX(), order.getPositionY(), order.getPositionX() + 10, order.getPositionY() + 10);
         }
+        // draw robot
+        g.setColor(Color.GRAY);
+        g.fillOval(robotX, height-robotY, productWidth, productHeight);
+        
     }
 
 
