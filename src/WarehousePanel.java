@@ -71,6 +71,7 @@ public class WarehousePanel extends JPanel {
 
     }
 
+
     public void setRobotPosition(int x, int y) {
         this.robotX = x;
         this.robotY = y;

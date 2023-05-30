@@ -7,6 +7,7 @@ import javax.swing.Scrollable;
 public class OrderPanel extends JPanel {
     private JLabel jlOrderName;
     private Order order;
+    private Customer customer;
 
     public OrderPanel() { //Constructor for when an order has been selected
         setPreferredSize(new Dimension(200, 200));
@@ -21,6 +22,12 @@ public class OrderPanel extends JPanel {
         this.order = order;
         displayOrder();
 
+    }
+
+    public void setOrder(Order order, Customer customer) {
+        this.order = order;
+        this.customer = customer;
+        displayOrder();
     }
 
     public Order getOrder() {
@@ -43,7 +50,15 @@ public class OrderPanel extends JPanel {
 
             jlProductName.setText(ol.getProduct().getName());
             jlProductQuantity.setText(ol.getAmount() + " stuks " + "(voorraad " + ol.getProduct().getQuantity() + ")");
+
         }
+
+        //Customer data
+        CustomerPanel ct = new CustomerPanel();
+        ct.setCustomer(customer);
+        ct.setBorder(BorderFactory.createLineBorder(Color.black));
+        add(ct);
+
         revalidate();
         repaint();
     }

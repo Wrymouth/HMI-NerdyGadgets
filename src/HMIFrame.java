@@ -27,6 +27,7 @@ public class HMIFrame extends JFrame implements ActionListener {
     private Order order;
     private Robot robot = new Robot();
     private ArduinoComm arduino;
+    private Customer selectedOrderCustomer;
 
     private String comPort = "COM5";
 
@@ -118,7 +119,7 @@ public class HMIFrame extends JFrame implements ActionListener {
             ArrayList<Orderline> orderlines = DBMethods.fetchOrderlines(selectedOrder);
             this.order = selectedOrder;
             this.order.setOrderlines(orderlines);
-            orderPanel.getOrderPanel().setOrder(selectedOrder);
+            orderPanel.getOrderPanel().setOrder(selectedOrder, DBMethods.fetchCustomer(selectedOrder.getCustomerID()));
             dSelectOrder.dispose();
             order.placeProductsInBoxes();
 
