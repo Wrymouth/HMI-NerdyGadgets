@@ -26,6 +26,7 @@ public class HMIFrame extends JFrame implements ActionListener {
 
     private Order order;
     private Robot robot = new Robot();
+    private ArduinoComm com;
     public HMIFrame() {
         // GUI Setup
         setTitle("NerdyGadgets Magazijnmanagement");
@@ -110,11 +111,16 @@ public class HMIFrame extends JFrame implements ActionListener {
             this.order.setOrderlines(orderlines);
             orderPanel.getOrderPanel().setOrder(selectedOrder);
             dSelectOrder.dispose();
+            order.placeProductsInBoxes();
+            com = new ArduinoComm(order, robot);
+            try {
+                com.TSP();
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
         } else if (e.getSource() == bPickUpOrder) {
             JOptionPane.showMessageDialog(this, "De order wordt nu door een medewerker opgehaald.");
-            ArduinoComm com = new ArduinoComm(order, robot);
             try {
-                //com.sendCoordinates();
                 com.readIncomingMessage();
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
@@ -126,7 +132,12 @@ public class HMIFrame extends JFrame implements ActionListener {
                 throw new RuntimeException(ex);
             }
         } else if (e.getSource() == bPrintPdf) {
-            // TODO print pdf
+            try {
+                PackingSlip pdf = new PackingSlip(order);
+                pdf.printPackingSlips();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         } else if (e.getActionCommand().equals("Noodstop")) {
             ArduinoComm com = new ArduinoComm();
             try {

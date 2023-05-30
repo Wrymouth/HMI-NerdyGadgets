@@ -1,3 +1,5 @@
+import com.aspose.pdf.operators.BX;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -7,6 +9,7 @@ public class OrderlineListPanel extends JPanel {
 
     private ArrayList<Orderline> orderlines;
     private boolean hasEditButtons;
+    private JScrollPane jsProductsScroll;
 
     public OrderlineListPanel(ArrayList<Orderline> orderlines, boolean hasEditButtons) {
         // setup data
@@ -17,10 +20,9 @@ public class OrderlineListPanel extends JPanel {
             setOrderlines(orderlines);
         }
         // setup gui
-        setPreferredSize(new Dimension(400, 200));
-        //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setLayout(new GridLayout(orderlines.size(),1));
-
+        setPreferredSize(new Dimension(100, 200));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        add(new JLabel("Geen product(en) geselecteerd!"));
     }
 
     public void setOrderlines(ArrayList<Orderline> orderlines) {
@@ -30,15 +32,21 @@ public class OrderlineListPanel extends JPanel {
         repaint();
     }
 
-
-
     public void createOrderlinePanels() {
         orderlinePanels = new ArrayList<OrderlinePanel>();
         removeAll();
+
+        JPanel selectedProductsView = new JPanel();
+        selectedProductsView.setLayout(new BoxLayout(selectedProductsView, BoxLayout.PAGE_AXIS));
+
+        jsProductsScroll = new JScrollPane(selectedProductsView);
+        jsProductsScroll.setPreferredSize(new Dimension(300, 300));
+        add(jsProductsScroll);
+
         for (Orderline orderline : orderlines) {
             OrderlinePanel orderlinePanel = new OrderlinePanel(orderline, hasEditButtons);
             orderlinePanels.add(orderlinePanel);
-            add(orderlinePanel);
+            selectedProductsView.add((orderlinePanel));
         }
     }
 

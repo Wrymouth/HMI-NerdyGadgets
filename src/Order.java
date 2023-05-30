@@ -7,6 +7,8 @@ public class Order {
     private int customerID;
     private ArrayList<Orderline> orderlines;
     private ArrayList<Box> boxes;
+    private int PositionX;
+    private int PositionY;
 
     public Order() {
         orderlines = new ArrayList<Orderline>();
@@ -47,7 +49,7 @@ public class Order {
         Orderline o = null;
         for (Orderline orderline: orderlines) {
             if (orderline.getProduct().getId() == id){
-                o = orderline;
+                 o = orderline;
                 break;
             }
         }
@@ -82,12 +84,28 @@ public class Order {
     public String toString() {
         String orderString = "Order: " + name + "\n";
         if (orderlines.size() == 0) {
-            orderString += "No products in order";
+        orderString += "No products in order";
         } else {
             for (Orderline orderline : orderlines) {
                 orderString += orderline.toString() + "\n";
             }
         }
         return orderString;
+    }
+
+    public int getPositionX() {
+        return PositionX;
+    }
+
+    public void setPositionX(int positionX) {
+        PositionX = positionX;
+    }
+
+    public int getPositionY() {
+        return PositionY;
+    }
+
+    public void setPositionY(int positionY) {
+        PositionY = positionY;
     }
 }
