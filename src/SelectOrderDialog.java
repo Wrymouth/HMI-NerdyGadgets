@@ -14,9 +14,11 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
     private JList listOrders;
     private JButton bAddOrder;
     private JButton bSelect;
+    private Frame frame;
 
     public SelectOrderDialog(Frame frame, boolean modal) {
         super(frame, modal);
+        this.frame = frame;
         orders = DBMethods.fetchUnprocessedOrders();
 
         // setup ui
@@ -62,6 +64,8 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
         if (e.getSource() == bAddOrder) {
             AddOrderDialog dialog = new AddOrderDialog(this, true);
             dialog.setVisible(true);
+            dispose();
+            SelectOrderDialog sod = new SelectOrderDialog(frame, true);
         } else if (e.getSource() == bSelect) {
             if(selectedOrder != null) {
                 setVisible(false);
