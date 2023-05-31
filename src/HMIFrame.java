@@ -6,14 +6,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import javax.swing.border.Border;
 
 public class HMIFrame extends JFrame implements ActionListener {
     // Create all HMIContainers so we can later access their data
     private HMIContainer warehousePanel;
     private HMIContainer boxesPanel;
     private HMIContainer orderPanel;
-    private HMIContainer ButtonPanel;
+    private HMIContainer buttonPanel;
 
     private SelectOrderDialog dSelectOrder;
     private EditOrderDialog dEditOrder;
@@ -26,71 +25,77 @@ public class HMIFrame extends JFrame implements ActionListener {
 
     private Order order;
     private Robot robot = new Robot();
-    private ArduinoComm com;
+    private ArduinoComm arduino;
+    private Customer selectedOrderCustomer;
+
+    private String comPort = "COM5";
+
     public HMIFrame() {
         // GUI Setup
         setTitle("NerdyGadgets Magazijnmanagement");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(2,1,5,5));
-
-
-
+        setLayout(new GridLayout(2, 1));
 
         // Warehouse panel
-        warehousePanel = new HMIContainer("Weergave robot:", new WarehousePanel(robot));
+        warehousePanel = new HMIContainer("", new WarehousePanel(robot));
         add(warehousePanel);
+        JLabel lWarehouse = new JLabel("Weergave robot");
+        warehousePanel.add(lWarehouse);
         warehousePanel.add(warehousePanel.getWarehousePanel());
-        Border blackline = BorderFactory.createLineBorder(Color.black);
-        warehousePanel.setBorder(blackline);
-
-
 
         // Order panel
         orderPanel = new HMIContainer("Order", new OrderPanel());
         add(orderPanel);
         orderPanel.add(orderPanel.getOrderPanel());
-        orderPanel.setBorder(blackline);
 
         bEditOrder = new JButton("Wijzig order"); // Edit order button
+        bEditOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         bEditOrder.addActionListener(this);
         orderPanel.add(bEditOrder);
 
         bPickUpOrder = new JButton("Haal order op"); // Get order button
+        bPickUpOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         bPickUpOrder.addActionListener(this);
-
         orderPanel.add(bPickUpOrder);
 
         bSelectOrder = new JButton("Selecteer order"); // Select order button
+        bSelectOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         bSelectOrder.addActionListener(this);
-
         orderPanel.add(bSelectOrder);
 
         // Boxes panel
         boxesPanel = new HMIContainer("Dozen", new BoxesPanel());
         add(boxesPanel);
         boxesPanel.add(boxesPanel.getBoxesPanel());
-        boxesPanel.setBorder(blackline);
 
         // Panel with PDF button
-        ButtonPanel = new HMIContainer("", new JPanel());
-        add(ButtonPanel);
+        buttonPanel = new HMIContainer("", new JPanel());
+        add(buttonPanel);
         bPrintPdf = new JButton("Print pakbon"); // Print receipt button
+        bPrintPdf.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         bPrintPdf.addActionListener(this);
-        ButtonPanel.add(bPrintPdf);
-
+        buttonPanel.add(bPrintPdf);
 
         jbEmergency = new JButton("Noodstop"); // Robot emergency button
         jbEmergency.setBackground(Color.RED);
         jbEmergency.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         jbEmergency.addActionListener(this);
-        ButtonPanel.add(jbEmergency);
+
+       buttonPanel.add(jbEmergency);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                ArduinoComm.closeComPort(comPort);
+                System.exit(0);
+            }
+        });
+        arduino = new ArduinoComm(comPort, warehousePanel.getWarehousePanel());
         setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == bEditOrder) {
+        if (e.getSource() == bEditOrder) { //Opens dialog where user will be able to edit an order
             if (order == null) {
                 JOptionPane.showMessageDialog(this, "Selecteer eerst een order");
             } else {
@@ -100,7 +105,7 @@ public class HMIFrame extends JFrame implements ActionListener {
                 orderPanel.getOrderPanel().setOrder(order);
                 dEditOrder.dispose();
             }
-        } else if (e.getSource() == bSelectOrder) {
+        } else if (e.getSource() == bSelectOrder) { //Opens dialog where user will be able to select an order
             dSelectOrder = new SelectOrderDialog(this, true);
             Order selectedOrder = dSelectOrder.getSelectedOrder();
             if (selectedOrder == null) {
@@ -109,40 +114,32 @@ public class HMIFrame extends JFrame implements ActionListener {
             ArrayList<Orderline> orderlines = DBMethods.fetchOrderlines(selectedOrder);
             this.order = selectedOrder;
             this.order.setOrderlines(orderlines);
-            orderPanel.getOrderPanel().setOrder(selectedOrder);
+            orderPanel.getOrderPanel().setOrder(selectedOrder, DBMethods.fetchCustomer(selectedOrder.getCustomerID()));
             dSelectOrder.dispose();
             order.placeProductsInBoxes();
-            com = new ArduinoComm(order, robot);
-            try {
-                com.TSP();
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
-        } else if (e.getSource() == bPickUpOrder) {
-            JOptionPane.showMessageDialog(this, "De order wordt nu door een medewerker opgehaald.");
-            try {
-                com.readIncomingMessage();
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
 
+        } else if (e.getSource() == bPickUpOrder) {
             try {
-                com.readIncomingMessage();
+                arduino.TSP(order);
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
         } else if (e.getSource() == bPrintPdf) {
             try {
-                PackingSlip pdf = new PackingSlip(order);
-                pdf.printPackingSlips();
+                if(order == null) {
+                    JOptionPane.showMessageDialog(this, "Selecteer eerst een order!",
+                            "Geen order geselecteerd", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    PackingSlip pdf = new PackingSlip(order);
+                    pdf.printPackingSlips();
+                }
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         } else if (e.getActionCommand().equals("Noodstop")) {
-            ArduinoComm com = new ArduinoComm();
             try {
-                com.sendEmergencySignal(true);
-            } catch(InterruptedException ex) {
+                arduino.sendEmergencySignal(true);
+            } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
         }

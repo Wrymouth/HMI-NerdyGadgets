@@ -17,7 +17,6 @@ public class AddOrderDialog extends JDialog implements ActionListener {
 
     private ArrayList<Customer> allCustomers; //Arraylist of all existing customers
     private JComboBox<String> customerChoiceList; //Dropdown
-    private ArrayList<Customer> selectedCustomers;
 
     private JButton jbSelectCustomer;
     private JButton jbCancel;
@@ -87,6 +86,7 @@ public class AddOrderDialog extends JDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("Voeg product toe")) {
+            pOrderlineList.getSelectedProductsView().removeAll();
             String selectedValue = String.valueOf(productChoiceList.getSelectedItem()); //Gets value from dropdown
             addedProducts.add(selectedValue); //Adds value to list
             // get selected product from name
@@ -94,6 +94,13 @@ public class AddOrderDialog extends JDialog implements ActionListener {
             for (Product product : allProducts) {
                 if (product.getName().equals(selectedValue)) {
                     selectedProduct = product;
+                }
+            }
+            for (Orderline ol : order.getOrderlines()) {
+                if (ol.getProduct().getId() == selectedProduct.getId()) {
+                    ol.setAmount(ol.getAmount() + 1);
+                    pOrderlineList.setOrderlines(order.getOrderlines());
+                    return;
                 }
             }
             Orderline orderline = new Orderline(selectedProduct);

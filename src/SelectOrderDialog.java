@@ -14,11 +14,12 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
     private JList listOrders;
     private JButton bAddOrder;
     private JButton bSelect;
-    DefaultListModel orderNames = new DefaultListModel();
+    private Frame frame;
 
     public SelectOrderDialog(Frame frame, boolean modal) {
         super(frame, modal);
-        orders = DBMethods.fetchAllOrders();
+        this.frame = frame;
+        orders = DBMethods.fetchUnprocessedOrders();
 
         // setup ui
         setTitle("Orders");
@@ -29,8 +30,9 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
         JLabel lOrders = new JLabel("Orders");
         add(lOrders);
 
+        Vector<String> orderNames = new Vector<String>();
         for (Order order : orders) {
-            orderNames.addElement(order.getName());
+            orderNames.add(order.getName());
         }
         listOrders = new JList<String>(orderNames);
         listOrders.addListSelectionListener(new ListSelectionListener() {
@@ -44,21 +46,13 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
         });
         listOrders.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         add(listOrders);
-        JScrollPane s = new JScrollPane(listOrders);
-        s.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        add(s);
-        bSelect = new JButton("Selecteren");
-        bSelect.addActionListener(this);
-        add(bSelect);
         bAddOrder = new JButton("Order toevoegen");
         bAddOrder.addActionListener(this);
         add(bAddOrder);
+        bSelect = new JButton("Selecteren");
+        bSelect.addActionListener(this);
+        add(bSelect);
         setVisible(true);
-
-    }
-
-    public SelectOrderDialog() {
-
     }
 
     public Order getSelectedOrder() {
@@ -70,9 +64,15 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
         if (e.getSource() == bAddOrder) {
             AddOrderDialog dialog = new AddOrderDialog(this, true);
             dialog.setVisible(true);
+            dispose();
+            SelectOrderDialog sod = new SelectOrderDialog(frame, true);
         } else if (e.getSource() == bSelect) {
-            setVisible(false);
+            if(selectedOrder != null) {
+                setVisible(false);
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecteer eerst een order!",
+                        "Geen order geselecteerd", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
     }
-
 }

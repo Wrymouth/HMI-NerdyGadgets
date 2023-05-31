@@ -5,11 +5,11 @@ public class DBMethods {
     private static DatabaseConnection dbConnection = new DatabaseConnection();
     private static Connection conn = dbConnection.getConnection();
 
-    public static ArrayList<Order> fetchAllOrders() {
+    public static ArrayList<Order> fetchUnprocessedOrders() {
         ArrayList<Order> orders = new ArrayList<Order>();
         try {
             Statement stmt = conn.createStatement();
-            ResultSet results = stmt.executeQuery("SELECT * FROM orders"); // Write query
+            ResultSet results = stmt.executeQuery("SELECT * FROM orders WHERE processed = 0"); // Write query
             while (results.next()) {
                 int orderId = results.getInt("order_id");
                 String orderName = "Order " + orderId;
@@ -206,6 +206,19 @@ public class DBMethods {
             System.out.println("Executing query failed!");
             System.out.println(ex.getMessage());
             return 0;
+        }
+    }
+
+    public static boolean deleteOrder(int id){
+        try {
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM orderlines WHERE order_id = ?");
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("executing query failed!");
+            System.out.println(e.getMessage());
+            return false;
         }
     }
 }
