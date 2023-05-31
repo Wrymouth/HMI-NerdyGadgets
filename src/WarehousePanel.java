@@ -82,9 +82,7 @@ public class WarehousePanel extends JPanel {
         }
 
         if (selectOrderDialog.getSelectedOrder() != null) {
-            while (selectOrderDialog.getSelectedOrder() != null){
-            repaint();
-            }
+
             // draw products
             Product[][] positions = warehouse.getPositions();
             for (int i = 0; i < positions.length; i++) {
