@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.border.Border;
 
 public class HMIFrame extends JFrame implements ActionListener {
     // Create all HMIContainers so we can later access their data
@@ -35,19 +36,20 @@ public class HMIFrame extends JFrame implements ActionListener {
         setTitle("NerdyGadgets Magazijnmanagement");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(2, 1));
+        setLayout(new GridLayout(2, 1, 5, 5));
 
         // Warehouse panel
-        warehousePanel = new HMIContainer("", new WarehousePanel(robot));
+        warehousePanel = new HMIContainer("Weergave robot:", new WarehousePanel(robot));
         add(warehousePanel);
-        JLabel lWarehouse = new JLabel("Weergave robot");
-        warehousePanel.add(lWarehouse);
         warehousePanel.add(warehousePanel.getWarehousePanel());
+        Border blackline = BorderFactory.createLineBorder(Color.black);
+        warehousePanel.setBorder(blackline);
 
         // Order panel
         orderPanel = new HMIContainer("Order", new OrderPanel());
         add(orderPanel);
         orderPanel.add(orderPanel.getOrderPanel());
+        orderPanel.setBorder(blackline);
 
         bEditOrder = new JButton("Wijzig order"); // Edit order button
         bEditOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -57,17 +59,20 @@ public class HMIFrame extends JFrame implements ActionListener {
         bPickUpOrder = new JButton("Haal order op"); // Get order button
         bPickUpOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         bPickUpOrder.addActionListener(this);
+
         orderPanel.add(bPickUpOrder);
 
         bSelectOrder = new JButton("Selecteer order"); // Select order button
         bSelectOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         bSelectOrder.addActionListener(this);
+
         orderPanel.add(bSelectOrder);
 
         // Boxes panel
         boxesPanel = new HMIContainer("Dozen", new BoxesPanel());
         add(boxesPanel);
         boxesPanel.add(boxesPanel.getBoxesPanel());
+        boxesPanel.setBorder(blackline);
 
         // Panel with PDF button
         buttonPanel = new HMIContainer("", new JPanel());
@@ -82,7 +87,7 @@ public class HMIFrame extends JFrame implements ActionListener {
         jbEmergency.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         jbEmergency.addActionListener(this);
 
-       buttonPanel.add(jbEmergency);
+        buttonPanel.add(jbEmergency);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent e) {
                 ArduinoComm.closeComPort(comPort);
@@ -95,7 +100,7 @@ public class HMIFrame extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == bEditOrder) { //Opens dialog where user will be able to edit an order
+        if (e.getSource() == bEditOrder) { // Opens dialog where user will be able to edit an order
             if (order == null) {
                 JOptionPane.showMessageDialog(this, "Selecteer eerst een order");
             } else {
@@ -105,7 +110,7 @@ public class HMIFrame extends JFrame implements ActionListener {
                 orderPanel.getOrderPanel().setOrder(order);
                 dEditOrder.dispose();
             }
-        } else if (e.getSource() == bSelectOrder) { //Opens dialog where user will be able to select an order
+        } else if (e.getSource() == bSelectOrder) { // Opens dialog where user will be able to select an order
             dSelectOrder = new SelectOrderDialog(this, true);
             Order selectedOrder = dSelectOrder.getSelectedOrder();
             if (selectedOrder == null) {
@@ -126,7 +131,7 @@ public class HMIFrame extends JFrame implements ActionListener {
             }
         } else if (e.getSource() == bPrintPdf) {
             try {
-                if(order == null) {
+                if (order == null) {
                     JOptionPane.showMessageDialog(this, "Selecteer eerst een order!",
                             "Geen order geselecteerd", JOptionPane.INFORMATION_MESSAGE);
                 } else {
