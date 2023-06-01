@@ -54,8 +54,19 @@ public class OrderlinePanel extends JPanel implements ActionListener {
 
                 public void setAmount() {
                     try {
-                        orderline.setAmount(Integer.parseInt(tAmount.getText()));
-                        error = false;
+                        //sends error if selected amount is bigger than current storage
+                        if ((orderline.getProduct().getQuantity() - Integer.parseInt(tAmount.getText())) < 0){
+                            JOptionPane.showMessageDialog(olp.getAod(), "Van dit product is er te weinig in voorraad \n " +
+                                            "er is nog " + orderline.getProduct().getQuantity() + " in voorraad",
+                                    "Te weinig voorraad", JOptionPane.INFORMATION_MESSAGE);
+                            //resets textfield
+                            SwingUtilities.invokeLater(() -> {
+                                tAmount.setText(String.valueOf(orderline.getProduct().getQuantity()));
+                            });
+                        } else {
+                            orderline.setAmount(Integer.parseInt(tAmount.getText()));
+                            error = false;
+                        }
                     } catch (NumberFormatException e) {
                         orderline.setAmount(0);
                         error = true;

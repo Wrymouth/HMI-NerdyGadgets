@@ -20,7 +20,7 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
     public SelectOrderDialog(Frame frame, boolean modal) {
         super(frame, modal);
         this.frame = frame;
-        orders = DBMethods.fetchUnprocessedOrders();
+        orders = DBMethods.fetchUnprocessedOrders(); //Retrieves orders that have not been marked as processed
 
         // setup ui
         setTitle("Orders");
@@ -49,12 +49,14 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
         JScrollPane s = new JScrollPane(listOrders);
         s.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         add(s);
-        bSelect = new JButton("Selecteren");
-        bSelect.addActionListener(this);
-        add(bSelect);
-        bAddOrder = new JButton("Order toevoegen");
+        bAddOrder = new JButton("Nieuwe order");
+        bAddOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         bAddOrder.addActionListener(this);
         add(bAddOrder);
+        bSelect = new JButton("Selecteer order");
+        bSelect.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        bSelect.addActionListener(this);
+        add(bSelect);
         setVisible(true);
 
     }
@@ -79,7 +81,7 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
                 setVisible(false);
             } else {
                 JOptionPane.showMessageDialog(this, "Selecteer eerst een order!",
-                        "Geen order geselecteerd", JOptionPane.INFORMATION_MESSAGE);
+                        "Geen order geselecteerd!", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

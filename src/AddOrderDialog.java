@@ -39,7 +39,7 @@ public class AddOrderDialog extends JDialog implements ActionListener {
         setLayout(new GridLayout(4,3));
 
         // ui components
-        pOrderlineList = new OrderlineListPanel(order.getOrderlines(), true);
+        pOrderlineList = new OrderlineListPanel(order.getOrderlines(), true, this);
         add(pOrderlineList);
 
         //Panel with all data from selected user
@@ -96,16 +96,24 @@ public class AddOrderDialog extends JDialog implements ActionListener {
                     selectedProduct = product;
                 }
             }
-            for (Orderline ol : order.getOrderlines()) {
-                if (ol.getProduct().getId() == selectedProduct.getId()) {
-                    ol.setAmount(ol.getAmount() + 1);
-                    pOrderlineList.setOrderlines(order.getOrderlines());
-                    return;
+                //searches for the orderline containing selectedproduct
+                for (Orderline ol : order.getOrderlines()) {
+                    if (ol.getProduct().getId() == selectedProduct.getId()) {
+                        if ((selectedProduct.getQuantity() - (ol.getAmount() + 1)) < 0){ //checks if selected amount is bigger than amount in storage
+                            JOptionPane.showMessageDialog(this, "Van dit product is er te weinig in voorraad \n" +
+                                            "er is nog " + selectedProduct.getQuantity() + " in voorraad",
+                                    "Te weinig voorraad", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                        else {
+                            ol.setAmount(ol.getAmount() + 1);
+                            pOrderlineList.setOrderlines(order.getOrderlines());
+                        }
+                        return;
+                    }
                 }
-            }
-            Orderline orderline = new Orderline(selectedProduct);
-            order.addOrderline(orderline);
-            pOrderlineList.setOrderlines(order.getOrderlines());
+                Orderline orderline = new Orderline(selectedProduct); //new orderline with the selected product
+                order.addOrderline(orderline); //add that orderline to the current order
+                pOrderlineList.setOrderlines(order.getOrderlines()); //updates the orderlines in this order for OrderLineListPanel to use
         } else if(e.getActionCommand().equals("Order plaatsen")) {
             if(!pOrderlineList.getOrderlines().isEmpty()) {
                 if(selectedCustomer.getCustomerID() != 0) { //Check if customer is set

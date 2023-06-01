@@ -13,10 +13,12 @@ public class OrderlineListPanel extends JPanel{
     private boolean hasEditButtons;
     private JScrollPane jsProductsScroll;
     private JPanel selectedProductsView = new JPanel();
+    private Dialog aod;
 
-    public OrderlineListPanel(ArrayList<Orderline> orderlines, boolean hasEditButtons) {
+    public OrderlineListPanel(ArrayList<Orderline> orderlines, boolean hasEditButtons, Dialog parent) {
         // setup data
         this.hasEditButtons = hasEditButtons;
+        aod = parent;
         if (orderlines == null) {
             setOrderlines(new ArrayList<Orderline>());
         } else {
@@ -60,5 +62,9 @@ public class OrderlineListPanel extends JPanel{
 
     public JPanel getSelectedProductsView() {
         return selectedProductsView;
+    }
+
+    public Dialog getAod() {
+        return aod;
     }
 }
