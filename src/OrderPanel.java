@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import javax.swing.JScrollPane;
+import javax.swing.Scrollable;
 
 public class OrderPanel extends JPanel {
     private JLabel jlOrderName;
@@ -9,7 +11,8 @@ public class OrderPanel extends JPanel {
 
     public OrderPanel() { //Constructor for when an order has been selected
         setPreferredSize(new Dimension(200, 200));
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new FlowLayout());
 
         jlOrderName = new JLabel("Geen order geselecteerd!");
         add(jlOrderName);
@@ -18,6 +21,7 @@ public class OrderPanel extends JPanel {
     public void setOrder(Order order) {
         this.order = order;
         displayOrder();
+
     }
 
     public void setOrder(Order order, Customer customer) {
@@ -40,6 +44,8 @@ public class OrderPanel extends JPanel {
             add(jlProductName);
 
             JLabel jlProductQuantity = new JLabel();
+            Font font = new Font("Courier",Font.ITALIC,12);
+            jlProductQuantity.setFont(font);
             add(jlProductQuantity);
 
             jlProductName.setText(ol.getProduct().getName());
