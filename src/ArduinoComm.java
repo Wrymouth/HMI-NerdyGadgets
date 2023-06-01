@@ -10,7 +10,6 @@ public class ArduinoComm {
 
     private Order order;
 
-
     private WarehousePanel wp;
     private BoxesPanel bp;
 
@@ -48,37 +47,30 @@ public class ArduinoComm {
 
                     int newlineIndex = receivedData.indexOf('\n');
                     if (newlineIndex != -1) {
-                        if (receivedData.charAt(0) == 'p') {
-                            int amountPicked = Integer.parseInt(receivedData.substring(1, newlineIndex));
-                            for (int i = 0; i < amountPicked; i++) {
-                                if (orderProducts.isEmpty()) {
-                                    order.setProcessed(true);
-                                    break;
-                                }
-                                pickedProducts.add(orderProducts.get(0));
-                                orderProducts.remove(0);
-                            }
+                        if (receivedData.charAt(0) == 'p') { // picked up product
+                            System.out.println("Received data: " + receivedData);
+
+                            pickedProducts.add(orderProducts.get(0));
+                            orderProducts.remove(0);
+                            wp.setRobotPositionToProduct(pickedProducts.get(pickedProducts.size() - 1));
                             bp.setCount(pickedProducts.size());
-                            TSP();
-                            receivedData = "";
+
                         }
-                        String coordinates = receivedData.substring(0, newlineIndex);
-                        System.out.println("Received data: " + coordinates);
-                        int index = coordinates.indexOf(','); // if a comma is found, that means these are coordinates
-                        if (index != -1) {
-                            try {
-                                int x = Integer.parseInt(coordinates.substring(0, index));
-                                int y = Integer.parseInt(coordinates.substring(index + 1));
-                                wp.setRobotPosition(x, y);
-                            } catch (NumberFormatException e) {
+                        if (receivedData.charAt(0) == 'r') { // returned to start
+                            if (orderProducts.isEmpty()) {
+                                order.setProcessed(true);
+                            } else {
+                                TSP();
                             }
                         }
                         // set receivedData to empty string so we can start listening for new data
                         receivedData = "";
                     }
                 }
+                System.out.println("einde van event");
             }
         });
+
     }
 
     public ArduinoComm() {
@@ -150,6 +142,7 @@ public class ArduinoComm {
 
     public void TSP() {
         List<Product> productsTBC = new ArrayList<>();
+        // add first 3 products to list, or less if there are less than 3 products left
         for (int i = 0; i < 3; i++) {
             if (orderProducts.isEmpty()) {
                 break;

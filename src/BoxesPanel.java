@@ -51,7 +51,8 @@ public class BoxesPanel extends JPanel {
             g.drawRect(boxStartX, boxStartY, boxWidth, boxHeight);
             ArrayList<Product> products = boxes.get(i).getProducts();
             for (int j = 0; j < products.size(); j++) {
-
+                if (displayedProductsCount == pickedProductsCount)
+                    continue;
                 Product product = products.get(j);
                 // products in rows of 3 from the bottom of the box to the top
                 int productX = boxStartX + (j % 3) * productWidth;
@@ -63,8 +64,6 @@ public class BoxesPanel extends JPanel {
                 g.setFont(new Font("default", Font.BOLD, 16));
                 g.drawString(String.valueOf(product.getId()), productX + 12, productY + 20);
                 displayedProductsCount++;
-                if (displayedProductsCount == pickedProductsCount)
-                    return;
             }
             boxStartX += boxWidth;
         }

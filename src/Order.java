@@ -64,6 +64,7 @@ public class Order {
 
     public void setProcessed(boolean processed) {
         this.processed = processed;
+        DBMethods.updateOrder(this, this.orderlines);
     }
 
     public void placeProductsInBoxes() {
