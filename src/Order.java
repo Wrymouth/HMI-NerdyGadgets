@@ -7,6 +7,11 @@ public class Order {
     private int customerID;
     private ArrayList<Orderline> orderlines;
     private ArrayList<Box> boxes;
+    private boolean processed;
+
+
+
+
 
     public Order() {
         orderlines = new ArrayList<Orderline>();
@@ -16,6 +21,7 @@ public class Order {
         this.id = id;
         this.name = name;
         this.customerID = customerID;
+        this.processed = false;
         orderlines = new ArrayList<Orderline>();
     }
 
@@ -52,6 +58,14 @@ public class Order {
             }
         }
         return o;
+    }
+
+    public boolean isProcessed() {
+        return processed;
+    }
+
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
     }
 
     public void placeProductsInBoxes() {

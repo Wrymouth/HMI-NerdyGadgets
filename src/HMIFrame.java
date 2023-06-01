@@ -38,7 +38,7 @@ public class HMIFrame extends JFrame implements ActionListener {
         setLayout(new GridLayout(2, 1));
 
         // Warehouse panel
-        warehousePanel = new HMIContainer("", new WarehousePanel(robot));
+        warehousePanel = new HMIContainer("", new WarehousePanel());
         add(warehousePanel);
         JLabel lWarehouse = new JLabel("Weergave robot");
         warehousePanel.add(lWarehouse);
@@ -82,20 +82,20 @@ public class HMIFrame extends JFrame implements ActionListener {
         jbEmergency.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         jbEmergency.addActionListener(this);
 
-       buttonPanel.add(jbEmergency);
+        buttonPanel.add(jbEmergency);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent e) {
                 ArduinoComm.closeComPort(comPort);
                 System.exit(0);
             }
         });
-        arduino = new ArduinoComm(comPort, warehousePanel.getWarehousePanel());
+        arduino = new ArduinoComm(comPort, warehousePanel.getWarehousePanel(), boxesPanel.getBoxesPanel());
         setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == bEditOrder) { //Opens dialog where user will be able to edit an order
+        if (e.getSource() == bEditOrder) { // Opens dialog where user will be able to edit an order
             if (order == null) {
                 JOptionPane.showMessageDialog(this, "Selecteer eerst een order");
             } else {
@@ -105,7 +105,7 @@ public class HMIFrame extends JFrame implements ActionListener {
                 orderPanel.getOrderPanel().setOrder(order);
                 dEditOrder.dispose();
             }
-        } else if (e.getSource() == bSelectOrder) { //Opens dialog where user will be able to select an order
+        } else if (e.getSource() == bSelectOrder) { // Opens dialog where user will be able to select an order
             dSelectOrder = new SelectOrderDialog(this, true);
             Order selectedOrder = dSelectOrder.getSelectedOrder();
             if (selectedOrder == null) {
@@ -117,16 +117,19 @@ public class HMIFrame extends JFrame implements ActionListener {
             orderPanel.getOrderPanel().setOrder(selectedOrder, DBMethods.fetchCustomer(selectedOrder.getCustomerID()));
             dSelectOrder.dispose();
             order.placeProductsInBoxes();
+            boxesPanel.getBoxesPanel().setBoxes(order.getBoxes());
+            arduino.setOrder(order);
+            arduino.setAllProducts();
 
         } else if (e.getSource() == bPickUpOrder) {
-            try {
-                arduino.TSP(order);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
+            if (order.isProcessed()) {
+                JOptionPane.showMessageDialog(this, "Deze order is al opgehaald!");
+                return;
             }
+            arduino.TSP();
         } else if (e.getSource() == bPrintPdf) {
             try {
-                if(order == null) {
+                if (order == null) {
                     JOptionPane.showMessageDialog(this, "Selecteer eerst een order!",
                             "Geen order geselecteerd", JOptionPane.INFORMATION_MESSAGE);
                 } else {

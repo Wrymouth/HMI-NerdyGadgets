@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class WarehousePanel extends JPanel {
     private Warehouse warehouse;
@@ -12,11 +13,10 @@ public class WarehousePanel extends JPanel {
     private int productHeight;
     private int xStart;
     private int yStart;
-    private Robot robot;
     private int robotX;
     private int robotY;
 
-    public WarehousePanel(Robot robot) {
+    public WarehousePanel() {
         int i = 0;
         int j = 0;
         Product[][] positions = new Product[5][5];
@@ -36,13 +36,12 @@ public class WarehousePanel extends JPanel {
 
         setPreferredSize(new Dimension(200, 200));
 
-        this.boxWidth = 30;
-        this.boxHeight = 30;
-        this.productWidth = 15;
-        this.productHeight = 15;
+        this.boxWidth = 40;
+        this.boxHeight = 40;
+        this.productWidth = 30;
+        this.productHeight = 30;
         this.xStart = 30;
         this.yStart = 30;
-        this.robot = robot;
 
         setBackground(Color.WHITE);
     }
@@ -84,7 +83,7 @@ public class WarehousePanel extends JPanel {
         
     }
 
-    private Color getProductColor(int productVolume) {
+    public static Color getProductColor(int productVolume) {
         if(productVolume == 10) {
             return Color.RED;
         } else if (productVolume == 8) {

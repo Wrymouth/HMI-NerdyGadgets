@@ -1,28 +1,29 @@
 import com.fazecast.jSerialComm.SerialPort; // library voor arduino communicatie
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
-import com.fazecast.jSerialComm.SerialPortInvalidPortException;
 
 import java.util.*;
-import java.lang.*;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class ArduinoComm {
 
+    private Order order;
+
+
     private WarehousePanel wp;
+    private BoxesPanel bp;
 
     private String instruction = "";
     private String receivedData = "";
+    private ArrayList<Product> orderProducts = new ArrayList<>();
+    private ArrayList<Product> pickedProducts = new ArrayList<>();
 
     private SerialPort sp;
 
-    public ArduinoComm(String comPort, WarehousePanel wp) {
+    public ArduinoComm(String comPort, WarehousePanel wp, BoxesPanel bp) {
         this.wp = wp;
+        this.bp = bp;
         openComPort(comPort);
         sp.addDataListener(new SerialPortDataListener() {
             @Override
@@ -40,11 +41,27 @@ public class ArduinoComm {
                     byte[] newData = new byte[availableBytes];
                     int numRead = sp.readBytes(newData, newData.length);
                     receivedData += new String(newData);
-                    
-                    // the event reads data in small chunks, so the program checks for a newline character
+
+                    // the event reads data in small chunks, so the program checks for a newline
+                    // character
                     // to know if the data is complete
+
                     int newlineIndex = receivedData.indexOf('\n');
                     if (newlineIndex != -1) {
+                        if (receivedData.charAt(0) == 'p') {
+                            int amountPicked = Integer.parseInt(receivedData.substring(1, newlineIndex));
+                            for (int i = 0; i < amountPicked; i++) {
+                                if (orderProducts.isEmpty()) {
+                                    order.setProcessed(true);
+                                    break;
+                                }
+                                pickedProducts.add(orderProducts.get(0));
+                                orderProducts.remove(0);
+                            }
+                            bp.setCount(pickedProducts.size());
+                            TSP();
+                            receivedData = "";
+                        }
                         String coordinates = receivedData.substring(0, newlineIndex);
                         System.out.println("Received data: " + coordinates);
                         int index = coordinates.indexOf(','); // if a comma is found, that means these are coordinates
@@ -65,6 +82,10 @@ public class ArduinoComm {
     }
 
     public ArduinoComm() {
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public void openComPort(String com) {
@@ -98,10 +119,9 @@ public class ArduinoComm {
     // gets x and y position of every product in selected order and saves them in
     // set pattern in a variable.
     // Then sends the pattern to the arduino.
-    public void sendCoordinates() throws InterruptedException {
+    public void sendCoordinates() {
         instruction.trim();
         instruction += "\n";
-        instruction = "100,2000\n";
 
         // opens connection on defined commport
 
@@ -115,40 +135,35 @@ public class ArduinoComm {
         }
     }
 
-    //Only called when the emergency button is pressed in HMI, sends emergency signal to robot
+    // Only called when the emergency button is pressed in HMI, sends emergency
+    // signal to robot
     public void sendEmergencySignal(boolean emergency) throws InterruptedException {
         PrintWriter output = new PrintWriter(sp.getOutputStream()); // Output variable declared.
 
-        if(emergency) {
-            output.println("E"); //Sends char E to robot, when read by Arduino it will activate the emergency stop
+        if (emergency) {
+            output.println("E"); // Sends char E to robot, when read by Arduino it will activate the emergency
+                                 // stop
             output.flush();
             Thread.sleep(1000);
         }
     }
 
-    public void TSP(Order order) throws InterruptedException {
+    public void TSP() {
         List<Product> productsTBC = new ArrayList<>();
-        int[] productX = new int[3];
-        int[] productY = new int[3];
-
-        for (Box box : order.getBoxes()) {
-            for (Product product : box.getProducts()) {
-                productsTBC.add(product);
-                if (productsTBC.size() == 3) {
-                    calculateAndSendCoordinatesTSP(productsTBC, productX, productY);
-                    productsTBC.clear();
-                }
+        for (int i = 0; i < 3; i++) {
+            if (orderProducts.isEmpty()) {
+                break;
             }
+            productsTBC.add(orderProducts.get(i));
         }
-
-        if (!productsTBC.isEmpty()) {
-            calculateAndSendCoordinatesTSP(productsTBC, productX, productY);
-        }
+        calculateAndSendCoordinatesTSP(productsTBC);
+        productsTBC.clear();
     }
 
-    private void calculateAndSendCoordinatesTSP(List<Product> productsTBC, int[] productX, int[] productY)
-            throws InterruptedException {
+    private void calculateAndSendCoordinatesTSP(List<Product> productsTBC) {
         double[] distances = new double[productsTBC.size()];
+        int[] productX = new int[3];
+        int[] productY = new int[3];
         for (int j = 0; j < productsTBC.size(); j++) {
             Product currentProduct = productsTBC.get(j);
             productX[j] = currentProduct.getPositionX();
@@ -187,5 +202,13 @@ public class ArduinoComm {
             }
         }
         sendCoordinates();
+    }
+
+    public void setAllProducts() {
+        for (Box box : order.getBoxes()) {
+            for (Product product : box.getProducts()) {
+                orderProducts.add(product);
+            }
+        }
     }
 }
