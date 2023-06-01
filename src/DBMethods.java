@@ -44,6 +44,26 @@ public class DBMethods {
         return products;
     }
 
+    public static ArrayList<Product> fetchProductsInStorage() {
+        ArrayList<Product> products = new ArrayList<>();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet results = stmt.executeQuery("SELECT * FROM products WHERE quantity > 0"); // Write query
+            while (results.next()) {
+                int id = results.getInt("product_id");
+                String productName = results.getString("name");
+                int quantity = results.getInt("quantity");
+                int volume = results.getInt("volume");
+                int positionX = results.getInt("positionX");
+                int positionY = results.getInt("positionY");
+                products.add(new Product(id, productName, quantity, volume, positionX, positionY));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Creating query failed!");
+            System.out.println(ex.getMessage());
+        }
+        return products;
+    }
     public static ArrayList<Customer> fetchAllCustomers() {
         ArrayList<Customer> customers = new ArrayList<>();
         try {
