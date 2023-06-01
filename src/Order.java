@@ -7,8 +7,9 @@ public class Order {
     private int customerID;
     private ArrayList<Orderline> orderlines;
     private ArrayList<Box> boxes;
-    private int[] PositionX = new int[3];
-    private int[] PositionY = new int[3];
+    private boolean processed;
+    private int PositionX;
+    private int PositionY;
 
     public Order() {
         orderlines = new ArrayList<Orderline>();
@@ -18,6 +19,7 @@ public class Order {
         this.id = id;
         this.name = name;
         this.customerID = customerID;
+        this.processed = false;
         orderlines = new ArrayList<Orderline>();
     }
 
@@ -54,6 +56,14 @@ public class Order {
             }
         }
         return o;
+    }
+
+    public boolean isProcessed() {
+        return processed;
+    }
+
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
     }
 
     public void placeProductsInBoxes() {
@@ -93,19 +103,19 @@ public class Order {
         return orderString;
     }
 
-    public int[] getPositionX() {
+    public int getPositionX() {
         return PositionX;
     }
 
-    public void setPositionX(int[] positionX) {
+    public void setPositionX(int positionX) {
         PositionX = positionX;
     }
 
-    public int[] getPositionY() {
+    public int getPositionY() {
         return PositionY;
     }
 
-    public void setPositionY(int[] positionY) {
+    public void setPositionY(int positionY) {
         PositionY = positionY;
     }
 }

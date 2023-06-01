@@ -39,7 +39,7 @@ public class HMIFrame extends JFrame implements ActionListener {
         setLayout(new GridLayout(2, 1, 5, 5));
 
         // Warehouse panel
-        warehousePanel = new HMIContainer("Weergave robot:", new WarehousePanel(robot));
+        warehousePanel = new HMIContainer("Weergave robot:", new WarehousePanel());
         add(warehousePanel);
         warehousePanel.add(warehousePanel.getWarehousePanel());
         Border blackline = BorderFactory.createLineBorder(Color.black);
@@ -94,7 +94,7 @@ public class HMIFrame extends JFrame implements ActionListener {
                 System.exit(0);
             }
         });
-        arduino = new ArduinoComm(comPort, warehousePanel.getWarehousePanel());
+        arduino = new ArduinoComm(comPort, warehousePanel.getWarehousePanel(), boxesPanel.getBoxesPanel());
         setVisible(true);
     }
 
@@ -122,13 +122,16 @@ public class HMIFrame extends JFrame implements ActionListener {
             orderPanel.getOrderPanel().setOrder(selectedOrder, DBMethods.fetchCustomer(selectedOrder.getCustomerID()));
             dSelectOrder.dispose();
             order.placeProductsInBoxes();
+            boxesPanel.getBoxesPanel().setBoxes(order.getBoxes());
+            arduino.setOrder(order);
+            arduino.setAllProducts();
 
         } else if (e.getSource() == bPickUpOrder) {
-            try {
-                arduino.TSP(order);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
+            if (order.isProcessed()) {
+                JOptionPane.showMessageDialog(this, "Deze order is al opgehaald!");
+                return;
             }
+            arduino.TSP();
         } else if (e.getSource() == bPrintPdf) {
             try {
                 if (order == null) {
