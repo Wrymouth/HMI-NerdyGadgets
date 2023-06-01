@@ -29,7 +29,7 @@ public class HMIFrame extends JFrame implements ActionListener {
     private ArduinoComm arduino;
     private Customer selectedOrderCustomer;
 
-    private String comPort = "COM5";
+    private String comPort = "COM4";
 
     public HMIFrame() {
         // GUI Setup

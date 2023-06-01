@@ -7,8 +7,8 @@ public class Order {
     private int customerID;
     private ArrayList<Orderline> orderlines;
     private ArrayList<Box> boxes;
-    private int PositionX;
-    private int PositionY;
+    private int[] PositionX = new int[3];
+    private int[] PositionY = new int[3];
 
     public Order() {
         orderlines = new ArrayList<Orderline>();
@@ -93,19 +93,19 @@ public class Order {
         return orderString;
     }
 
-    public int getPositionX() {
+    public int[] getPositionX() {
         return PositionX;
     }
 
-    public void setPositionX(int positionX) {
+    public void setPositionX(int[] positionX) {
         PositionX = positionX;
     }
 
-    public int getPositionY() {
+    public int[] getPositionY() {
         return PositionY;
     }
 
-    public void setPositionY(int positionY) {
+    public void setPositionY(int[] positionY) {
         PositionY = positionY;
     }
 }

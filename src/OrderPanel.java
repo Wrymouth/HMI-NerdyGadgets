@@ -48,10 +48,13 @@ public class OrderPanel extends JPanel {
             jlProductQuantity.setFont(font);
             add(jlProductQuantity);
 
-            jlProductName.setText(ol.getProduct().getName());
+            jlProductName.setText(ol.getProduct().getName() );
             jlProductQuantity.setText(ol.getAmount() + " stuks " + "(voorraad " + ol.getProduct().getQuantity() + ")");
 
         }
+        JScrollPane scrollableTextArea = new JScrollPane();
+
+        scrollableTextArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         //Customer data
         CustomerPanel ct = new CustomerPanel();

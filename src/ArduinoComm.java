@@ -40,22 +40,19 @@ public class ArduinoComm {
                     byte[] newData = new byte[availableBytes];
                     int numRead = sp.readBytes(newData, newData.length);
                     receivedData += new String(newData);
-                    
-                    // the event reads data in small chunks, so the program checks for a newline character
+
+                    // the event reads data in small chunks, s the program checks for a newline character
                     // to know if the data is complete
                     int newlineIndex = receivedData.indexOf('\n');
                     if (newlineIndex != -1) {
-                        String coordinates = receivedData.substring(0, newlineIndex);
-                        System.out.println("Received data: " + coordinates);
-                        int index = coordinates.indexOf(','); // if a comma is found, that means these are coordinates
-                        if (index != -1) {
-                            try {
-                                int x = Integer.parseInt(coordinates.substring(0, index));
-                                int y = Integer.parseInt(coordinates.substring(index + 1));
-                                wp.setRobotPosition(x, y);
-                            } catch (NumberFormatException e) {
-                            }
+                        if (receivedData.charAt(0) == 'p'){
+
+                            wp.setRobotPosition();
                         }
+                        //System.out.println("Received data: " + coordinates);
+
+
+
                         // set receivedData to empty string so we can start listening for new data
                         receivedData = "";
                     }
@@ -130,7 +127,6 @@ public class ArduinoComm {
         List<Product> productsTBC = new ArrayList<>();
         int[] productX = new int[3];
         int[] productY = new int[3];
-
         for (Box box : order.getBoxes()) {
             for (Product product : box.getProducts()) {
                 productsTBC.add(product);
@@ -143,6 +139,7 @@ public class ArduinoComm {
 
         if (!productsTBC.isEmpty()) {
             calculateAndSendCoordinatesTSP(productsTBC, productX, productY);
+
         }
     }
 
@@ -184,6 +181,7 @@ public class ArduinoComm {
                 distances[minIndex] = 0.0;
                 instruction += productX[minIndex] + "," + productY[minIndex] + " ";
                 System.out.println("x-coordinate " + productX[minIndex] + "\n" + "y-coordinate " + productY[minIndex]);
+
             }
         }
         sendCoordinates();
