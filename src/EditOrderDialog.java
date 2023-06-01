@@ -22,7 +22,7 @@ public class EditOrderDialog extends JDialog implements ActionListener {
 
     public EditOrderDialog(Frame frame, boolean modal, Order order) {
         super(frame, modal);
-        allProducts = DBMethods.fetchAllProducts();
+        allProducts = DBMethods.fetchProductsInStorage();
         addedProducts = new ArrayList<>();
         this.order = order;
         selectedCustomer = DBMethods.fetchCustomer(order.getCustomerID());
@@ -32,7 +32,7 @@ public class EditOrderDialog extends JDialog implements ActionListener {
         setSize(500, 500);
         setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        setLayout(new GridLayout(4,3));
+        setLayout(new GridLayout(3,3));
 
         // ui components
         pOrderlineList = new OrderlineListPanel(order.getOrderlines(), true, this);

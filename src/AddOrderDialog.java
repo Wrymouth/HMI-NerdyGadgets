@@ -26,7 +26,7 @@ public class AddOrderDialog extends JDialog implements ActionListener {
     public AddOrderDialog(JDialog dialog, boolean modal) {
         super(dialog, modal);
         // setup data
-        allProducts = DBMethods.fetchAllProducts();
+        allProducts = DBMethods.fetchProductsInStorage();
         allCustomers = DBMethods.fetchAllCustomers();
         addedProducts = new ArrayList<>();
         order = new Order();
