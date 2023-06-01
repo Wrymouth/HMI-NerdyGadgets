@@ -126,6 +126,7 @@ public class ArduinoComm {
         }
     }
 
+    //loops through all boxes in order and executes calculateAndSendCoordinatesTSP each time three products from boxes have been selected
     public void TSP(Order order) throws InterruptedException {
         List<Product> productsTBC = new ArrayList<>();
         int[] productX = new int[3];
@@ -133,15 +134,15 @@ public class ArduinoComm {
 
         for (Box box : order.getBoxes()) {
             for (Product product : box.getProducts()) {
-                productsTBC.add(product);
+                productsTBC.add(product); //add products to list until there are 3 in the list
                 if (productsTBC.size() == 3) {
                     calculateAndSendCoordinatesTSP(productsTBC, productX, productY);
-                    productsTBC.clear();
+                    productsTBC.clear(); //clears list to add the next 3 products
                 }
             }
         }
 
-        if (!productsTBC.isEmpty()) {
+        if (!productsTBC.isEmpty()) { // checks if list is actually empty and executes function with remaining products if it isn't
             calculateAndSendCoordinatesTSP(productsTBC, productX, productY);
         }
     }
@@ -149,29 +150,29 @@ public class ArduinoComm {
     private void calculateAndSendCoordinatesTSP(List<Product> productsTBC, int[] productX, int[] productY)
             throws InterruptedException {
         double[] distances = new double[productsTBC.size()];
-        for (int j = 0; j < productsTBC.size(); j++) {
+        for (int j = 0; j < productsTBC.size(); j++) { // gets X and Y coordinates for all 3 products
             Product currentProduct = productsTBC.get(j);
             productX[j] = currentProduct.getPositionX();
             productY[j] = currentProduct.getPositionY();
-            distances[j] = Math.sqrt(Math.pow(productY[j], 2) + Math.pow(productX[j], 2));
+            distances[j] = Math.sqrt(Math.pow(productY[j], 2) + Math.pow(productX[j], 2)); //calculates distance from current product to start (X 0, Y 0)
         }
 
-        int m = 0;
-        int minIndex = -1;
+        int m = 0; // variable to make sure codeblock executes once only
+        int minIndex = -1; // is the index corresponding to the product with the shortest distance, used to get all info in all arrays for this product
 
         for (int o = 0; o < productsTBC.size(); o++) {
             double minValue = Double.POSITIVE_INFINITY;
 
-            for (int k = 0; k < productsTBC.size(); k++) {
+            for (int k = 0; k < productsTBC.size(); k++) { //determines product closest to previous location, starts at (X 0 , Y 0)
                 if (distances[k] != 0.0 && distances[k] < minValue) {
-                    minValue = distances[k];
-                    minIndex = k;
+                    minValue = distances[k]; //minValue contains the shortest distance
+                    minIndex = k; //minIndex contains the index corresponding to the product with the shortest distance
                 }
             }
 
-            if (minIndex != -1) {
-                if (m == 0) {
-                    for (int b = 0; b < productsTBC.size(); b++) {
+            if (minIndex != -1) { // only if the product closest to start has been determined
+                if (m == 0) { // executes once
+                    for (int b = 0; b < productsTBC.size(); b++) { //calculates distances between closest product to start and all other products
                         if (b != minIndex) {
                             productX[b] -= productX[minIndex];
                             productY[b] -= productY[minIndex];
@@ -181,11 +182,11 @@ public class ArduinoComm {
                     m++;
                 }
 
-                distances[minIndex] = 0.0;
-                instruction += productX[minIndex] + "," + productY[minIndex] + " ";
+                distances[minIndex] = 0.0; // shortest distance to start set to 0,0 to make sure next closest product to itself isn't itself
+                instruction += productX[minIndex] + "," + productY[minIndex] + " "; // adds X and Y coordinates to a String in to later send to Robot
                 System.out.println("x-coordinate " + productX[minIndex] + "\n" + "y-coordinate " + productY[minIndex]);
             }
         }
-        sendCoordinates();
+        sendCoordinates(); //sends instruction String to robot
     }
 }
