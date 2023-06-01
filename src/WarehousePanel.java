@@ -1,8 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import com.fazecast.jSerialComm.SerialPort; // library voor arduino communicatie
-import com.fazecast.jSerialComm.SerialPortDataListener;
-import com.fazecast.jSerialComm.SerialPortEvent;
 
 public class WarehousePanel extends JPanel {
     private Product Product;
@@ -15,15 +12,14 @@ public class WarehousePanel extends JPanel {
     private int productHeight;
     private int xStart;
     private int yStart;
-    private int ordercounter;
     private Robot robot;
     private Order order;
     private Orderline orderline;
-    private SelectOrderDialog selectOrderDialog;
+
     private int robotX;
     private int robotY;
 
-    public WarehousePanel(Robot robot) {
+    public WarehousePanel() {
         int i = 0;
         int j = 0;
         Product[][] positions = new Product[5][5];
@@ -52,29 +48,18 @@ public class WarehousePanel extends JPanel {
         this.robot = robot;
         this.order = new Order();
         this.orderline = new Orderline();
-        this.selectOrderDialog = new SelectOrderDialog();
 
 
         setBackground(Color.WHITE);
-//        SerialPort Port = SerialPort.getCommPorts()[0];
-//         Port.addDataListener(new SerialPortDataListener() {
-//             @Override
-//             public int getListeningEvents() {
-//                 return SerialPort.LISTENING_EVENT_DATA_RECEIVED;
-//             }
-//
-//             @Override
-//             public void serialEvent(SerialPortEvent serialPortEvent) {
-//                 repaint();
-//             }
-//         });
+
 
     }
 
 
     public void setRobotPosition(int x, int y) {
-        this.robotX = x;
-        this.robotY = y;
+        System.out.println(robotX);
+        this.robotX = (x/53);
+        this.robotY = (y/30);
         repaint();
     }
 
@@ -90,10 +75,6 @@ public class WarehousePanel extends JPanel {
             g.drawLine(xStart + i * boxWidth, yStart, xStart + i * boxWidth, yStart * boxHeight);
         }
 
-        if (selectOrderDialog.getSelectedOrder() != null) {
-            while (selectOrderDialog.getSelectedOrder() != null){
-            repaint();
-            }
             // draw products
             Product[][] positions = warehouse.getPositions();
             for (int i = 0; i < positions.length; i++) {
@@ -111,22 +92,15 @@ public class WarehousePanel extends JPanel {
 
             // draw robot
             g.setColor(Color.GRAY);
-            g.fillOval(200 + robot.getPositionX(), height - robot.getPositionY(), productWidth, productHeight);
+            g.fillOval(200 + robotX, height - robotY, productWidth, productHeight);
 
-            //draw complete orders
-
-            if (robot.getPositionX() == order.getPositionX() && robot.getPositionY() == order.getPositionY()) {
-                ordercounter++;
-                g.setColor(Color.WHITE);
-                g.drawOval(1, 1, productWidth, productHeight);
-            }
 
             //draw route
             g.drawLine(order.getPositionX(), order.getPositionY(), order.getPositionX() + 10, order.getPositionY() + 10);
-        }
+
         // draw robot
         g.setColor(Color.GRAY);
-        g.fillOval(robotX, height-robotY, productWidth, productHeight);
+        g.fillOval(200 + robotX, height-robotY, productWidth, productHeight);
         
     }
 
@@ -134,7 +108,8 @@ public class WarehousePanel extends JPanel {
 
 
 
-    private Color getProductColor(int productVolume) {
+
+    public static Color getProductColor(int productVolume) {
         if(productVolume == 10) {
             return Color.RED;
         } else if (productVolume == 8) {
@@ -147,10 +122,5 @@ public class WarehousePanel extends JPanel {
             return Color.BLACK;
         }
     }
-        public void CompleteOrder(){
-        if(ordercounter == 3){
-            System.out.println("doos vol");
-        }
-        }
 
 }
