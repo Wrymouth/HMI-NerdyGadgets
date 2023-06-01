@@ -35,7 +35,7 @@ public class EditOrderDialog extends JDialog implements ActionListener {
         setLayout(new GridLayout(4,3));
 
         // ui components
-        pOrderlineList = new OrderlineListPanel(order.getOrderlines(), true);
+        pOrderlineList = new OrderlineListPanel(order.getOrderlines(), true, this);
         add(pOrderlineList);
 
         //Panel with all data from selected user
@@ -86,8 +86,15 @@ public class EditOrderDialog extends JDialog implements ActionListener {
             }
             for (Orderline ol : order.getOrderlines()) {
                 if (ol.getProduct().getId() == selectedProduct.getId()) {
-                    ol.setAmount(ol.getAmount() + 1);
-                    pOrderlineList.setOrderlines(order.getOrderlines());
+                    if ((selectedProduct.getQuantity() - (ol.getAmount() + 1)) < 0){
+                        JOptionPane.showMessageDialog(this, "Van dit product is er te weinig in voorraad \n" +
+                                        "er is nog " + selectedProduct.getQuantity() + " in voorraad",
+                                "Te weinig voorraad", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    else {
+                        ol.setAmount(ol.getAmount() + 1);
+                        pOrderlineList.setOrderlines(order.getOrderlines());
+                    }
                     return;
                 }
             }
