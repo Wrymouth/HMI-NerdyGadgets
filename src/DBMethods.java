@@ -44,6 +44,7 @@ public class DBMethods {
         return products;
     }
 
+    //fetches products that are still in stock
     public static ArrayList<Product> fetchProductsInStorage() {
         ArrayList<Product> products = new ArrayList<>();
         try {

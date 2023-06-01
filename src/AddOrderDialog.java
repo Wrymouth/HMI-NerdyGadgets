@@ -96,9 +96,10 @@ public class AddOrderDialog extends JDialog implements ActionListener {
                     selectedProduct = product;
                 }
             }
+                //searches for the orderline containing selectedproduct
                 for (Orderline ol : order.getOrderlines()) {
                     if (ol.getProduct().getId() == selectedProduct.getId()) {
-                        if ((selectedProduct.getQuantity() - (ol.getAmount() + 1)) < 0){
+                        if ((selectedProduct.getQuantity() - (ol.getAmount() + 1)) < 0){ //checks if selected amount is bigger than amount in storage
                             JOptionPane.showMessageDialog(this, "Van dit product is er te weinig in voorraad \n" +
                                             "er is nog " + selectedProduct.getQuantity() + " in voorraad",
                                     "Te weinig voorraad", JOptionPane.INFORMATION_MESSAGE);
@@ -110,9 +111,9 @@ public class AddOrderDialog extends JDialog implements ActionListener {
                         return;
                     }
                 }
-                Orderline orderline = new Orderline(selectedProduct);
-                order.addOrderline(orderline);
-                pOrderlineList.setOrderlines(order.getOrderlines());
+                Orderline orderline = new Orderline(selectedProduct); //new orderline with the selected product
+                order.addOrderline(orderline); //add that orderline to the current order
+                pOrderlineList.setOrderlines(order.getOrderlines()); //updates the orderlines in this order for OrderLineListPanel to use
         } else if(e.getActionCommand().equals("Order plaatsen")) {
             if(!pOrderlineList.getOrderlines().isEmpty()) {
                 if(selectedCustomer.getCustomerID() != 0) { //Check if customer is set
