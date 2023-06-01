@@ -1,28 +1,28 @@
 import com.fazecast.jSerialComm.SerialPort; // library voor arduino communicatie
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
-import com.fazecast.jSerialComm.SerialPortInvalidPortException;
 
 import java.util.*;
-import java.lang.*;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class ArduinoComm {
 
+    private Order order;
+
     private WarehousePanel wp;
+    private BoxesPanel bp;
 
     private String instruction = "";
     private String receivedData = "";
+    private ArrayList<Product> orderProducts = new ArrayList<>();
+    private ArrayList<Product> pickedProducts = new ArrayList<>();
 
     private SerialPort sp;
 
-    public ArduinoComm(String comPort, WarehousePanel wp) {
+    public ArduinoComm(String comPort, WarehousePanel wp, BoxesPanel bp) {
         this.wp = wp;
+        this.bp = bp;
         openComPort(comPort);
         sp.addDataListener(new SerialPortDataListener() {
             @Override
@@ -40,31 +40,44 @@ public class ArduinoComm {
                     byte[] newData = new byte[availableBytes];
                     int numRead = sp.readBytes(newData, newData.length);
                     receivedData += new String(newData);
-                    
-                    // the event reads data in small chunks, so the program checks for a newline character
+
+                    // the event reads data in small chunks, so the program checks for a newline
+                    // character
                     // to know if the data is complete
+
                     int newlineIndex = receivedData.indexOf('\n');
                     if (newlineIndex != -1) {
-                        String coordinates = receivedData.substring(0, newlineIndex);
-                        System.out.println("Received data: " + coordinates);
-                        int index = coordinates.indexOf(','); // if a comma is found, that means these are coordinates
-                        if (index != -1) {
-                            try {
-                                int x = Integer.parseInt(coordinates.substring(0, index));
-                                int y = Integer.parseInt(coordinates.substring(index + 1));
-                                wp.setRobotPosition(x, y);
-                            } catch (NumberFormatException e) {
+                        if (receivedData.charAt(0) == 'p') { // picked up product
+                            System.out.println("Received data: " + receivedData);
+
+                            pickedProducts.add(orderProducts.get(0));
+                            orderProducts.remove(0);
+                            wp.setRobotPositionToProduct(pickedProducts.get(pickedProducts.size() - 1));
+                            bp.setCount(pickedProducts.size());
+
+                        }
+                        if (receivedData.charAt(0) == 'r') { // returned to start
+                            if (orderProducts.isEmpty()) {
+                                order.setProcessed(true);
+                            } else {
+                                TSP();
                             }
                         }
                         // set receivedData to empty string so we can start listening for new data
                         receivedData = "";
                     }
                 }
+                System.out.println("einde van event");
             }
         });
+
     }
 
     public ArduinoComm() {
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public void openComPort(String com) {
@@ -98,10 +111,9 @@ public class ArduinoComm {
     // gets x and y position of every product in selected order and saves them in
     // set pattern in a variable.
     // Then sends the pattern to the arduino.
-    public void sendCoordinates() throws InterruptedException {
+    public void sendCoordinates() {
         instruction.trim();
         instruction += "\n";
-        instruction = "100,2000\n";
 
         // opens connection on defined commport
 
@@ -115,42 +127,37 @@ public class ArduinoComm {
         }
     }
 
-    //Only called when the emergency button is pressed in HMI, sends emergency signal to robot
+    // Only called when the emergency button is pressed in HMI, sends emergency
+    // signal to robot
     public void sendEmergencySignal(boolean emergency) throws InterruptedException {
         PrintWriter output = new PrintWriter(sp.getOutputStream()); // Output variable declared.
 
-        if(emergency) {
-            output.println("E"); //Sends char E to robot, when read by Arduino it will activate the emergency stop
+        if (emergency) {
+            output.println("E"); // Sends char E to robot, when read by Arduino it will activate the emergency
+                                 // stop
             output.flush();
             Thread.sleep(1000);
         }
     }
 
-    //loops through all boxes in order and executes calculateAndSendCoordinatesTSP each time three products from boxes have been selected
-    public void TSP(Order order) throws InterruptedException {
+    public void TSP() {
         List<Product> productsTBC = new ArrayList<>();
-        int[] productX = new int[3];
-        int[] productY = new int[3];
-
-        for (Box box : order.getBoxes()) {
-            for (Product product : box.getProducts()) {
-                productsTBC.add(product); //add products to list until there are 3 in the list
-                if (productsTBC.size() == 3) {
-                    calculateAndSendCoordinatesTSP(productsTBC, productX, productY);
-                    productsTBC.clear(); //clears list to add the next 3 products
-                }
+        // add first 3 products to list, or less if there are less than 3 products left
+        for (int i = 0; i < 3; i++) {
+            if (orderProducts.isEmpty()) {
+                break;
             }
+            productsTBC.add(orderProducts.get(i));
         }
-
-        if (!productsTBC.isEmpty()) { // checks if list is actually empty and executes function with remaining products if it isn't
-            calculateAndSendCoordinatesTSP(productsTBC, productX, productY);
-        }
+        calculateAndSendCoordinatesTSP(productsTBC);
+        productsTBC.clear();
     }
 
-    private void calculateAndSendCoordinatesTSP(List<Product> productsTBC, int[] productX, int[] productY)
-            throws InterruptedException {
+    private void calculateAndSendCoordinatesTSP(List<Product> productsTBC) {
         double[] distances = new double[productsTBC.size()];
-        for (int j = 0; j < productsTBC.size(); j++) { // gets X and Y coordinates for all 3 products
+        int[] productX = new int[3];
+        int[] productY = new int[3];
+        for (int j = 0; j < productsTBC.size(); j++) {
             Product currentProduct = productsTBC.get(j);
             productX[j] = currentProduct.getPositionX();
             productY[j] = currentProduct.getPositionY();
@@ -188,5 +195,13 @@ public class ArduinoComm {
             }
         }
         sendCoordinates(); //sends instruction String to robot
+    }
+
+    public void setAllProducts() {
+        for (Box box : order.getBoxes()) {
+            for (Product product : box.getProducts()) {
+                orderProducts.add(product);
+            }
+        }
     }
 }

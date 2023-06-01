@@ -14,6 +14,7 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
     private JList listOrders;
     private JButton bAddOrder;
     private JButton bSelect;
+    private DefaultListModel orderNames = new DefaultListModel();
     private Frame frame;
 
     public SelectOrderDialog(Frame frame, boolean modal) {
@@ -30,9 +31,8 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
         JLabel lOrders = new JLabel("Orders");
         add(lOrders);
 
-        Vector<String> orderNames = new Vector<String>();
         for (Order order : orders) {
-            orderNames.add(order.getName());
+            orderNames.addElement(order.getName());
         }
         listOrders = new JList<String>(orderNames);
         listOrders.addListSelectionListener(new ListSelectionListener() {
@@ -46,6 +46,9 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
         });
         listOrders.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         add(listOrders);
+        JScrollPane s = new JScrollPane(listOrders);
+        s.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        add(s);
         bAddOrder = new JButton("Nieuwe order");
         bAddOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         bAddOrder.addActionListener(this);
@@ -55,6 +58,11 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
         bSelect.addActionListener(this);
         add(bSelect);
         setVisible(true);
+
+    }
+
+    public SelectOrderDialog() {
+
     }
 
     public Order getSelectedOrder() {
@@ -77,4 +85,5 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
             }
         }
     }
+
 }

@@ -183,9 +183,12 @@ public class DBMethods {
 
     public static boolean updateOrder(Order order, ArrayList<Orderline> orderlines) {
         try {
-            PreparedStatement stmt = conn.prepareStatement("DELETE FROM orderlines WHERE order_id = ?");
-            stmt.setInt(1, order.getId());
-            stmt.executeUpdate();
+            PreparedStatement stmt = conn.prepareStatement("UPDATE orders SET processed = ? WHERE order_id = ?");
+            stmt.setBoolean(1, order.isProcessed());
+            stmt.setInt(2, order.getId());
+            PreparedStatement stmtDelete = conn.prepareStatement("DELETE FROM orderlines WHERE order_id = ?");
+            stmtDelete.setInt(1, order.getId());
+            stmtDelete.executeUpdate();
             for (Orderline orderline : orderlines) {
                 DBMethods.addOrderline(orderline, order.getId());
             }
