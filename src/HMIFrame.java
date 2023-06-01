@@ -26,7 +26,6 @@ public class HMIFrame extends JFrame implements ActionListener {
     private Order order;
     private Robot robot = new Robot();
     private ArduinoComm arduino;
-    private Customer selectedOrderCustomer;
 
     private String comPort = "COM5";
 
@@ -42,14 +41,19 @@ public class HMIFrame extends JFrame implements ActionListener {
         add(warehousePanel);
         JLabel lWarehouse = new JLabel("Weergave robot");
         warehousePanel.add(lWarehouse);
-        warehousePanel.add(warehousePanel.getWarehousePanel());
+        warehousePanel.add(warehousePanel.getWarehousePanel()); //Draws warehouse on screen
 
         // Order panel
         orderPanel = new HMIContainer("Order", new OrderPanel());
         add(orderPanel);
         orderPanel.add(orderPanel.getOrderPanel());
 
-        bEditOrder = new JButton("Wijzig order"); // Edit order button
+        bSelectOrder = new JButton("Selecteren order"); // Select order button
+        bSelectOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        bSelectOrder.addActionListener(this);
+        orderPanel.add(bSelectOrder);
+
+        bEditOrder = new JButton("Bewerk order"); // Edit order button
         bEditOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         bEditOrder.addActionListener(this);
         orderPanel.add(bEditOrder);
@@ -59,17 +63,12 @@ public class HMIFrame extends JFrame implements ActionListener {
         bPickUpOrder.addActionListener(this);
         orderPanel.add(bPickUpOrder);
 
-        bSelectOrder = new JButton("Selecteer order"); // Select order button
-        bSelectOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        bSelectOrder.addActionListener(this);
-        orderPanel.add(bSelectOrder);
-
         // Boxes panel
         boxesPanel = new HMIContainer("Dozen", new BoxesPanel());
         add(boxesPanel);
-        boxesPanel.add(boxesPanel.getBoxesPanel());
+        boxesPanel.add(boxesPanel.getBoxesPanel()); //Draws boxes on screen
 
-        // Panel with PDF button
+        // Panel with PDF and emergency button
         buttonPanel = new HMIContainer("", new JPanel());
         add(buttonPanel);
         bPrintPdf = new JButton("Print pakbon"); // Print receipt button
@@ -81,8 +80,8 @@ public class HMIFrame extends JFrame implements ActionListener {
         jbEmergency.setBackground(Color.RED);
         jbEmergency.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         jbEmergency.addActionListener(this);
+        buttonPanel.add(jbEmergency);
 
-       buttonPanel.add(jbEmergency);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent e) {
                 ArduinoComm.closeComPort(comPort);
@@ -97,7 +96,8 @@ public class HMIFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bEditOrder) { //Opens dialog where user will be able to edit an order
             if (order == null) {
-                JOptionPane.showMessageDialog(this, "Selecteer eerst een order");
+                JOptionPane.showMessageDialog(this, "Selecteer eerst een order!",
+                        "Geen order geselecteerd!", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 dEditOrder = new EditOrderDialog(this, true, order);
                 dEditOrder.setVisible(true);
@@ -116,11 +116,11 @@ public class HMIFrame extends JFrame implements ActionListener {
             this.order.setOrderlines(orderlines);
             orderPanel.getOrderPanel().setOrder(selectedOrder, DBMethods.fetchCustomer(selectedOrder.getCustomerID()));
             dSelectOrder.dispose();
-            order.placeProductsInBoxes();
+            order.placeProductsInBoxes(); //BPP algorithm execution
 
         } else if (e.getSource() == bPickUpOrder) {
             try {
-                arduino.TSP(order);
+                arduino.TSP(order); //TSP algorithm execution
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
@@ -128,17 +128,17 @@ public class HMIFrame extends JFrame implements ActionListener {
             try {
                 if(order == null) {
                     JOptionPane.showMessageDialog(this, "Selecteer eerst een order!",
-                            "Geen order geselecteerd", JOptionPane.INFORMATION_MESSAGE);
+                            "Geen order geselecteerd!", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     PackingSlip pdf = new PackingSlip(order);
-                    pdf.printPackingSlips();
+                    pdf.printPackingSlips(); //Creates new PDF packing slip
                 }
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         } else if (e.getActionCommand().equals("Noodstop")) {
             try {
-                arduino.sendEmergencySignal(true);
+                arduino.sendEmergencySignal(true); //Sends emergency signal to Arduino
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
