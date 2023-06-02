@@ -15,9 +15,9 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
     private JButton bAddOrder;
     private JButton bSelect;
     private DefaultListModel orderNames = new DefaultListModel();
-    private Frame frame;
+    private HMIFrame frame;
 
-    public SelectOrderDialog(Frame frame, boolean modal) {
+    public SelectOrderDialog(HMIFrame frame, boolean modal) {
         super(frame, modal);
         this.frame = frame;
         orders = DBMethods.fetchUnprocessedOrders(); //Retrieves orders that have not been marked as processed
@@ -75,7 +75,7 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
             AddOrderDialog dialog = new AddOrderDialog(this, true);
             dialog.setVisible(true);
             dispose();
-            SelectOrderDialog sod = new SelectOrderDialog(frame, true);
+            frame.createSOD();
         } else if (e.getSource() == bSelect) {
             if(selectedOrder != null) {
                 setVisible(false);
