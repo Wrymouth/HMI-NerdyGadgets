@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class BoxesPanel extends JPanel {
     private ArrayList<Box> boxes;
 
-    private int pickedProductsCount; // how many products have been picked up
+    // private int pickedProductsCount; // how many products have been picked up
     private int displayedProductsCount; // how many of the picked up products have been displayed
 
     public BoxesPanel() {
@@ -51,8 +51,8 @@ public class BoxesPanel extends JPanel {
             g.drawRect(boxStartX, boxStartY, boxWidth, boxHeight);
             ArrayList<Product> products = boxes.get(i).getProducts();
             for (int j = 0; j < products.size(); j++) {
-                if (displayedProductsCount == pickedProductsCount)
-                    continue;
+                // if (displayedProductsCount == pickedProductsCount)
+                    // continue;
                 Product product = products.get(j);
                 // products in rows of 3 from the bottom of the box to the top
                 int productX = boxStartX + (j % 3) * productWidth;

@@ -11,8 +11,8 @@ public class OrderPanel extends JPanel {
 
     public OrderPanel() { //Constructor for when an order has been selected
         setPreferredSize(new Dimension(200, 200));
-        //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setLayout(new FlowLayout());
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        // setLayout(new FlowLayout());
 
         jlOrderName = new JLabel("Geen order geselecteerd!");
         add(jlOrderName);
@@ -40,17 +40,24 @@ public class OrderPanel extends JPanel {
         jlOrderName.setText(order.getName());
 
         for(Orderline ol : dbOrderlines) {
+            JPanel jpOrderline = new JPanel();
+            // size
+            jpOrderline.setPreferredSize(new Dimension(200, 50));
+            jpOrderline.setLayout(new BoxLayout(jpOrderline, BoxLayout.X_AXIS));
+            JLabel jlProductId = new JLabel();
+            jlProductId.setText("ID " + String.valueOf(ol.getProduct().getId()) + ": ");
+            jpOrderline.add(jlProductId);
+            
             JLabel jlProductName = new JLabel();
-            add(jlProductName);
+            jlProductName.setText(ol.getProduct().getName() + " ");
+            jpOrderline.add(jlProductName);
 
             JLabel jlProductQuantity = new JLabel();
             Font font = new Font("Courier",Font.ITALIC,12);
             jlProductQuantity.setFont(font);
-            add(jlProductQuantity);
-
-            jlProductName.setText(ol.getProduct().getName());
             jlProductQuantity.setText(ol.getAmount() + " stuks " + "(voorraad " + ol.getProduct().getQuantity() + ")");
-
+            jpOrderline.add(jlProductQuantity);
+            add(jpOrderline);
         }
 
         //Customer data

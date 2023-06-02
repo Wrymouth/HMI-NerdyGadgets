@@ -61,10 +61,6 @@ public class SelectOrderDialog extends JDialog implements ActionListener {
 
     }
 
-    public SelectOrderDialog() {
-
-    }
-
     public Order getSelectedOrder() {
         return selectedOrder;
     }
