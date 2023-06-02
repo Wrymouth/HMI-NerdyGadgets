@@ -177,13 +177,20 @@ public class ArduinoComm {
                 }
             }
 
+            int[] distanceCalcX = new int[3];
+            int[] distanceCalcY = new int[3];
             if (minIndex != -1) { // only if the product closest to start has been determined
                 if (m == 0) { // executes once
                     for (int b = 0; b < productsTBC.size(); b++) { //calculates distances between closest product to start and all other products
+                        distanceCalcX[b] = productX[b];
+                        distanceCalcY[b] = productY[b];
                         if (b != minIndex) {
-                            productX[b] -= productX[minIndex];
-                            productY[b] -= productY[minIndex];
-                            distances[b] = Math.sqrt(Math.pow(productY[b], 2) + Math.pow(productX[b], 2));
+                            if (productX[b] == productX[minIndex] && productY[b] == productY[minIndex]){
+                                distances[b] = 0.1;
+                            }
+                            distanceCalcX[b] -= productX[minIndex];
+                            distanceCalcY[b] -= productY[minIndex];
+                            distances[b] = Math.sqrt(Math.pow(distanceCalcY[b], 2) + Math.pow(distanceCalcX[b], 2));
                         }
                     }
                     m++;
