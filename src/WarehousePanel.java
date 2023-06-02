@@ -12,11 +12,6 @@ public class WarehousePanel extends JPanel {
     private int productHeight;
     private int xStart;
     private int yStart;
-    private int ordercounter;
-    private Robot robot;
-    private Order order;
-    private Orderline orderline;
-    private SelectOrderDialog selectOrderDialog;
     private int robotX; // grid
     private int robotY; // grid
 
@@ -37,9 +32,6 @@ public class WarehousePanel extends JPanel {
         this.yStart = 30;
         this.robotX = 7;
         this.robotY = 0;
-        this.order = new Order();
-        this.orderline = new Orderline();
-        this.selectOrderDialog = new SelectOrderDialog();
 
         setBackground(Color.WHITE);
     }
@@ -91,7 +83,10 @@ public class WarehousePanel extends JPanel {
                 int productX = j * boxWidth + xStart;
                 int productY = i * boxHeight + yStart;
                 g.setColor(getProductColor(column[j].getVolume()));
-                g.fillOval(productX + 10, productY + 10, productWidth, productHeight);
+                g.fillOval(productX, productY, productWidth, productHeight);
+                g.setColor(Color.BLACK);
+                g.setFont(new Font("default", Font.BOLD, 16));
+                g.drawString(String.valueOf(column[j].getId()), productX, productY + 30);
             }
         }
         // draw robot

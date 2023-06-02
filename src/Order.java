@@ -1,4 +1,3 @@
-import java.sql.*;
 import java.util.ArrayList;
 
 public class Order {
@@ -8,8 +7,6 @@ public class Order {
     private ArrayList<Orderline> orderlines;
     private ArrayList<Box> boxes;
     private boolean processed;
-    private int PositionX;
-    private int PositionY;
 
     public Order() {
         orderlines = new ArrayList<Orderline>();
@@ -104,19 +101,4 @@ public class Order {
         return orderString;
     }
 
-    public int getPositionX() {
-        return PositionX;
-    }
-
-    public void setPositionX(int positionX) {
-        PositionX = positionX;
-    }
-
-    public int getPositionY() {
-        return PositionY;
-    }
-
-    public void setPositionY(int positionY) {
-        PositionY = positionY;
-    }
 }
