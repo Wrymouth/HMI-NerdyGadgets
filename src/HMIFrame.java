@@ -94,6 +94,23 @@ public class HMIFrame extends JFrame implements ActionListener {
         setVisible(true);
     }
 
+    public void createSOD(){
+        dSelectOrder = new SelectOrderDialog(this, true);
+        Order selectedOrder = dSelectOrder.getSelectedOrder();
+        if (selectedOrder == null) {
+            return;
+        }
+        ArrayList<Orderline> orderlines = DBMethods.fetchOrderlines(selectedOrder);
+        this.order = selectedOrder;
+        this.order.setOrderlines(orderlines);
+        orderPanel.getOrderPanel().setOrder(selectedOrder, DBMethods.fetchCustomer(selectedOrder.getCustomerID()));
+        dSelectOrder.dispose();
+        order.placeProductsInBoxes();
+        boxesPanel.getBoxesPanel().setBoxes(order.getBoxes());
+        arduino.setOrder(order);
+        arduino.setAllProducts();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bEditOrder) { // Opens dialog where user will be able to edit an order
@@ -108,21 +125,7 @@ public class HMIFrame extends JFrame implements ActionListener {
                 dEditOrder.dispose();
             }
         } else if (e.getSource() == bSelectOrder) { // Opens dialog where user will be able to select an order
-            dSelectOrder = new SelectOrderDialog(this, true);
-            Order selectedOrder = dSelectOrder.getSelectedOrder();
-            if (selectedOrder == null) {
-                return;
-            }
-            ArrayList<Orderline> orderlines = DBMethods.fetchOrderlines(selectedOrder);
-            this.order = selectedOrder;
-            this.order.setOrderlines(orderlines);
-            orderPanel.getOrderPanel().setOrder(selectedOrder, DBMethods.fetchCustomer(selectedOrder.getCustomerID()));
-            dSelectOrder.dispose();
-            order.placeProductsInBoxes();
-            boxesPanel.getBoxesPanel().setBoxes(order.getBoxes());
-            arduino.setOrder(order);
-            arduino.setAllProducts();
-
+            createSOD();
         } else if (e.getSource() == bPickUpOrder) {
             if (order.isProcessed()) {
                 JOptionPane.showMessageDialog(this, "Deze order is al opgehaald!");
