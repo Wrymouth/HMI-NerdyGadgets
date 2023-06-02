@@ -38,14 +38,14 @@ public class HMIFrame extends JFrame implements ActionListener {
         setLayout(new GridLayout(2, 1, 5, 5));
 
         // Warehouse panel
-        warehousePanel = new HMIContainer("Weergave robot:", new WarehousePanel());
+        warehousePanel = new HMIContainer("", new WarehousePanel());
         add(warehousePanel);
         warehousePanel.add(warehousePanel.getWarehousePanel());
         Border blackline = BorderFactory.createLineBorder(Color.black);
         warehousePanel.setBorder(blackline);
 
         // Order panel
-        orderPanel = new HMIContainer("Order", new OrderPanel());
+        orderPanel = new HMIContainer("", new OrderPanel());
         add(orderPanel);
         orderPanel.add(orderPanel.getOrderPanel());
         orderPanel.setBorder(blackline);
@@ -58,17 +58,15 @@ public class HMIFrame extends JFrame implements ActionListener {
         bPickUpOrder = new JButton("Haal order op"); // Get order button
         bPickUpOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         bPickUpOrder.addActionListener(this);
-
         orderPanel.add(bPickUpOrder);
 
         bSelectOrder = new JButton("Selecteer order"); // Select order button
         bSelectOrder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         bSelectOrder.addActionListener(this);
-
         orderPanel.add(bSelectOrder);
 
         // Boxes panel
-        boxesPanel = new HMIContainer("Dozen", new BoxesPanel());
+        boxesPanel = new HMIContainer("", new BoxesPanel());
         add(boxesPanel);
         boxesPanel.add(boxesPanel.getBoxesPanel());
         boxesPanel.setBorder(blackline);
