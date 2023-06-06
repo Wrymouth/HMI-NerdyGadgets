@@ -131,6 +131,11 @@ public class HMIFrame extends JFrame implements ActionListener {
         } else if (e.getSource() == bSelectOrder) { // Opens dialog where user will be able to select an order
             createSOD();
         } else if (e.getSource() == bPickUpOrder) {
+            if (order == null) {
+                JOptionPane.showMessageDialog(this, "Selecteer eerst een order!",
+                        "Geen order geselecteerd!", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
             if (order.isProcessed()) {
                 JOptionPane.showMessageDialog(this, "Deze order is al opgehaald!");
                 return;
