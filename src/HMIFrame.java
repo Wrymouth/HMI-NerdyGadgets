@@ -94,7 +94,7 @@ public class HMIFrame extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    public void createSOD(){
+    public void createSOD() {
         dSelectOrder = new SelectOrderDialog(this, true);
         Order selectedOrder = dSelectOrder.getSelectedOrder();
         if (selectedOrder == null) {
@@ -117,13 +117,17 @@ public class HMIFrame extends JFrame implements ActionListener {
             if (order == null) {
                 JOptionPane.showMessageDialog(this, "Selecteer eerst een order!",
                         "Geen order geselecteerd!", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                dEditOrder = new EditOrderDialog(this, true, order);
-                dEditOrder.setVisible(true);
-                order = dEditOrder.getOrder();
-                orderPanel.getOrderPanel().setOrder(order);
-                dEditOrder.dispose();
+                return;
             }
+            dEditOrder = new EditOrderDialog(this, true, order);
+            dEditOrder.setVisible(true);
+            order = dEditOrder.getOrder();
+            orderPanel.getOrderPanel().setOrder(order);
+            order.placeProductsInBoxes();
+            boxesPanel.getBoxesPanel().setBoxes(order.getBoxes());
+            arduino.setOrder(order);
+            arduino.setAllProducts();
+            dEditOrder.dispose();
         } else if (e.getSource() == bSelectOrder) { // Opens dialog where user will be able to select an order
             createSOD();
         } else if (e.getSource() == bPickUpOrder) {
@@ -139,14 +143,14 @@ public class HMIFrame extends JFrame implements ActionListener {
                             "Geen order geselecteerd!", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     PackingSlip pdf = new PackingSlip(order);
-                    pdf.printPackingSlips(); //Creates new PDF packing slip
+                    pdf.printPackingSlips(); // Creates new PDF packing slip
                 }
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         } else if (e.getActionCommand().equals("Noodstop")) {
             try {
-                arduino.sendEmergencySignal(true); //Sends emergency signal to Arduino
+                arduino.sendEmergencySignal(true); // Sends emergency signal to Arduino
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
