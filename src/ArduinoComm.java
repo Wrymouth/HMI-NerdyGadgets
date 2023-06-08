@@ -50,7 +50,7 @@ public class ArduinoComm {
                         if (receivedData.charAt(0) == 'p') { // picked up product
                             System.out.println("Received data: " + receivedData);
                             pickedProducts.add(orderProducts.get(0));
-                            orderProducts.remove(0);
+                            // orderProducts.remove(0);
                             // set robot position to the product that was just picked up
                             // wp.setRobotPositionToProduct(pickedProducts.get(pickedProducts.size() - 1));
                             // update boxes panel 
@@ -143,10 +143,11 @@ public class ArduinoComm {
         List<Product> productsTBC = new ArrayList<>();
         // add first 3 products to list, or less if there are less than 3 products left
         for (int i = 0; i < 3; i++) {
-            if (i == orderProducts.size()) {
+            if (orderProducts.isEmpty()) {
                 break;
             }
-            productsTBC.add(orderProducts.get(i));
+            productsTBC.add(orderProducts.get(0));
+            orderProducts.remove(0);
         }
         calculateAndSendCoordinatesTSP(productsTBC);
         productsTBC.clear();
